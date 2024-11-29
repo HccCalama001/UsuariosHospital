@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePersonalAccessTokensTable extends Migration
+class CreateRolesTable extends Migration
 {
 
     /**
@@ -20,14 +20,12 @@ class CreatePersonalAccessTokensTable extends Migration
      */
     public function up()
     {
-        Schema::create('personal_access_tokens', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->morphs('tokenable');
-            $table->string('name');
-            $table->string('token', 64)->unique();
-            $table->text('abilities')->nullable();
-            $table->timestamp('last_used_at')->nullable();
-            $table->timestamps();
+        Schema::create('roles', function (Blueprint $table) {
+            $table->id(); // Clave primaria
+            $table->string('nombre'); // Nombre del rol
+            $table->text('descripcion')->nullable(); // Descripción del rol
+            // Añade otros campos si es necesario
+            // $table->timestamps(); // Si deseas utilizar timestamps
         });
     }
 
@@ -38,6 +36,6 @@ class CreatePersonalAccessTokensTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('personal_access_tokens');
+        Schema::dropIfExists('roles');
     }
 }

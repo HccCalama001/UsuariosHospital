@@ -46,11 +46,11 @@ return [
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+            'host' => env('DB_HOSTM', '127.0.0.1'),
+            'port' => env('DB_PORTM', '3306'), // Elimina la coma adicional
+            'database' => env('DB_DATABASEM', 'forge'),
+            'username' => env('DB_USERNAMEM', 'forge'),
+            'password' => env('DB_PASSWORDM', ''),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
@@ -80,6 +80,7 @@ return [
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',
+            'date_format' => 'd/m/Y H:i:s', 
             'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST', 'localhost'),
             'port' => env('DB_PORT', '1433'),
@@ -89,6 +90,58 @@ return [
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
+            'options' => [
+                'CharacterSet' => 'UTF-8',
+            ],
+        ],
+        'sqlsrv2' => [  // Segunda conexión a la segunda base de datos
+            'driver' => 'sqlsrv',
+            'date_format' => 'd/m/Y H:i:s',
+            'url' => env('DB2_DATABASE_URL'),
+            'host' => env('DB2_HOST', 'localhost'),  // Conexión a la segunda base de datos
+            'port' => env('DB2_PORT', '1433'),
+            'database' => env('DB2_DATABASE', 'forge'),
+            'username' => env('DB2_USERNAME', 'forge'),
+            'password' => env('DB2_PASSWORD', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'options' => [
+                'CharacterSet' => 'UTF-8',
+            ],
+        ],
+        'sqlsrv3' => [
+            'driver' => 'sqlsrv',
+            'date_format' => 'd/m/Y H:i:s',
+            'url' => env('DB3_DATABASE_URL'),
+            'host' => env('DB3_HOST', 'localhost'),
+            'port' => env('DB3_PORT', '1433'),
+            'database' => env('DB3_DATABASE', 'forge'),
+            'username' => env('DB3_USERNAME', 'forge'),
+            'password' => env('DB3_PASSWORD', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'options' => [
+                'CharacterSet' => 'UTF-8',
+            ],
+        ],
+
+        'sqlsrv4' => [
+            'driver' => 'sqlsrv',
+            'date_format' => 'd/m/Y H:i:s',
+            'url' => env('DB4_DATABASE_URL'),
+            'host' => env('DB4_HOST', 'localhost'),
+            'port' => env('DB4_PORT', '1433'),
+            'database' => env('DB4_DATABASE', 'forge'),
+            'username' => env('DB4_USERNAME', 'forge'),
+            'password' => env('DB4_PASSWORD', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'options' => [
+                'CharacterSet' => 'UTF-8',
+            ],
         ],
 
     ],
