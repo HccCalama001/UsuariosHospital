@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -10,7 +11,7 @@ class SQLPasswordController extends Controller
 {
     public function index()
     {
-        return Inertia::render('SQLLogin');
+        return Inertia::render('changePassword/SQLLogin');
     }
 
     public function indexChange()
@@ -19,7 +20,7 @@ class SQLPasswordController extends Controller
             return redirect()->route('sqlpassword.login')->withErrors(['session' => 'Debe autenticarse primero.']);
         }
 
-        return Inertia::render('SQLChangePassword', [
+        return Inertia::render('changePassword/SQLChangePassword', [
             'username' => Session::get('sql_username'),
         ]);
     }
@@ -40,11 +41,26 @@ class SQLPasswordController extends Controller
         if (!$connection) {
             return back()->withErrors(['current_password' => 'Usuario o contraseña incorrectos.']);
         }
-
         Session::put('sql_username', $request->username);
         sqlsrv_close($connection);
 
-        return redirect()->route('sqlpassword.change');
+        
+        $controladorUsuario = new UsuarioController();
+        $response = $controladorUsuario->buscarUsuario(new Request(['nameuser' => $request->username]));
+
+        $userData = json_decode($response->getContent(), true);
+        // Verificar si userNew es null
+        if (is_null($userData['userNew'])) {
+            // Guardar datos de userLogin y current_password en la sesión
+            session([
+                'userLogin' => $userData['userLogin'],
+                'current_password' => $request->current_password, // Guardar la contraseña en la sesión
+            ]);
+            return redirect()->route('completarDatos');
+        }
+        
+
+        return redirect()->route('changePassword/sqlpassword.change');
     }
 
     public function updatePassword(Request $request)
@@ -65,14 +81,14 @@ class SQLPasswordController extends Controller
         $username = Session::get('sql_username');
 
         if (!$username) {
-            return redirect()->route('sqlpassword.login')->withErrors(['session' => 'Debe autenticarse primero.']);
+            return redirect()->route('changePassword/sqlpassword.login')->withErrors(['session' => 'Debe autenticarse primero.']);
         }
 
         try {
             $newPassword = $request->new_password;
             DB::unprepared("ALTER LOGIN [$username] WITH PASSWORD = '$newPassword'");
 
-            return redirect()->route('sqlpassword.loading');
+            return redirect()->route('changePassword/sqlpassword.loading');
         } catch (\Exception $e) {
             return back()->withErrors(['new_password' => 'Error al actualizar la contraseña: ' . $e->getMessage()]);
         }
@@ -95,7 +111,7 @@ class SQLPasswordController extends Controller
 
             Session::forget('sql_username');
 
-            return redirect()->route('sqlpassword.success');
+            return redirect()->route('changePassword/sqlpassword.success');
         } catch (\Exception $e) {
             return back()->withErrors(['message' => 'Error al cerrar las sesiones: ' . $e->getMessage()]);
         }

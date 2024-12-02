@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models\ServidorOld;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,29 +13,29 @@ class UsuarioLogin extends Model
     protected $primaryKey = 'principal_id';
     public $timestamps = false;
 
-    protected $fillable =[
+    protected $fillable = [
         'name', 
-        'principal_id'
+        'principal_id',
     ];
 
     protected $hidden = ['sid', 'password_hash'];
+
+    // Relación corregida: Uno a uno con UsuarioServicio
     public function seguUsuario()
     {
         return $this->hasOne(UsuarioServicio::class, 'Segu_Usr_Cuenta', 'name');
     }
 
+    // Relación corregida: Uno a uno con UsuarioToken
     public function authRememberToken()
     {
         return $this->hasOne(UsuarioToken::class, 'id_user', 'principal_id');
     }
 
+    // Relación corregida: Uno a muchos con RolUsuarioSistema
     public function roleUserSistema()
     {
         return $this->hasMany(RolUsuarioSistema::class, 'user_principal_id', 'principal_id');
-    }
-    public function usuarioSitema()
-    {
-        return $this->hasMany(UsuarioSistema::class, 'name', 'TAB_Login');
     }
 
 }

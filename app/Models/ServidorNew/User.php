@@ -5,7 +5,7 @@ namespace App\Models\ServidorNew;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Laravel\Sanctum\HasApiTokens;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
 use App\Models\ServidorNew\Rol;
 use App\Models\ServidorOld\UsuarioLogin;
@@ -14,9 +14,9 @@ use App\Models\ServidorOld\ServicioProfesional;
 use App\Models\ServidorOld\UsuarioSistema;
 use App\Models\ServidorOld\RolUsuarioSistema;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     // Especificar la conexión a la base de datos (opcional si 'mysql' es la predeterminada)
     protected $connection = 'mysql';
@@ -47,11 +47,6 @@ class User extends Authenticatable
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value);
-    }
-
-    public function tokens()
-    {
-        return $this->hasMany(\Laravel\Sanctum\PersonalAccessToken::class, 'tokenable_id');
     }
 
     public function rol()
@@ -100,5 +95,18 @@ class User extends Authenticatable
             'NombreUsuario',    // Local key on User table...
             'principal_id'      // Local key on UsuarioLogin table...
         );
+    }
+
+    /**
+     * Métodos requeridos por JWTSubject
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 }

@@ -10,8 +10,11 @@ class SistemaSalud extends Model
     use HasFactory;
 
     protected $connection = 'sqlsrv2';
+    protected $keyType = 'string';
+    public $incrementing = false;
     protected $table = 'TAB_SistemaSalud';
     protected $primaryKey = 'TAB_Codigo';
+
 
     protected $fillable = [
         'TAB_Codigo', //Codigo del sistema de salud
@@ -27,4 +30,5 @@ class SistemaSalud extends Model
     {
         return $this->hasMany(UsuarioSistema::class, 'TAB_ID_Sistema', 'TAB_Codigo');
     }
+    
 }

@@ -25,6 +25,7 @@ class UsuarioSistema extends Model
     {
         return $this->belongsTo(SistemaSalud::class, 'TAB_ID_Sistema', 'TAB_Codigo');
     }
+    
 
     public function privilegios()
     {

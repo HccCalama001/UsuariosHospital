@@ -16,11 +16,12 @@ class RolSistema extends Model
 
     protected $fillable = [
         'nombre',
-        'descripcion'
+        'descripcion',
     ];
 
+    // Relación corregida: Uno a muchos con RolUsuarioSistema
     public function roleUserSistema()
     {
-        return $this->hasOne(RolUsuarioSistema::class, 'role_id', 'id');
+        return $this->hasMany(RolUsuarioSistema::class, 'role_id', 'id');
     }
 }

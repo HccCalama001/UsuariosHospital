@@ -41808,37 +41808,45 @@ module.exports = function getSideChannel() {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var map = {
-	"./SQLChangePassword": [
-		"./resources/js/Pages/SQLChangePassword.jsx",
-		"resources_js_Pages_SQLChangePassword_jsx"
+	"./changePassword/SQLChangePassword": [
+		"./resources/js/Pages/changePassword/SQLChangePassword.jsx",
+		"resources_js_Pages_changePassword_SQLChangePassword_jsx"
 	],
-	"./SQLChangePassword.jsx": [
-		"./resources/js/Pages/SQLChangePassword.jsx",
-		"resources_js_Pages_SQLChangePassword_jsx"
+	"./changePassword/SQLChangePassword.jsx": [
+		"./resources/js/Pages/changePassword/SQLChangePassword.jsx",
+		"resources_js_Pages_changePassword_SQLChangePassword_jsx"
 	],
-	"./SQLLoading": [
-		"./resources/js/Pages/SQLLoading.jsx",
-		"resources_js_Pages_SQLLoading_jsx"
+	"./changePassword/SQLLoading": [
+		"./resources/js/Pages/changePassword/SQLLoading.jsx",
+		"resources_js_Pages_changePassword_SQLLoading_jsx"
 	],
-	"./SQLLoading.jsx": [
-		"./resources/js/Pages/SQLLoading.jsx",
-		"resources_js_Pages_SQLLoading_jsx"
+	"./changePassword/SQLLoading.jsx": [
+		"./resources/js/Pages/changePassword/SQLLoading.jsx",
+		"resources_js_Pages_changePassword_SQLLoading_jsx"
 	],
-	"./SQLLogin": [
-		"./resources/js/Pages/SQLLogin.jsx",
-		"resources_js_Pages_SQLLogin_jsx"
+	"./changePassword/SQLLogin": [
+		"./resources/js/Pages/changePassword/SQLLogin.jsx",
+		"resources_js_Pages_changePassword_SQLLogin_jsx"
 	],
-	"./SQLLogin.jsx": [
-		"./resources/js/Pages/SQLLogin.jsx",
-		"resources_js_Pages_SQLLogin_jsx"
+	"./changePassword/SQLLogin.jsx": [
+		"./resources/js/Pages/changePassword/SQLLogin.jsx",
+		"resources_js_Pages_changePassword_SQLLogin_jsx"
 	],
-	"./SQLPasswordSuccess": [
-		"./resources/js/Pages/SQLPasswordSuccess.jsx",
-		"resources_js_Pages_SQLPasswordSuccess_jsx"
+	"./changePassword/SQLPasswordSuccess": [
+		"./resources/js/Pages/changePassword/SQLPasswordSuccess.jsx",
+		"resources_js_Pages_changePassword_SQLPasswordSuccess_jsx"
 	],
-	"./SQLPasswordSuccess.jsx": [
-		"./resources/js/Pages/SQLPasswordSuccess.jsx",
-		"resources_js_Pages_SQLPasswordSuccess_jsx"
+	"./changePassword/SQLPasswordSuccess.jsx": [
+		"./resources/js/Pages/changePassword/SQLPasswordSuccess.jsx",
+		"resources_js_Pages_changePassword_SQLPasswordSuccess_jsx"
+	],
+	"./usuario/CompletarDatos": [
+		"./resources/js/Pages/usuario/CompletarDatos.jsx",
+		"resources_js_Pages_usuario_CompletarDatos_jsx"
+	],
+	"./usuario/CompletarDatos.jsx": [
+		"./resources/js/Pages/usuario/CompletarDatos.jsx",
+		"resources_js_Pages_usuario_CompletarDatos_jsx"
 	]
 };
 function webpackAsyncContext(req) {
@@ -41989,7 +41997,7 @@ module.exports = /*#__PURE__*/JSON.parse('{"name":"axios","version":"0.21.4","de
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_Pages_SQLChangePassword_jsx":1,"resources_js_Pages_SQLLoading_jsx":1,"resources_js_Pages_SQLLogin_jsx":1,"resources_js_Pages_SQLPasswordSuccess_jsx":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_Pages_changePassword_SQLChangePassword_jsx":1,"resources_js_Pages_changePassword_SQLLoading_jsx":1,"resources_js_Pages_changePassword_SQLLogin_jsx":1,"resources_js_Pages_changePassword_SQLPasswordSuccess_jsx":1,"resources_js_Pages_usuario_CompletarDatos_jsx":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};

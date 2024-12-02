@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models\ServidorOld;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,9 +9,7 @@ class ServicioProfesional extends Model
     use HasFactory;
     
     protected $connection = 'sqlsrv2';
-
     protected $table = 'SER_Profesiona';
-
     protected $primaryKey = 'SER_PRO_Rut';
 
     protected $fillable = [
@@ -26,7 +23,7 @@ class ServicioProfesional extends Model
         'Farmacia',
         'SER_PRO_Agenda',
     ];
-    
+
     protected $hidden = [
         'SER_PRO_Direccion',
         'SER_PRO_Telefono', 
@@ -38,16 +35,17 @@ class ServicioProfesional extends Model
     ];
 
     public $timestamps = false;
+    protected $keyType = 'string';
 
-    protected $keyType= 'string';
-
+    // Relación corregida: Pertenece a UsuarioServicio
     public function usuarioServicio()
     {
-        return $this->belongsTo(UsuarioServicio::class, 'SER_PRO_Tipo', 'TAB_Codigo');
+        return $this->belongsTo(UsuarioServicio::class, 'SER_PRO_Rut', 'Segu_Usr_RUT');
     }
 
-    public function TipoProfesional()
+    // Relación corregida: Pertenece a TipoProfesional
+    public function tipoProfesional()
     {
-        return $this->belongsTo(TipoProfesional::class, 'SER_PRO_Estado', 'TAB_Codigo');
+        return $this->belongsTo(TipoProfesional::class, 'SER_PRO_Tipo', 'TAB_Codigo');
     }
 }

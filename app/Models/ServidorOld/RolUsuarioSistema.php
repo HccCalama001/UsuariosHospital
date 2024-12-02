@@ -13,30 +13,32 @@ class RolUsuarioSistema extends Model
     protected $table = 'role_user_sistema';
     protected $primaryKey = 'id';
 
-    //public $timestamps = false;
-
     protected $fillable = [
         'role_id',
         'user_principal_id',
         'sistemas_id',
-        'vigencia'
+        'vigencia',
     ];
 
+    // Relación corregida: Pertenece a RolSistema
     public function role()
     {
         return $this->belongsTo(RolSistema::class, 'role_id', 'id');
     }
 
+    // Relación corregida: Pertenece a Sistema
     public function sistema()
     {
         return $this->belongsTo(Sistema::class, 'sistemas_id', 'id');
     }
 
+    // Relación corregida: Pertenece a UsuarioLogin
     public function sysSqlLogin()
     {
         return $this->belongsTo(UsuarioLogin::class, 'user_principal_id', 'principal_id');
     }
 
+    // Scope corregido: Filtra por vigencia activa
     public function scopeVigencia($query)
     {
         return $query->where('vigencia', 1);

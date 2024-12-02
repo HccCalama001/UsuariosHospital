@@ -10,14 +10,9 @@ class UsuarioServicio extends Model
     use HasFactory;
     
     protected $connection = 'sqlsrv2';
-
-    // Definir la tabla asociada
     protected $table = 'Segu_Usuarios';
-    
-    // Definir clave primaria
     protected $primaryKey = 'Segu_Usr_RUT';
 
-    // Definir los campos asignables masivamente
     protected $fillable = [
         'Segu_Usr_Cuenta',
         'Segu_Usr_Nombre',
@@ -25,12 +20,11 @@ class UsuarioServicio extends Model
         'Segu_Usr_ApellidoMaterno',
         'Segu_Usr_RUT',
         'Segu_Usr_FuncionAdmnistr',
-        'Segu_Usr_Codigo'
+        'Segu_Usr_Codigo',
     ];
 
     public $timestamps = false;
-
-    protected $keyType= 'string';
+    protected $keyType = 'string';
 
     protected $hidden = [
         'Segu_Vigente',
@@ -43,23 +37,28 @@ class UsuarioServicio extends Model
         'Segu_Usr_Fono',
         'Segu_Usr_Mail',
         'enfESI',
-        'Segu_Usr_Cuenta' 
+        'Segu_Usr_Cuenta',
     ];
 
-
+    // Relación corregida: Uno a uno con ServicioProfesional
     public function servicioProfesional()
     {
-        return $this->hasOne(ServicioProfesional::class, 'Segu_Usr_RUT', 'SER_PRO_Rut');
+        return $this->hasOne(ServicioProfesional::class, 'SER_PRO_Rut', 'Segu_Usr_RUT');
     }
+
+    // Relación corregida: Pertenece a UsuarioLogin
     public function sysSqlLogin()
     {
         return $this->belongsTo(UsuarioLogin::class, 'Segu_Usr_Cuenta', 'name');
     }
+
+    // Accesor corregido para obtener el nombre completo del usuario
     public function getNombreUsuarioAttribute()
     {
         return "{$this->Segu_Usr_Nombre} {$this->Segu_Usr_ApellidoPaterno} {$this->Segu_Usr_ApellidoMaterno}";
     }
 
+    // Scope corregido para filtrar por username
     public function scopeUsername($query, $id)
     {
         return $query->where('Segu_Usr_Cuenta', '=', $id);

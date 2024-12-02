@@ -6,7 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\ServidorNew\User;
 use App\Models\ServidorOld\UsuarioLogin;
 use App\Models\ServidorOld\UsuarioServicio;
+use App\Models\ServidorOld\UsuarioSistema;
 use App\Models\ServidorOld\ServicioProfesional;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UsuarioController extends Controller
 {
@@ -22,8 +27,7 @@ class UsuarioController extends Controller
         // Inicializar variables para cada fuente de datos
         $userNew = null;
         $userLogin = null;
-        $userServicio = null;
-        $userProfesional = null;
+        $usuarioSistema = null;
 
         // Buscar en la base de datos nueva (User)
         $userNew = User::with([
@@ -40,101 +44,153 @@ class UsuarioController extends Controller
             ->orWhere('Rut', $query)
             ->first();
 
+        // Log de debugging
+        Log::info('Resultado de $userNew:', ['userNew' => $userNew]);
+
         // Buscar en UsuarioLogin
         $userLogin = UsuarioLogin::with([
             'seguUsuario.servicioProfesional.tipoProfesional',
             'authRememberToken',
             'roleUserSistema.role',
-            'roleUserSistema.sistema',
-            'usuarioSistema.sistemaSalud',
+            'roleUserSistema.sistema'
         ])
             ->where('name', $query)
             ->first();
 
-        // Buscar en UsuarioServicio
-        $userServicio = UsuarioServicio::with([
-            'servicioProfesional.tipoProfesional',
-            'sysSqlLogin',
-        ])
-            ->where('Segu_Usr_Cuenta', $query)
-            ->orWhere('Segu_Usr_RUT', $query)
-            ->first();
+        // Consultar UsuarioSistema y SistemaSalud (SQL Directo)
+        $usuarioSistema = DB::connection('sqlsrv2')->select("
+            SELECT us.TAB_Login, us.TAB_ID_Sistema, ss.TAB_Text AS sistemaSalud
+            FROM TAB_UsuarioSistema us
+            LEFT JOIN TAB_SistemaSalud ss ON us.TAB_ID_Sistema = ss.TAB_Codigo
+            WHERE us.TAB_Login = ?
+        ", [$query]);
 
-        // Buscar en ServicioProfesional
-        if ($userServicio) {
-            // Si se encuentra en UsuarioServicio, usar el RUT para buscar en ServicioProfesional
-            $rut = $userServicio->Segu_Usr_RUT; // Extraemos el RUT
-        } else {
-            // Si no se encuentra en UsuarioServicio, asumir que $query ya es un RUT válido
-            $rut = $query;
-        }
-        
-        // Buscar en ServicioProfesional usando el RUT obtenido o proporcionado
-        $userProfesional = ServicioProfesional::with([
-            'tipoProfesional',
-            'usuarioServicio',
-        ])
-            ->where('SER_PRO_Rut', $rut)
-            ->first();
-
-        // Si no se encontró en ServicioProfesional pero tenemos el RUT de UsuarioServicio
-        if (!$userProfesional && $userServicio) {
-            $rutFromUserServicio = $userServicio->Segu_Usr_RUT;
-            if ($rutFromUserServicio) {
-                $userProfesional = ServicioProfesional::with([
-                    'tipoProfesional',
-                    'usuarioServicio',
-                ])
-                    ->where('SER_PRO_Rut', $rutFromUserServicio)
-                    ->first();
-            }
-        }
-
-        // Verificar si no se encontró en ninguna base de datos
-        if (!$userNew && !$userLogin && !$userServicio && !$userProfesional) {
-            return response()->json(['message' => 'Usuario no encontrado'], 404);
-        }
-
-        // Construir los datos de cada fuente
-
-        // Datos del usuario de la base de datos nueva (User)
+        // Procesar datos del usuario nuevo (User)
         $userNewData = null;
         if ($userNew) {
             $userNewArray = $userNew->toArray();
-            // Excluir campos sensibles
-            unset($userNewArray['password'], $userNewArray['remember_token']);
+            unset($userNewArray['password'], $userNewArray['remember_token']); // Excluir campos sensibles
             $userNewData = $userNewArray;
         }
 
-        // Datos del usuario de UsuarioLogin
+        // Procesar datos de UsuarioLogin
         $userLoginData = null;
         if ($userLogin) {
             $userLoginArray = $userLogin->toArray();
-            // Excluir campos sensibles o binarios
-            unset($userLoginArray['sid'], $userLoginArray['password_hash']);
+            unset($userLoginArray['sid'], $userLoginArray['password_hash']); // Excluir campos sensibles
             $userLoginData = $userLoginArray;
+
+            // Verificar roles asociados al usuario
+            if (!empty($userLoginData['role_user_sistema'])) {
+                $roles = collect($userLoginData['role_user_sistema'])->map(function ($roleUserSistema) {
+                    return [
+                        'role' => $roleUserSistema['role']['nombre'] ?? null,
+                        'sistema' => $roleUserSistema['sistema']['nombre'] ?? null,
+                        'vigencia' => $roleUserSistema['vigencia'] ?? null,
+                    ];
+                });
+                $userLoginData['roles'] = $roles; // Añadir roles procesados a la respuesta
+            }
         }
 
-        // Datos del usuario de UsuarioServicio
-        $userServicioData = null;
-        if ($userServicio) {
-            $userServicioData = $userServicio->toArray();
-        }
-
-        // Datos del usuario de ServicioProfesional
-        $userProfesionalData = null;
-        if ($userProfesional) {
-            $userProfesionalData = $userProfesional->toArray();
-        }
+        // Procesar datos de UsuarioSistema
+        $usuarioSistemaData = collect($usuarioSistema)->map(function ($sistema) {
+            return [
+                'login' => $sistema->TAB_Login,
+                'sistemaId' => $sistema->TAB_ID_Sistema,
+                'sistemaSalud' => $sistema->sistemaSalud ?? 'No asignado',
+            ];
+        });
 
         // Construir el resumen general
         $resumen = [
             'userNew' => $userNewData,
             'userLogin' => $userLoginData,
-            'userServicio' => $userServicioData,
-            'userProfesional' => $userProfesionalData,
+            'usuarioSistema' => $usuarioSistemaData,
         ];
 
         return response()->json($resumen);
     }
+
+    public function completarDatos(Request $request)
+    {
+        $userLogin = session('userLogin');
+        $currentPassword = session('current_password'); // Obtener la contraseña de la sesión
+        Log::info('clave', ['request' => $currentPassword]);
+
+        return Inertia::render('usuario/CompletarDatos', [
+            'userLogin' => $userLogin,
+            'current_password' => $currentPassword, // Enviar al frontend
+        ]);
+    }
+    
+
+    public function guardarDatos(Request $request)
+    {
+        Log::info('Inicio del proceso de guardarDatos.', ['datosRecibidos' => $request->all()]);
+
+        // Validar los datos recibidos
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'apellido_paterno' => 'required|string|max:255',
+                'apellido_materno' => 'required|string|max:255',
+                'rut' => 'required|string|unique:mysql.usuarios,Rut',
+                'email' => 'required|email|unique:mysql.usuarios,EmailUsuario',
+                'phone' => 'nullable|string|max:15',
+                'current_password' => 'required|string',
+                'userLogin' => 'required|string',
+            ]);
+            Log::info('Validación de datos exitosa.', ['datosValidados' => $request->all()]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Error de validación', ['errores' => $e->errors()]);
+            return response()->json([
+                'message' => 'Error de validación.',
+                'errors' => $e->errors(),
+            ], 422);
+        }
+
+        // Crear usuario
+        try {
+            $user = User::create([
+                'Rut' => $request->rut,
+                'Nombre' => $request->name,
+                'ApellidoPaterno' => $request->apellido_paterno,
+                'ApellidoMaterno' => $request->apellido_materno,
+                'EmailUsuario' => $request->email,
+                'NumeroTelefono' => $request->phone,
+                'password' => bcrypt($request->current_password),
+                'NombreUsuario' => $request->userLogin,
+            ]);
+            Log::info('Usuario creado exitosamente.', ['user' => $user]);
+        } catch (\Exception $e) {
+            Log::error('Error al crear el usuario', ['exception' => $e->getMessage()]);
+            return response()->json([
+                'message' => 'Error al crear el usuario.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+
+        // Generar token JWT
+        try {
+            $token = JWTAuth::fromUser($user);
+            Log::info('Token JWT generado con éxito.', ['token' => $token]);
+        } catch (\Exception $e) {
+            Log::error('Error al generar el token JWT', ['exception' => $e->getMessage()]);
+            return response()->json([
+                'message' => 'Error al generar el token.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+
+        // Respuesta final
+        Log::info('Datos completados correctamente.', ['user' => $user, 'token' => $token]);
+        return response()->json([
+            'message' => 'Datos completados correctamente.',
+            'token' => $token,
+            'user' => $user,
+        ], 201);
+    }
+        
+
 }
