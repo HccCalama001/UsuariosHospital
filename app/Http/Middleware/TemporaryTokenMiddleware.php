@@ -3,12 +3,12 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Auth\Middleware\Authenticate as Middleware;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
-class Authenticate extends Middleware
+class TemporaryTokenMiddleware
 {
+
     /**
      * Get the path the user should be redirected to when they are not authenticated.
      *
@@ -22,18 +22,11 @@ class Authenticate extends Middleware
         }
     }
 
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @return mixed
-     */
     public function handle($request, Closure $next)
     {
-        // Obtener el token desde el encabezado Authorization o la cookie
+        \Log::info('Middleware TemporaryTokenMiddleware ejecutado');
+        
         $token = $request->bearerToken() ?? $request->cookie('auth_token');
-    
         if (!$token) {
             // Si no hay token, redirigir al login
             if (!$request->expectsJson()) {
@@ -44,21 +37,21 @@ class Authenticate extends Middleware
         }
     
         try {
-            // Validar el token JWT
-            $user = JWTAuth::setToken($token)->authenticate();
+            $decoded = JWTAuth::setToken($token)->getPayload();
+           
     
-            if (!$user) {
-                return response()->json(['message' => 'Token inválido.'], 401);
+            if (!$decoded->get('temporary', false)) {
+                
+                return redirect()->route('sqlpassword.login');
             }
     
-            // El usuario está autenticado, agregarlo al request
-            $request->merge(['user' => $user]);
-        } catch (JWTException $e) {
+            $request->merge(['temporary_data' => $decoded->toArray()]);
+           
+        } catch (\Exception $e) {
+        
             return response()->json(['message' => 'Error con el token: ' . $e->getMessage()], 401);
         }
     
-        // Continuar con la solicitud
         return $next($request);
     }
-    
 }

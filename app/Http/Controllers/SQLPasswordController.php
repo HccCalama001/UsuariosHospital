@@ -1,117 +1,124 @@
 <?php
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\SQLPasswordRequest;
+use App\Services\SQLPasswordService;
+use App\Services\TokenService;
+use App\Services\UsuarioService;
 use Illuminate\Support\Facades\Session;
-use App\Http\Controllers\UsuarioController;
-use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
-
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Log;
 class SQLPasswordController extends Controller
 {
+    protected $sqlPasswordService;
+    protected $tokenService;
+    protected $usuarioService;
+
+    public function __construct(SQLPasswordService $sqlPasswordService, TokenService $tokenService, UsuarioService $usuarioService)
+    {
+        $this->sqlPasswordService = $sqlPasswordService;
+        $this->tokenService = $tokenService;
+        $this->usuarioService = $usuarioService;
+    }
+
+    /**
+     * Muestra la vista de inicio de sesión.
+     */
     public function index()
     {
-        return Inertia::render('changePassword/SQLLogin');
-    }
-
-    public function indexChange()
-    {
-        if (!Session::has('sql_username')) {
-            return redirect()->route('sqlpassword.login')->withErrors(['session' => 'Debe autenticarse primero.']);
-        }
-
-        return Inertia::render('changePassword/SQLChangePassword', [
-            'username' => Session::get('sql_username'),
+        return Inertia::render('changePassword/SQLLogin', [
+            'csrfToken' => csrf_token(), 
         ]);
     }
+    
 
-    public function authenticate(Request $request)
+    public function authenticate(SQLPasswordRequest $request)
     {
-        $request->validate([
-            'username' => 'required|string',
-            'current_password' => 'required|string',
-        ]);
-
-        $connection = @sqlsrv_connect(env('DB_HOST'), [
-            'UID' => $request->username,
-            'PWD' => $request->current_password,
-            'Database' => 'master',
-        ]);
-
-        if (!$connection) {
-            return back()->withErrors(['current_password' => 'Usuario o contraseña incorrectos.']);
-        }
-        Session::put('sql_username', $request->username);
-        sqlsrv_close($connection);
-
-        
-        $controladorUsuario = new UsuarioController();
-        $response = $controladorUsuario->buscarUsuario(new Request(['nameuser' => $request->username]));
-
-        $userData = json_decode($response->getContent(), true);
-        // Verificar si userNew es null
-        if (is_null($userData['userNew'])) {
-            // Guardar datos de userLogin y current_password en la sesión
-            session([
-                'userLogin' => $userData['userLogin'],
-                'current_password' => $request->current_password, // Guardar la contraseña en la sesión
-            ]);
-            return redirect()->route('completarDatos');
-        }
-        
-
-        return redirect()->route('changePassword/sqlpassword.change');
-    }
-
-    public function updatePassword(Request $request)
-    {
-        $request->validate([
-            'new_password' => [
-                'required',
-                'string',
-                'min:8',
-                'regex:/[A-Z]/',
-                'regex:/[a-z]/',
-                'regex:/[0-9]/',
-                'regex:/[@$!%*?&#.]/',
-            ],
-            'new_password_confirmation' => 'required|same:new_password',
-        ]);
-
-        $username = Session::get('sql_username');
-
-        if (!$username) {
-            return redirect()->route('changePassword/sqlpassword.login')->withErrors(['session' => 'Debe autenticarse primero.']);
-        }
-
         try {
-            $newPassword = $request->new_password;
-            DB::unprepared("ALTER LOGIN [$username] WITH PASSWORD = '$newPassword'");
+    
+            $this->sqlPasswordService->authenticateUser($request->username, $request->current_password);
+    
+            $usuarioData = $this->usuarioService->buscarUsuarioResumen($request->username);
+            
+    
+            if (is_null($usuarioData['userNew'])) {
+                // Usuario nuevo o temporal
+                $token = $this->tokenService->generateTemporaryToken([
+                    'username' => $request->username,
+                    'temporary' => true,
+                ]);
+                // Guardar datos en la sesión
+                session([
+                    'userLogin' => $usuarioData,
+                    'current_password' => $request->current_password,
+                ]);
+            
+                $cookie = cookie('auth_token', $token, 10, '/', null, false, false, false, 'Lax');
+            
+                return response()->json([
+                    'status' => 'success',
+                    'redirect' => route('usuario.completarDatos'),
+                ])->withCookie($cookie);
+            }
+    
+            // Usuario existente
+            $user = $this->usuarioService->buscarUsuarioExistente($request->username);
+            $token = $this->tokenService->generateFullToken($user);
+            $cookie = cookie('auth_token', $token, 120, '/', null, false, false, false, 'Lax');
+    
+            return response()->json([
+                'status' => 'success',
+                'redirect' => route('usuario.index'),
+            ])->withCookie($cookie);
+    
+        } catch (\Exception $e) {
+            Log::error('Error de autenticación:', ['message' => $e->getMessage()]);
+    
+            return response()->json([
+                'status' => 'error',
+                'errors' => ['authentication' => $e->getMessage()],
+            ],422);
+        }
+    }
+    
+    
 
-            return redirect()->route('changePassword/sqlpassword.loading');
+    /**
+     * Cambia la contraseña del usuario autenticado.
+     */
+    public function updatePassword(SQLPasswordRequest $request)
+    {
+        try {
+            $username = Session::get('sql_username');
+            if (!$username) {
+                return redirect()->route('sqlpassword.login')->withErrors(['message' => 'Debe autenticarse primero.']);
+            }
+
+            // Actualizar contraseña en SQL Server
+            $this->sqlPasswordService->updatePassword($username, $request->new_password);
+
+            return redirect()->route('sqlpassword.loading');
         } catch (\Exception $e) {
             return back()->withErrors(['new_password' => 'Error al actualizar la contraseña: ' . $e->getMessage()]);
         }
     }
 
-    public function closeSessions(Request $request)
+    /**
+     * Cierra todas las sesiones activas del usuario en SQL Server.
+     */
+    public function closeSessions()
     {
-        $username = Session::get('sql_username');
-
-        if (!$username) {
-            return back()->withErrors(['message' => 'No autorizado.']);
-        }
-
         try {
-            $sessions = DB::select("SELECT session_id FROM sys.dm_exec_sessions WHERE login_name = ?", [$username]);
-
-            foreach ($sessions as $session) {
-                DB::unprepared("KILL {$session->session_id}");
+            $username = Session::get('sql_username');
+            if (!$username) {
+                return back()->withErrors(['message' => 'No autorizado.']);
             }
 
-            Session::forget('sql_username');
+            // Cerrar sesiones activas
+            $this->sqlPasswordService->closeUserSessions($username);
 
-            return redirect()->route('changePassword/sqlpassword.success');
+            return redirect()->route('sqlpassword.success');
         } catch (\Exception $e) {
             return back()->withErrors(['message' => 'Error al cerrar las sesiones: ' . $e->getMessage()]);
         }

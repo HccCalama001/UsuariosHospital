@@ -1,196 +1,118 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\ServidorNew\User;
-use App\Models\ServidorOld\UsuarioLogin;
-use App\Models\ServidorOld\UsuarioServicio;
-use App\Models\ServidorOld\UsuarioSistema;
-use App\Models\ServidorOld\ServicioProfesional;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
+use App\Http\Requests\UsuarioRequest;
+use App\Services\UsuarioService;
+use App\Services\TokenService;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
-use Tymon\JWTAuth\Facades\JWTAuth;
-
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Log;
 class UsuarioController extends Controller
 {
-    public function buscarUsuario(Request $request)
+    protected $usuarioService;
+    protected $tokenService;
+
+    public function __construct(UsuarioService $usuarioService, TokenService $tokenService)
     {
-        // Validar que el parámetro 'nameuser' esté presente
-        $request->validate([
-            'nameuser' => 'required|string',
-        ]);
+        $this->usuarioService = $usuarioService;
+        $this->tokenService = $tokenService;
+    }
 
-        $query = $request->input('nameuser'); // Nombre de usuario o RUT
+    /**
+     * Muestra el perfil del usuario autenticado.
+     */
+    public function index()
+    {
+        try {
+            $token = request()->cookie('auth_token');
 
-        // Inicializar variables para cada fuente de datos
-        $userNew = null;
-        $userLogin = null;
-        $usuarioSistema = null;
-
-        // Buscar en la base de datos nueva (User)
-        $userNew = User::with([
-            'rol',
-            'login.roleUserSistema.role',
-            'login.roleUserSistema.sistema',
-            'sistemas.sistemaSalud',
-            'rolesSistema.role',
-            'rolesSistema.sistema',
-            'servicio',
-            'profesional.tipoProfesional',
-        ])
-            ->where('NombreUsuario', $query)
-            ->orWhere('Rut', $query)
-            ->first();
-
-        // Log de debugging
-        Log::info('Resultado de $userNew:', ['userNew' => $userNew]);
-
-        // Buscar en UsuarioLogin
-        $userLogin = UsuarioLogin::with([
-            'seguUsuario.servicioProfesional.tipoProfesional',
-            'authRememberToken',
-            'roleUserSistema.role',
-            'roleUserSistema.sistema'
-        ])
-            ->where('name', $query)
-            ->first();
-
-        // Consultar UsuarioSistema y SistemaSalud (SQL Directo)
-        $usuarioSistema = DB::connection('sqlsrv2')->select("
-            SELECT us.TAB_Login, us.TAB_ID_Sistema, ss.TAB_Text AS sistemaSalud
-            FROM TAB_UsuarioSistema us
-            LEFT JOIN TAB_SistemaSalud ss ON us.TAB_ID_Sistema = ss.TAB_Codigo
-            WHERE us.TAB_Login = ?
-        ", [$query]);
-
-        // Procesar datos del usuario nuevo (User)
-        $userNewData = null;
-        if ($userNew) {
-            $userNewArray = $userNew->toArray();
-            unset($userNewArray['password'], $userNewArray['remember_token']); // Excluir campos sensibles
-            $userNewData = $userNewArray;
-        }
-
-        // Procesar datos de UsuarioLogin
-        $userLoginData = null;
-        if ($userLogin) {
-            $userLoginArray = $userLogin->toArray();
-            unset($userLoginArray['sid'], $userLoginArray['password_hash']); // Excluir campos sensibles
-            $userLoginData = $userLoginArray;
-
-            // Verificar roles asociados al usuario
-            if (!empty($userLoginData['role_user_sistema'])) {
-                $roles = collect($userLoginData['role_user_sistema'])->map(function ($roleUserSistema) {
-                    return [
-                        'role' => $roleUserSistema['role']['nombre'] ?? null,
-                        'sistema' => $roleUserSistema['sistema']['nombre'] ?? null,
-                        'vigencia' => $roleUserSistema['vigencia'] ?? null,
-                    ];
-                });
-                $userLoginData['roles'] = $roles; // Añadir roles procesados a la respuesta
+            if (!$token) {
+                return redirect()->route('sqlpassword.login')->withErrors(['message' => 'Por favor, inicie sesión.']);
             }
+
+            // Validar el token y obtener el usuario autenticado
+            $user = $this->tokenService->validateToken($token);
+
+            if (!$user) {
+                return redirect()->route('sqlpassword.login')->withErrors(['message' => 'Usuario no encontrado.']);
+            }
+
+            $resumen = $this->usuarioService->buscarUsuarioResumen($user->NombreUsuario);
+            \Log::info('Resumen enviado al frontend:', $resumen);
+
+            return Inertia::render('usuario/Index', [
+                'user' => $this->usuarioService->formatUserData($user),
+                'resumen' => $resumen,
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->route('sqlpassword.login')->withErrors(['message' => $e->getMessage()]);
         }
+    }
 
-        // Procesar datos de UsuarioSistema
-        $usuarioSistemaData = collect($usuarioSistema)->map(function ($sistema) {
-            return [
-                'login' => $sistema->TAB_Login,
-                'sistemaId' => $sistema->TAB_ID_Sistema,
-                'sistemaSalud' => $sistema->sistemaSalud ?? 'No asignado',
-            ];
-        });
-
-        // Construir el resumen general
-        $resumen = [
-            'userNew' => $userNewData,
-            'userLogin' => $userLoginData,
-            'usuarioSistema' => $usuarioSistemaData,
-        ];
+    /**
+     * Busca información de un usuario.
+     */
+    public function buscarUsuario(UsuarioRequest $request)
+    {
+        $resumen = $this->usuarioService->buscarUsuarioResumen($request->nameuser);
 
         return response()->json($resumen);
     }
 
-    public function completarDatos(Request $request)
+    /**
+     * Muestra la vista para completar datos.
+     */
+    public function completarDatos()
     {
         $userLogin = session('userLogin');
-        $currentPassword = session('current_password'); // Obtener la contraseña de la sesión
-        Log::info('clave', ['request' => $currentPassword]);
+        $currentPassword = session('current_password');
 
+    
         return Inertia::render('usuario/CompletarDatos', [
             'userLogin' => $userLogin,
-            'current_password' => $currentPassword, // Enviar al frontend
+            'current_password' => $currentPassword,
+            'csrfToken' => csrf_token(), // Incluir el token CSRF
         ]);
     }
-    
 
-    public function guardarDatos(Request $request)
+    public function guardarDatos(UsuarioRequest $request)
     {
-        Log::info('Inicio del proceso de guardarDatos.', ['datosRecibidos' => $request->all()]);
-
-        // Validar los datos recibidos
         try {
-            $request->validate([
-                'name' => 'required|string|max:255',
-                'apellido_paterno' => 'required|string|max:255',
-                'apellido_materno' => 'required|string|max:255',
-                'rut' => 'required|string|unique:mysql.usuarios,Rut',
-                'email' => 'required|email|unique:mysql.usuarios,EmailUsuario',
-                'phone' => 'nullable|string|max:15',
-                'current_password' => 'required|string',
-                'userLogin' => 'required|string',
-            ]);
-            Log::info('Validación de datos exitosa.', ['datosValidados' => $request->all()]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            Log::error('Error de validación', ['errores' => $e->errors()]);
+            // Validar los datos del request
+            $validatedData = $request->validated();
+
+            // Guardar los datos utilizando el servicio correspondiente
+            $user = $this->usuarioService->guardarDatos($validatedData);
+
+            // Generar el token completo para el usuario creado
+            $token = $this->tokenService->generateFullToken($user);
+
+            // Respuesta exitosa
             return response()->json([
-                'message' => 'Error de validación.',
+                'message' => 'Datos completados correctamente.',
+                'token' => $token,
+                'user' => $user,
+            ], 201);
+
+        } catch (ValidationException $e) {
+            // Captura los errores de validación y los envía al cliente
+            Log::error('Errores de validación:', $e->errors());
+
+            return response()->json([
+                'message' => 'Errores de validación.',
                 'errors' => $e->errors(),
             ], 422);
-        }
 
-        // Crear usuario
-        try {
-            $user = User::create([
-                'Rut' => $request->rut,
-                'Nombre' => $request->name,
-                'ApellidoPaterno' => $request->apellido_paterno,
-                'ApellidoMaterno' => $request->apellido_materno,
-                'EmailUsuario' => $request->email,
-                'NumeroTelefono' => $request->phone,
-                'password' => bcrypt($request->current_password),
-                'NombreUsuario' => $request->userLogin,
-            ]);
-            Log::info('Usuario creado exitosamente.', ['user' => $user]);
         } catch (\Exception $e) {
-            Log::error('Error al crear el usuario', ['exception' => $e->getMessage()]);
+            // Manejo de cualquier otro tipo de error
+            Log::error('Error al completar los datos: ' . $e->getMessage());
+
             return response()->json([
-                'message' => 'Error al crear el usuario.',
+                'message' => 'Error al completar los datos.',
                 'error' => $e->getMessage(),
             ], 500);
         }
-
-        // Generar token JWT
-        try {
-            $token = JWTAuth::fromUser($user);
-            Log::info('Token JWT generado con éxito.', ['token' => $token]);
-        } catch (\Exception $e) {
-            Log::error('Error al generar el token JWT', ['exception' => $e->getMessage()]);
-            return response()->json([
-                'message' => 'Error al generar el token.',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
-
-        // Respuesta final
-        Log::info('Datos completados correctamente.', ['user' => $user, 'token' => $token]);
-        return response()->json([
-            'message' => 'Datos completados correctamente.',
-            'token' => $token,
-            'user' => $user,
-        ], 201);
     }
-        
 
 }

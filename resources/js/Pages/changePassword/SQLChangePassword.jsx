@@ -1,16 +1,51 @@
 import React from "react";
 import { useForm, usePage } from "@inertiajs/inertia-react";
+import Cookies from "js-cookie";
 
 const SQLChangePassword = () => {
     const { username } = usePage().props; // Obtener el username desde las props
-    const { data, setData, post, errors } = useForm({
+    const { data, setData, errors } = useForm({
         new_password: "",
         new_password_confirmation: "",
     });
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        post("/sql-update-password");
+
+        // Leer el token desde las cookies
+        const jwtToken = Cookies.get("auth_token");
+
+        if (!jwtToken) {
+            alert(
+                "Token de autenticación no encontrado. Por favor, inicie sesión nuevamente."
+            );
+            return;
+        }
+
+        try {
+            const response = await fetch("/sql-update-password", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${jwtToken}`, // Incluir el token en el encabezado
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(
+                    errorData.message || "Error al cambiar la contraseña"
+                );
+            }
+
+            const responseData = await response.json();
+            alert(responseData.message); // Mostrar mensaje de éxito
+            // Aquí podrías redirigir o realizar alguna otra acción
+        } catch (error) {
+            console.error("Error al cambiar la contraseña:", error.message);
+            alert(error.message);
+        }
     };
 
     return (

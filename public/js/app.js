@@ -41847,6 +41847,14 @@ var map = {
 	"./usuario/CompletarDatos.jsx": [
 		"./resources/js/Pages/usuario/CompletarDatos.jsx",
 		"resources_js_Pages_usuario_CompletarDatos_jsx"
+	],
+	"./usuario/Index": [
+		"./resources/js/Pages/usuario/Index.jsx",
+		"resources_js_Pages_usuario_Index_jsx"
+	],
+	"./usuario/Index.jsx": [
+		"./resources/js/Pages/usuario/Index.jsx",
+		"resources_js_Pages_usuario_Index_jsx"
 	]
 };
 function webpackAsyncContext(req) {
@@ -41997,7 +42005,7 @@ module.exports = /*#__PURE__*/JSON.parse('{"name":"axios","version":"0.21.4","de
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_Pages_changePassword_SQLChangePassword_jsx":1,"resources_js_Pages_changePassword_SQLLoading_jsx":1,"resources_js_Pages_changePassword_SQLLogin_jsx":1,"resources_js_Pages_changePassword_SQLPasswordSuccess_jsx":1,"resources_js_Pages_usuario_CompletarDatos_jsx":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_Pages_changePassword_SQLChangePassword_jsx":1,"resources_js_Pages_changePassword_SQLLoading_jsx":1,"resources_js_Pages_changePassword_SQLLogin_jsx":1,"resources_js_Pages_changePassword_SQLPasswordSuccess_jsx":1,"resources_js_Pages_usuario_CompletarDatos_jsx":1,"resources_js_Pages_usuario_Index_jsx":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};
