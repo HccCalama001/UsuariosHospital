@@ -62,7 +62,7 @@ class SQLPasswordRequest extends FormRequest
             'new_password' => [
                 'required',
                 'string',
-                'min:8',
+                'max:8',
                 'regex:/[A-Z]/',
                 'regex:/[a-z]/',
                 'regex:/[0-9]/',

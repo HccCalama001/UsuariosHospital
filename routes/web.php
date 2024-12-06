@@ -22,13 +22,12 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('usuario')->group(function () {
         Route::get('/', [UsuarioController::class, 'index'])->name('usuario.index');
         Route::post('/buscar', [UsuarioController::class, 'buscarUsuario'])->name('usuario.buscarUsuario');
+        Route::post('/cambiar-contrasena', [UsuarioController::class, 'cambiarContrasena']);
+        
     });
 
     // Rutas relacionadas con el cambio de contraseña SQL
     Route::prefix('sql')->group(function () {
-        Route::get('/change-password', [SQLPasswordController::class, 'indexChange'])->name('sqlpassword.change');
-        Route::post('/update-password', [SQLPasswordController::class, 'updatePassword'])->name('sqlpassword.update');
-        Route::get('/success', fn() => Inertia::render('changePassword/SQLPasswordSuccess'))->name('sqlpassword.success');
         Route::post('/close-sessions', [SQLPasswordController::class, 'closeSessions'])->name('sqlpassword.closeSessions');
         Route::get('/loading', fn() => Inertia::render('changePassword/SQLLoading'))->name('sqlpassword.loading');
     });

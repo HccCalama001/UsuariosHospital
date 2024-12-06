@@ -81,28 +81,6 @@ class SQLPasswordController extends Controller
             ],422);
         }
     }
-    
-    
-
-    /**
-     * Cambia la contraseña del usuario autenticado.
-     */
-    public function updatePassword(SQLPasswordRequest $request)
-    {
-        try {
-            $username = Session::get('sql_username');
-            if (!$username) {
-                return redirect()->route('sqlpassword.login')->withErrors(['message' => 'Debe autenticarse primero.']);
-            }
-
-            // Actualizar contraseña en SQL Server
-            $this->sqlPasswordService->updatePassword($username, $request->new_password);
-
-            return redirect()->route('sqlpassword.loading');
-        } catch (\Exception $e) {
-            return back()->withErrors(['new_password' => 'Error al actualizar la contraseña: ' . $e->getMessage()]);
-        }
-    }
 
     /**
      * Cierra todas las sesiones activas del usuario en SQL Server.

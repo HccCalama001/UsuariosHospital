@@ -1,19 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import { usePage } from "@inertiajs/inertia-react";
 import App from "../../Layouts/App";
 import { Inertia } from "@inertiajs/inertia";
 import { FaUserEdit, FaKey } from "react-icons/fa";
+import ChangePasswordModal from "./components/modals/ChangePasswordModal";
 
 const UsuarioIndex = () => {
-    const { resumen } = usePage().props;
+    const { resumen, csrfToken } = usePage().props;
     const { userNew, userLogin, usuarioSistema } = resumen || {};
+    const [isModalOpen, setModalOpen] = useState(false);
 
     const handleEditProfile = () => {
         Inertia.get("/editar-datos");
     };
 
     const handleChangePassword = () => {
-        Inertia.get("/cambiar-contrasena");
+        setModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setModalOpen(false);
     };
 
     const handleLogout = () => {
@@ -60,6 +66,11 @@ const UsuarioIndex = () => {
                                 >
                                     <FaKey className="h-6 w-6" />
                                 </button>
+                                <ChangePasswordModal
+                                    isOpen={isModalOpen}
+                                    onClose={handleCloseModal}
+                                    csrfToken={csrfToken}
+                                />
                             </div>
                         </div>
                         {userNew ? (

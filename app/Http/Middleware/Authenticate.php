@@ -35,30 +35,38 @@ class Authenticate extends Middleware
         $token = $request->bearerToken() ?? $request->cookie('auth_token');
     
         if (!$token) {
-            // Si no hay token, redirigir al login
-            if (!$request->expectsJson()) {
-                return redirect()->route('sqlpassword.login');
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Token no encontrado.'], 401);
             }
-    
-            return response()->json(['message' => 'Token no encontrado.'], 401);
+            return redirect()->route('sqlpassword.login');
         }
     
         try {
-            // Validar el token JWT
-            $user = JWTAuth::setToken($token)->authenticate();
+            // Validar el token usando el guard unificado `web`
+            $user = auth('web')->setToken($token)->authenticate();
     
             if (!$user) {
-                return response()->json(['message' => 'Token inválido.'], 401);
+                if ($request->expectsJson()) {
+                    return response()->json(['message' => 'Token inválido.'], 401);
+                }
+                return redirect()->route('sqlpassword.login');
             }
     
-            // El usuario está autenticado, agregarlo al request
+            // Registrar el usuario en el contexto de autenticación
+            auth('web')->login($user);
+    
+            // También puedes registrar al usuario en el request para uso adicional
             $request->merge(['user' => $user]);
-        } catch (JWTException $e) {
-            return response()->json(['message' => 'Error con el token: ' . $e->getMessage()], 401);
+    
+        } catch (\Exception $e) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Token inválido o expirado.'], 401);
+            }
+            return redirect()->route('sqlpassword.login');
         }
     
-        // Continuar con la solicitud
         return $next($request);
     }
+    
     
 }

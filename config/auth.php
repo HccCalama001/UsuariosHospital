@@ -37,7 +37,11 @@ return [
 
     'guards' => [
         'web' => [
-            'driver' => 'session',
+            'driver' => 'jwt',
+            'provider' => 'users',
+        ],
+        'api' => [
+            'driver' => 'jwt', // Agregar el guard para JWT
             'provider' => 'users',
         ],
     ],

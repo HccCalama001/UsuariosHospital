@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Log;
+use App\Http\Requests\ChangePasswordRequest;
+
 class UsuarioController extends Controller
 {
     protected $usuarioService;
@@ -26,7 +28,6 @@ class UsuarioController extends Controller
     {
         try {
             $token = request()->cookie('auth_token');
-
             if (!$token) {
                 return redirect()->route('sqlpassword.login')->withErrors(['message' => 'Por favor, inicie sesión.']);
             }
@@ -39,11 +40,11 @@ class UsuarioController extends Controller
             }
 
             $resumen = $this->usuarioService->buscarUsuarioResumen($user->NombreUsuario);
-            \Log::info('Resumen enviado al frontend:', $resumen);
 
             return Inertia::render('usuario/Index', [
                 'user' => $this->usuarioService->formatUserData($user),
                 'resumen' => $resumen,
+                'csrfToken' => csrf_token()
             ]);
         } catch (\Exception $e) {
             return redirect()->route('sqlpassword.login')->withErrors(['message' => $e->getMessage()]);
@@ -115,4 +116,19 @@ class UsuarioController extends Controller
         }
     }
 
+    public function cambiarContrasena(ChangePasswordRequest $request)
+    {
+        try {
+       
+            // Llamar al servicio para cambiar la contraseña
+            $response = $this->usuarioService->cambiarContrasena(auth()->user()->NombreUsuario, $request->validated());
+
+            return response()->json($response, 200);
+        }  catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al cambiar la contraseña.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }
