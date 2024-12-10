@@ -11,6 +11,8 @@ Route::get('/', function () {
     return redirect()->route('sqlpassword.login');
 });
 
+
+
 // Rutas públicas (sin autenticación JWT)
 Route::prefix('sql')->group(function () {
     Route::get('/login', [SQLPasswordController::class, 'index'])->name('sqlpassword.login');
@@ -43,8 +45,3 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-Route::fallback(function () {
-    return Inertia::render('ErrorPage', [
-        'message' => 'La ruta solicitada no fue encontrada.',
-    ]);
-});

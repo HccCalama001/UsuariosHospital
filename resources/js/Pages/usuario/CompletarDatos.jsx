@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import { guardarDatos } from "../../services/apiService";
 import Cookies from "js-cookie"; // Para manejar cookies
 
 const CompletarDatos = ({ userLogin, current_password, csrfToken }) => {
-    const seguUsuario = userLogin?.userLogin?.segu_usuario || {}; // Validar existencia de segu_usuario
+    const seguUsuario = userLogin?.userLogin?.segu_usuario || {};
     const [formData, setFormData] = useState({
         name: seguUsuario?.Segu_Usr_Nombre || "",
         apellido_paterno: seguUsuario?.Segu_Usr_ApellidoPaterno || "",
@@ -15,7 +16,7 @@ const CompletarDatos = ({ userLogin, current_password, csrfToken }) => {
     });
 
     const [errors, setErrors] = useState({});
-    const [globalError, setGlobalError] = useState(""); // Para manejar errores globales
+    const [globalError, setGlobalError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleInputChange = (e) => {
@@ -27,80 +28,54 @@ const CompletarDatos = ({ userLogin, current_password, csrfToken }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        const jwtToken = Cookies.get("auth_token");
-        if (!jwtToken) {
-            console.error("Token de autenticación no encontrado.");
-            setGlobalError(
-                "Token no encontrado. Por favor, inicie sesión nuevamente."
-            );
-            return;
-        }
-
         setIsSubmitting(true);
         setErrors({});
         setGlobalError("");
 
         try {
-            const response = await fetch("guardar-datos", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": csrfToken,
-                    Authorization: `Bearer ${jwtToken}`,
-                    Accept: "application/json",
-                },
-                body: JSON.stringify(formData),
-            });
+            const responseData = await guardarDatos(formData, csrfToken);
 
-            if (!response.ok) {
-                const errorData = await response.json();
-
-                if (response.status === 422) {
-                    setErrors(errorData.errors || {});
-                } else {
-                    setGlobalError(
-                        errorData.message || "Ocurrió un error inesperado."
-                    );
-                }
-            } else {
-                const responseData = await response.json();
-                alert(responseData.message); // Mensaje de éxito
-                setFormData({
-                    name: "",
-                    apellido_paterno: "",
-                    apellido_materno: "",
-                    rut: "",
-                    email: "",
-                    phone: "",
-                    current_password: "",
-                    userLogin: "",
-                }); // Reiniciar el formulario
-            }
+            setFormData({
+                name: "",
+                apellido_paterno: "",
+                apellido_materno: "",
+                rut: "",
+                email: "",
+                phone: "",
+                current_password: "",
+                userLogin: "",
+            }); // Reiniciar el formulario
+            // Redirigir al inicio de sesión con un mensaje de éxito
+            window.location.href = `/sql/login?success=${encodeURIComponent(
+                "Usuario actualizado con éxito."
+            )}`;
         } catch (error) {
-            console.error("Error inesperado:", error.message);
-            setGlobalError(
-                "Error de conexión. Por favor, inténtelo más tarde."
-            );
+            if (error.errors) {
+                setErrors(error.errors);
+            } else {
+                setGlobalError(error.message);
+            }
         } finally {
             setIsSubmitting(false);
         }
     };
 
     return (
-        <div className="relative flex items-center justify-center min-h-screen bg-gradient-to-r from-green-400 via-emerald-500 to-green-600">
-            <div className="relative w-full max-w-lg bg-white shadow-2xl rounded-2xl p-8 z-10">
-                <h1 className="text-3xl font-extrabold text-center mb-4 text-emerald-700">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-400 via-teal-500 to-teal-600 font-poppins">
+            <div className="bg-white shadow-xl rounded-xl p-10 max-w-lg w-full">
+                <h1 className="text-4xl font-bold text-teal-600 text-center mb-8">
                     Completar Datos Faltantes
                 </h1>
                 <p className="text-center text-gray-600 mb-6">
                     Por favor, completa los campos requeridos para continuar.
                 </p>
+
                 {globalError && (
-                    <div className="mb-4 text-red-500 text-center">
+                    <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded text-center">
                         {globalError}
                     </div>
                 )}
+
                 <form onSubmit={handleSubmit}>
                     {/* Campo de Nombre */}
                     <div className="mb-6">
@@ -112,8 +87,10 @@ const CompletarDatos = ({ userLogin, current_password, csrfToken }) => {
                             name="name"
                             value={formData.name}
                             onChange={handleInputChange}
-                            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
-                                errors.name ? "border-red-500" : ""
+                            className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none ${
+                                errors.name
+                                    ? "border-red-500"
+                                    : "border-gray-300"
                             }`}
                             placeholder="Ingresa tu nombre"
                         />
@@ -134,8 +111,10 @@ const CompletarDatos = ({ userLogin, current_password, csrfToken }) => {
                             name="apellido_paterno"
                             value={formData.apellido_paterno}
                             onChange={handleInputChange}
-                            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
-                                errors.apellido_paterno ? "border-red-500" : ""
+                            className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none ${
+                                errors.apellido_paterno
+                                    ? "border-red-500"
+                                    : "border-gray-300"
                             }`}
                             placeholder="Ingresa tu apellido paterno"
                         />
@@ -156,8 +135,10 @@ const CompletarDatos = ({ userLogin, current_password, csrfToken }) => {
                             name="apellido_materno"
                             value={formData.apellido_materno}
                             onChange={handleInputChange}
-                            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
-                                errors.apellido_materno ? "border-red-500" : ""
+                            className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none ${
+                                errors.apellido_materno
+                                    ? "border-red-500"
+                                    : "border-gray-300"
                             }`}
                             placeholder="Ingresa tu apellido materno"
                         />
@@ -178,8 +159,10 @@ const CompletarDatos = ({ userLogin, current_password, csrfToken }) => {
                             name="rut"
                             value={formData.rut}
                             onChange={handleInputChange}
-                            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
-                                errors.rut ? "border-red-500" : ""
+                            className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none ${
+                                errors.rut
+                                    ? "border-red-500"
+                                    : "border-gray-300"
                             }`}
                             placeholder="Ingresa tu RUT"
                         />
@@ -200,8 +183,10 @@ const CompletarDatos = ({ userLogin, current_password, csrfToken }) => {
                             name="email"
                             value={formData.email}
                             onChange={handleInputChange}
-                            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
-                                errors.email ? "border-red-500" : ""
+                            className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none ${
+                                errors.email
+                                    ? "border-red-500"
+                                    : "border-gray-300"
                             }`}
                             placeholder="Ingresa tu correo electrónico"
                         />
@@ -222,8 +207,10 @@ const CompletarDatos = ({ userLogin, current_password, csrfToken }) => {
                             name="phone"
                             value={formData.phone}
                             onChange={handleInputChange}
-                            className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
-                                errors.phone ? "border-red-500" : ""
+                            className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none ${
+                                errors.phone
+                                    ? "border-red-500"
+                                    : "border-gray-300"
                             }`}
                             placeholder="Ingresa tu teléfono"
                         />
@@ -237,7 +224,7 @@ const CompletarDatos = ({ userLogin, current_password, csrfToken }) => {
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className={`w-full bg-emerald-600 text-white font-medium py-2 rounded-lg hover:bg-emerald-700 transition duration-200 shadow-md ${
+                        className={`w-full py-3 px-4 bg-teal-600 text-white font-medium rounded-lg shadow-lg hover:bg-teal-700 transition-all duration-200 ${
                             isSubmitting ? "opacity-50 cursor-not-allowed" : ""
                         }`}
                     >

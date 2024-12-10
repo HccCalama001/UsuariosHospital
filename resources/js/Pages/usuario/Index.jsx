@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { usePage } from "@inertiajs/inertia-react";
 import App from "../../Layouts/App";
-import { Inertia } from "@inertiajs/inertia";
 import { FaUserEdit, FaKey } from "react-icons/fa";
 import ChangePasswordModal from "./components/modals/ChangePasswordModal";
 import EditUserModal from "./components/modals/EditUserModal";
+import CardRoleWeb from "./components/Card/CardRoleWeb";
+import CardSisEscr from "./components/Card/CardSisEscr";
+import UserInfoGrid from "./components/Grid/UserInfoGrid";
 
 const UsuarioIndex = () => {
     const { resumen, csrfToken } = usePage().props;
@@ -28,10 +30,6 @@ const UsuarioIndex = () => {
         setModalOpen(false);
     };
 
-    const handleLogout = () => {
-        Inertia.get("/logout");
-    };
-
     return (
         <App>
             <div className="max-w-7xl mx-auto mt-10 bg-white shadow-lg rounded-lg overflow-hidden">
@@ -51,14 +49,14 @@ const UsuarioIndex = () => {
                     {/* Información General */}
                     <section>
                         <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-2xl font-semibold text-gray-800">
+                            <h2 className="text-2xl font-semibold text-white">
                                 Información General
                             </h2>
                             <div className="flex space-x-4">
                                 {/* Botón Editar Perfil */}
                                 <button
                                     onClick={handleOpenEditModal}
-                                    className="p-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-full shadow transition"
+                                    className="p-2 bg-teal-500 hover:bg-teal-600 text-white font-medium rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-teal-400"
                                     title="Editar Información del Usuario"
                                 >
                                     <FaUserEdit className="h-6 w-6" />
@@ -67,7 +65,7 @@ const UsuarioIndex = () => {
                                 {/* Botón Cambiar Contraseña */}
                                 <button
                                     onClick={handleChangePassword}
-                                    className="p-2 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-full shadow transition"
+                                    className="p-2 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
                                     title="Cambiar Contraseña"
                                 >
                                     <FaKey className="h-6 w-6" />
@@ -81,76 +79,13 @@ const UsuarioIndex = () => {
                                     isOpen={isEditModalOpen}
                                     onClose={handleCloseEditModal}
                                     csrfToken={csrfToken}
-                                    userData={userNew} // datos del usuario
-                                    userLoginData={userLogin} // datos del login
+                                    userData={userNew}
+                                    userLoginData={userLogin}
                                 />
                             </div>
                         </div>
                         {userNew ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                <div className="bg-gray-50 p-4 rounded-md shadow-sm">
-                                    <h3 className="text-sm font-medium text-gray-600">
-                                        Nombre Completo
-                                    </h3>
-                                    <p className="text-lg font-semibold text-gray-800">
-                                        {userNew.Nombre}{" "}
-                                        {userNew.ApellidoPaterno}{" "}
-                                        {userNew.ApellidoMaterno}
-                                    </p>
-                                </div>
-                                <div className="bg-gray-50 p-4 rounded-md shadow-sm">
-                                    <h3 className="text-sm font-medium text-gray-600">
-                                        Nombre de Usuario
-                                    </h3>
-                                    <p className="text-lg font-semibold text-gray-800">
-                                        {userNew.NombreUsuario}
-                                    </p>
-                                </div>
-                                <div className="bg-gray-50 p-4 rounded-md shadow-sm">
-                                    <h3 className="text-sm font-medium text-gray-600">
-                                        RUT
-                                    </h3>
-                                    <p className="text-lg font-semibold text-gray-800">
-                                        {userNew.Rut}
-                                    </p>
-                                </div>
-                                <div className="bg-gray-50 p-4 rounded-md shadow-sm">
-                                    <h3 className="text-sm font-medium text-gray-600">
-                                        Correo Electrónico
-                                    </h3>
-                                    <p className="text-lg font-semibold text-gray-800">
-                                        {userNew.EmailUsuario}
-                                    </p>
-                                </div>
-                                <div className="bg-gray-50 p-4 rounded-md shadow-sm">
-                                    <h3 className="text-sm font-medium text-gray-600">
-                                        Teléfono
-                                    </h3>
-                                    <p className="text-lg font-semibold text-gray-800">
-                                        {userNew.NumeroTelefono}
-                                    </p>
-                                </div>
-                                <div className="bg-gray-50 p-4 rounded-md shadow-sm">
-                                    <h3 className="text-sm font-medium text-gray-600">
-                                        Estado
-                                    </h3>
-                                    <p className="text-lg font-semibold text-gray-800">
-                                        {userNew.is_active
-                                            ? "Activo"
-                                            : "Inactivo"}
-                                    </p>
-                                </div>
-                                <div className="bg-gray-50 p-4 rounded-md shadow-sm">
-                                    <h3 className="text-sm font-medium text-gray-600">
-                                        Fecha de Creación
-                                    </h3>
-                                    <p className="text-lg font-semibold text-gray-800">
-                                        {new Date(
-                                            userNew.created_at
-                                        ).toLocaleDateString()}
-                                    </p>
-                                </div>
-                            </div>
+                            <UserInfoGrid userNew={userNew} />
                         ) : (
                             <p className="text-gray-500 italic">
                                 No hay información general disponible.
@@ -158,7 +93,7 @@ const UsuarioIndex = () => {
                         )}
                     </section>
 
-                    {/* Roles y Sistemas */}
+                    {/* Roles y Sistemas Web */}
                     <section>
                         <h2 className="text-2xl font-semibold text-gray-800 mb-4">
                             Roles y Sistemas Web
@@ -167,26 +102,7 @@ const UsuarioIndex = () => {
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {userLogin.role_user_sistema.map(
                                     (role, index) => (
-                                        <div
-                                            key={index}
-                                            className="bg-teal-50 p-4 rounded-md shadow-sm hover:shadow-md transition-shadow"
-                                        >
-                                            <p className="font-medium text-gray-700">
-                                                <span className="font-bold">
-                                                    Rol:
-                                                </span>{" "}
-                                                {role.role_nombre}
-                                            </p>
-                                            <p className="font-medium text-gray-700">
-                                                <span className="font-bold">
-                                                    ID Sistema:
-                                                </span>{" "}
-                                                {role.sistemas_id}
-                                            </p>
-                                            <p className="text-gray-600 text-sm mt-2">
-                                                {role.descripcion}
-                                            </p>
-                                        </div>
+                                        <CardRoleWeb key={index} role={role} />
                                     )
                                 )}
                             </div>
@@ -205,23 +121,10 @@ const UsuarioIndex = () => {
                         {usuarioSistema?.length ? (
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {usuarioSistema.map((sistema, index) => (
-                                    <div
+                                    <CardSisEscr
                                         key={index}
-                                        className="bg-gray-50 p-4 rounded-md shadow-sm hover:shadow-md transition-shadow"
-                                    >
-                                        <p className="font-medium text-gray-700">
-                                            <span className="font-bold">
-                                                Sistema:
-                                            </span>{" "}
-                                            {sistema.sistemaSalud}
-                                        </p>
-                                        <p className="font-medium text-gray-700">
-                                            <span className="font-bold">
-                                                ID Sistema:
-                                            </span>{" "}
-                                            {sistema.TAB_ID_Sistema}
-                                        </p>
-                                    </div>
+                                        sistema={sistema}
+                                    />
                                 ))}
                             </div>
                         ) : (

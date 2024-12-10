@@ -27,21 +27,21 @@ var ErrorPage = function ErrorPage(_ref) {
     _inertiajs_inertia__WEBPACK_IMPORTED_MODULE_1__.Inertia.get("/");
   };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-    className: "min-h-screen flex flex-col items-center justify-center bg-gray-100",
+    className: "min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-gray-100 to-gray-300",
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-      className: "bg-white p-8 rounded-lg shadow-lg text-center",
+      className: "bg-white p-10 rounded-2xl shadow-xl max-w-lg text-center",
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h1", {
-        className: "text-6xl font-bold text-red-500",
+        className: "text-9xl font-extrabold text-red-500",
         children: "404"
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("h2", {
-        className: "text-2xl font-semibold text-gray-800 mt-4",
-        children: "Oops! P\xE1gina no encontrada"
+        className: "text-3xl font-semibold text-gray-800 mt-6",
+        children: "\xA1Oops! P\xE1gina no encontrada"
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("p", {
-        className: "text-gray-600 mt-2",
+        className: "text-gray-600 mt-4 text-sm",
         children: message
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("button", {
         onClick: handleGoHome,
-        className: "mt-6 px-4 py-2 bg-teal-600 text-white rounded-lg shadow hover:bg-teal-700 transition",
+        className: "mt-8 px-6 py-3 bg-teal-600 text-white text-lg font-medium rounded-full shadow-md hover:bg-teal-700 hover:shadow-lg transition",
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_3__.FaHome, {
           className: "inline-block mr-2"
         }), "Volver al Inicio"]

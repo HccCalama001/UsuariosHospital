@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaTimes, FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
+import { actualizarUsuario } from "../../../../services/apiService";
 
 const EditUserModal = ({
     isOpen,
@@ -54,38 +55,20 @@ const EditUserModal = ({
         setIsSubmitting(true);
 
         try {
-            const response = await fetch(`/usuario/actualizar-global`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": csrfToken,
-                    Accept: "application/json",
-                },
-                body: JSON.stringify(formData),
+            const responseData = await actualizarUsuario(formData, csrfToken);
+            setStatus({
+                type: "success",
+                message: "Usuario actualizado exitosamente.",
             });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                if (response.status === 422) {
-                    setErrors(errorData.errors || {});
-                } else {
-                    setStatus({
-                        type: "error",
-                        message:
-                            errorData.message || "Ocurrió un error inesperado.",
-                    });
-                }
+        } catch (error) {
+            if (error.errors) {
+                setErrors(error.errors);
             } else {
                 setStatus({
-                    type: "success",
-                    message: "Usuario actualizado exitosamente.",
+                    type: "error",
+                    message: error.message,
                 });
             }
-        } catch (error) {
-            setStatus({
-                type: "error",
-                message: "Error de conexión. Inténtelo más tarde.",
-            });
         } finally {
             setIsSubmitting(false);
         }
@@ -93,40 +76,32 @@ const EditUserModal = ({
 
     const hasChanges = () => {
         if (!initialFormData) return false;
-        // Verificar si algún campo difiere entre initialFormData y formData
-        for (const key in formData) {
-            // Ignorar current_password porque siempre vendrá vacío al inicio
-            if (key === "current_password") continue;
-            if (formData[key] !== initialFormData[key]) {
-                return true;
-            }
-        }
-        return false;
+        return Object.keys(formData).some(
+            (key) => formData[key] !== initialFormData[key]
+        );
     };
 
     const handleClose = () => {
         onClose();
-        // Si la actualización fue exitosa, recargamos la página al cerrar el modal
         if (status && status.type === "success") {
             window.location.reload();
         }
     };
 
     if (!isOpen) return null;
-
     return (
-        <div className="fixed top-0 left-0 z-50 flex items-center justify-center w-full h-full">
-            <div className="relative bg-white rounded-lg shadow-lg w-full max-w-lg p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-lg p-8">
                 {/* Header */}
-                <div className="flex justify-between items-center border-b pb-3">
-                    <h2 className="text-xl font-semibold text-gray-800">
+                <div className="flex justify-between items-center border-b pb-4">
+                    <h2 className="text-2xl font-bold text-teal-600">
                         {status ? "Resultado" : "Editar Usuario"}
                     </h2>
                     <button
                         onClick={handleClose}
                         className="text-gray-400 hover:text-gray-600 transition"
                     >
-                        <FaTimes size={20} />
+                        <FaTimes size={24} />
                     </button>
                 </div>
 
@@ -143,17 +118,18 @@ const EditUserModal = ({
                         </p>
                         <button
                             onClick={handleClose}
-                            className="px-4 py-2 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700 transition"
+                            className="px-6 py-2 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700 transition"
                         >
                             Cerrar
                         </button>
                     </div>
                 ) : (
-                    <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-                        <h3 className="text-lg font-medium text-gray-800">
+                    <form onSubmit={handleSubmit} className="mt-6 space-y-6">
+                        <h3 className="text-lg font-bold text-gray-800">
                             Datos Personales
                         </h3>
 
+                        {/* Usuario */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700">
                                 Usuario (No Editable)
@@ -163,11 +139,11 @@ const EditUserModal = ({
                                 name="userLogin"
                                 value={formData.userLogin}
                                 readOnly={true}
-                                className={`mt-1 w-full px-4 py-2 border rounded-md bg-gray-100 ${
+                                className={`w-full px-4 py-3 border rounded-lg bg-gray-100 focus:ring-2 focus:ring-teal-500 focus:outline-none ${
                                     errors.userLogin
                                         ? "border-red-500"
                                         : "border-gray-300"
-                                } focus:ring-2 focus:ring-teal-500 cursor-not-allowed`}
+                                } cursor-not-allowed`}
                             />
                             {errors.userLogin && (
                                 <p className="text-red-500 text-sm mt-1">
@@ -176,6 +152,7 @@ const EditUserModal = ({
                             )}
                         </div>
 
+                        {/* Nombre */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700">
                                 Nombre
@@ -185,11 +162,11 @@ const EditUserModal = ({
                                 name="name"
                                 value={formData.name}
                                 onChange={handleInputChange}
-                                className={`mt-1 w-full px-4 py-2 border rounded-md ${
+                                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none ${
                                     errors.name
                                         ? "border-red-500"
                                         : "border-gray-300"
-                                } focus:ring-2 focus:ring-teal-500`}
+                                }`}
                             />
                             {errors.name && (
                                 <p className="text-red-500 text-sm mt-1">
@@ -198,6 +175,7 @@ const EditUserModal = ({
                             )}
                         </div>
 
+                        {/* Apellidos */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">
@@ -208,11 +186,11 @@ const EditUserModal = ({
                                     name="apellido_paterno"
                                     value={formData.apellido_paterno}
                                     onChange={handleInputChange}
-                                    className={`mt-1 w-full px-4 py-2 border rounded-md ${
+                                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none ${
                                         errors.apellido_paterno
                                             ? "border-red-500"
                                             : "border-gray-300"
-                                    } focus:ring-2 focus:ring-teal-500`}
+                                    }`}
                                 />
                                 {errors.apellido_paterno && (
                                     <p className="text-red-500 text-sm mt-1">
@@ -229,11 +207,11 @@ const EditUserModal = ({
                                     name="apellido_materno"
                                     value={formData.apellido_materno}
                                     onChange={handleInputChange}
-                                    className={`mt-1 w-full px-4 py-2 border rounded-md ${
+                                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none ${
                                         errors.apellido_materno
                                             ? "border-red-500"
                                             : "border-gray-300"
-                                    } focus:ring-2 focus:ring-teal-500`}
+                                    }`}
                                 />
                                 {errors.apellido_materno && (
                                     <p className="text-red-500 text-sm mt-1">
@@ -243,6 +221,7 @@ const EditUserModal = ({
                             </div>
                         </div>
 
+                        {/* RUT */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700">
                                 RUT
@@ -252,11 +231,11 @@ const EditUserModal = ({
                                 name="rut"
                                 value={formData.rut}
                                 onChange={handleInputChange}
-                                className={`mt-1 w-full px-4 py-2 border rounded-md ${
+                                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none ${
                                     errors.rut
                                         ? "border-red-500"
                                         : "border-gray-300"
-                                } focus:ring-2 focus:ring-teal-500`}
+                                }`}
                             />
                             {errors.rut && (
                                 <p className="text-red-500 text-sm mt-1">
@@ -265,6 +244,7 @@ const EditUserModal = ({
                             )}
                         </div>
 
+                        {/* Correo Electrónico */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700">
                                 Correo Electrónico
@@ -274,11 +254,11 @@ const EditUserModal = ({
                                 name="email"
                                 value={formData.email}
                                 onChange={handleInputChange}
-                                className={`mt-1 w-full px-4 py-2 border rounded-md ${
+                                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none ${
                                     errors.email
                                         ? "border-red-500"
                                         : "border-gray-300"
-                                } focus:ring-2 focus:ring-teal-500`}
+                                }`}
                             />
                             {errors.email && (
                                 <p className="text-red-500 text-sm mt-1">
@@ -287,6 +267,7 @@ const EditUserModal = ({
                             )}
                         </div>
 
+                        {/* Teléfono */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700">
                                 Número de Teléfono
@@ -296,11 +277,11 @@ const EditUserModal = ({
                                 name="phone"
                                 value={formData.phone}
                                 onChange={handleInputChange}
-                                className={`mt-1 w-full px-4 py-2 border rounded-md ${
+                                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none ${
                                     errors.phone
                                         ? "border-red-500"
                                         : "border-gray-300"
-                                } focus:ring-2 focus:ring-teal-500`}
+                                }`}
                             />
                             {errors.phone && (
                                 <p className="text-red-500 text-sm mt-1">
@@ -310,18 +291,18 @@ const EditUserModal = ({
                         </div>
 
                         {/* Botones */}
-                        <div className="flex justify-end space-x-3 mt-4">
+                        <div className="flex justify-end space-x-3 mt-6">
                             <button
                                 type="button"
                                 onClick={handleClose}
-                                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+                                className="px-6 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
                             >
                                 Cancelar
                             </button>
                             <button
                                 type="submit"
                                 disabled={isSubmitting || !hasChanges()}
-                                className={`px-4 py-2 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700 transition ${
+                                className={`px-6 py-2 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700 transition ${
                                     isSubmitting || !hasChanges()
                                         ? "opacity-50 cursor-not-allowed"
                                         : ""

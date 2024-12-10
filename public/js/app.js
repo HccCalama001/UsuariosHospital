@@ -41840,6 +41840,38 @@ var map = {
 		"./resources/js/Pages/usuario/Index.jsx",
 		"resources_js_Pages_usuario_Index_jsx"
 	],
+	"./usuario/components/Card/CardRoleWeb": [
+		"./resources/js/Pages/usuario/components/Card/CardRoleWeb.jsx",
+		"resources_js_Pages_usuario_components_Card_CardRoleWeb_jsx"
+	],
+	"./usuario/components/Card/CardRoleWeb.jsx": [
+		"./resources/js/Pages/usuario/components/Card/CardRoleWeb.jsx",
+		"resources_js_Pages_usuario_components_Card_CardRoleWeb_jsx"
+	],
+	"./usuario/components/Card/CardSisEscr": [
+		"./resources/js/Pages/usuario/components/Card/CardSisEscr.jsx",
+		"resources_js_Pages_usuario_components_Card_CardSisEscr_jsx"
+	],
+	"./usuario/components/Card/CardSisEscr.jsx": [
+		"./resources/js/Pages/usuario/components/Card/CardSisEscr.jsx",
+		"resources_js_Pages_usuario_components_Card_CardSisEscr_jsx"
+	],
+	"./usuario/components/Card/UserInfoCard": [
+		"./resources/js/Pages/usuario/components/Card/UserInfoCard.jsx",
+		"resources_js_Pages_usuario_components_Card_UserInfoCard_jsx"
+	],
+	"./usuario/components/Card/UserInfoCard.jsx": [
+		"./resources/js/Pages/usuario/components/Card/UserInfoCard.jsx",
+		"resources_js_Pages_usuario_components_Card_UserInfoCard_jsx"
+	],
+	"./usuario/components/Grid/UserInfoGrid": [
+		"./resources/js/Pages/usuario/components/Grid/UserInfoGrid.jsx",
+		"resources_js_Pages_usuario_components_Grid_UserInfoGrid_jsx"
+	],
+	"./usuario/components/Grid/UserInfoGrid.jsx": [
+		"./resources/js/Pages/usuario/components/Grid/UserInfoGrid.jsx",
+		"resources_js_Pages_usuario_components_Grid_UserInfoGrid_jsx"
+	],
 	"./usuario/components/modals/ChangePasswordModal": [
 		"./resources/js/Pages/usuario/components/modals/ChangePasswordModal.jsx",
 		"resources_js_Pages_usuario_components_modals_ChangePasswordModal_jsx"
@@ -42005,7 +42037,7 @@ module.exports = /*#__PURE__*/JSON.parse('{"name":"axios","version":"0.21.4","de
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_Pages_ErrorPage_jsx":1,"resources_js_Pages_changePassword_SQLLogin_jsx":1,"resources_js_Pages_usuario_CompletarDatos_jsx":1,"resources_js_Pages_usuario_Index_jsx":1,"resources_js_Pages_usuario_components_modals_ChangePasswordModal_jsx":1,"resources_js_Pages_usuario_components_modals_EditUserModal_jsx":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_Pages_ErrorPage_jsx":1,"resources_js_Pages_changePassword_SQLLogin_jsx":1,"resources_js_Pages_usuario_CompletarDatos_jsx":1,"resources_js_Pages_usuario_Index_jsx":1,"resources_js_Pages_usuario_components_Card_CardRoleWeb_jsx":1,"resources_js_Pages_usuario_components_Card_CardSisEscr_jsx":1,"resources_js_Pages_usuario_components_Card_UserInfoCard_jsx":1,"resources_js_Pages_usuario_components_Grid_UserInfoGrid_jsx":1,"resources_js_Pages_usuario_components_modals_ChangePasswordModal_jsx":1,"resources_js_Pages_usuario_components_modals_EditUserModal_jsx":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};

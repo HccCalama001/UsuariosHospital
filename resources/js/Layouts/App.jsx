@@ -1,7 +1,6 @@
 import React from "react";
 import {
     FaHome,
-    FaUserAlt,
     FaSignOutAlt,
     FaFacebook,
     FaTwitter,
@@ -9,14 +8,21 @@ import {
 } from "react-icons/fa";
 
 const App = ({ children }) => {
+    const handleLogout = () => {
+        // Eliminar el token de las cookies
+        document.cookie =
+            "auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        // Recargar la página
+        window.location.reload();
+    };
+
     return (
-        <div className="flex flex-col min-h-screen bg-gray-50">
+        <div className="flex flex-col min-h-screen bg-gray-50 font-poppins">
             {/* Barra de Navegación */}
-            <header className="bg-teal-600 text-white shadow">
+            <header className="bg-teal-600 text-white shadow fixed top-0 w-full z-50">
                 <div className="container mx-auto px-6 py-4 flex items-center justify-between">
                     {/* Título del Panel */}
-                    <h1 className="text-2xl font-semibold flex items-center">
-                        <span className="mr-2 text-3xl">🌟</span>
+                    <h1 className="text-2xl font-bold flex items-center">
                         Panel de Usuario
                     </h1>
 
@@ -25,25 +31,29 @@ const App = ({ children }) => {
                         <ul className="flex space-x-6 items-center">
                             <li>
                                 <a
-                                    href="/"
-                                    className="flex items-center hover:text-gray-200 transition"
+                                    href="/usuario"
+                                    className="flex items-center hover:text-gray-200 transition duration-200"
                                 >
                                     <FaHome className="w-5 h-5 mr-2" />
+                                    Inicio
                                 </a>
                             </li>
-
                             <li>
-                                <a
-                                    href="/logout"
-                                    className="flex items-center hover:text-gray-200 transition"
+                                <button
+                                    onClick={handleLogout}
+                                    className="flex items-center hover:text-gray-200 transition duration-200"
                                 >
                                     <FaSignOutAlt className="w-5 h-5 mr-2" />
-                                </a>
+                                    Salir
+                                </button>
                             </li>
                         </ul>
                     </nav>
                 </div>
             </header>
+
+            {/* Espaciador para el header fijo */}
+            <div className="h-16"></div>
 
             {/* Contenido Principal */}
             <main className="flex-grow">
@@ -51,11 +61,11 @@ const App = ({ children }) => {
             </main>
 
             {/* Pie de Página */}
-            <footer className="bg-gray-900 text-gray-400 py-6">
+            <footer className="bg-teal-700 text-gray-200 py-6">
                 <div className="container mx-auto px-6 text-center">
                     <p className="text-sm">
                         © {new Date().getFullYear()}{" "}
-                        <span className="text-white font-medium">
+                        <span className="text-white font-semibold">
                             Sistema Hospitalario
                         </span>
                         . Todos los derechos reservados.
@@ -63,21 +73,21 @@ const App = ({ children }) => {
                     <div className="mt-4 flex justify-center space-x-6">
                         <a
                             href="#"
-                            className="text-gray-400 hover:text-white transition"
+                            className="text-gray-300 hover:text-white transition duration-200"
                             aria-label="Facebook"
                         >
                             <FaFacebook className="w-5 h-5" />
                         </a>
                         <a
                             href="#"
-                            className="text-gray-400 hover:text-white transition"
+                            className="text-gray-300 hover:text-white transition duration-200"
                             aria-label="Twitter"
                         >
                             <FaTwitter className="w-5 h-5" />
                         </a>
                         <a
                             href="#"
-                            className="text-gray-400 hover:text-white transition"
+                            className="text-gray-300 hover:text-white transition duration-200"
                             aria-label="Instagram"
                         >
                             <FaInstagram className="w-5 h-5" />
