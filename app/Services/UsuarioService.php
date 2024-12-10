@@ -2,9 +2,11 @@
 namespace App\Services;
 
 use App\Models\ServidorNew\User;
-use App\Models\ServidorOld\UsuarioLogin;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
+use App\Models\ServidorOld\UsuarioLogin;
+use App\Models\ServidorOld\UsuarioServicio;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Hash;
 use Firebase\JWT\JWT;
@@ -75,33 +77,33 @@ class UsuarioService
     public function cambiarContrasena($username, $data)
     {
         Log::info("Iniciando cambio de contraseña para el usuario: {$username}");
-    
+
         DB::transaction(function () use ($username, $data) {
             // Verificar existencia del usuario en SQL Server
             $sqlServerUser = DB::connection('sqlsrv')->selectOne("
                 SELECT name AS username
                 FROM sys.sql_logins
                 WHERE name = ?", [$username]);
-    
+
             if (!$sqlServerUser) {
                 throw ValidationException::withMessages([
                     'current_password' => ['Usuario no encontrado en el sistema de SQL Server.'],
                 ]);
             }
-    
+
             // Actualizar contraseña en SQL Server
             DB::connection('sqlsrv')->statement("
                 ALTER LOGIN [$username] WITH PASSWORD = '{$data['new_password']}'
             ");
-    
+
             // Actualizar contraseña en MySQL
             DB::connection('mysql')->table('usuarios')
                 ->where('NombreUsuario', $username)
                 ->update(['password' => Hash::make($data['new_password'])]);
         });
-    
+
         Log::info("Cambio de contraseña completado exitosamente para el usuario: {$username}");
-    
+
         return [
             'message' => 'La contraseña ha sido cambiada exitosamente en ambos sistemas.',
         ];
@@ -124,7 +126,7 @@ class UsuarioService
             // Obtener el usuario o lanzar excepción si no existe
 
             $user = User::findOrFailByUsername($username);
-       
+
             // Actualizar datos en el sistema nuevo (MySQL)
             $user->update([
                 'Nombre' => $datos['Nombre'] ?? $user->Nombre,
@@ -169,6 +171,20 @@ class UsuarioService
             return true;
         });
     }
-    
+
+    public function obtenerNombreCompleto($username)
+    {
+        // Busca el usuario en la base de datos
+        $user = UsuarioServicio::where('Segu_Usr_Cuenta', $username)->first();
+
+        // Si el usuario no existe, lanza una excepción
+        if (!$user) {
+            throw new \Exception('Usuario no encontrado');
+        }
+
+        // Devuelve el nombre completo
+        return $user->nombre_usuario; // Utiliza el accesor definido en el modelo
+    }
+
 
 }
