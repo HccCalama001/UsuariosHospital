@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SQLPasswordRequest;
+use App\Services\EmailService;
 use App\Services\SQLPasswordService;
 use App\Services\TokenService;
 use App\Services\UsuarioService;
@@ -9,17 +10,21 @@ use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+
 class SQLPasswordController extends Controller
 {
     protected $sqlPasswordService;
     protected $tokenService;
     protected $usuarioService;
+    protected $emailService;
 
-    public function __construct(SQLPasswordService $sqlPasswordService, TokenService $tokenService, UsuarioService $usuarioService)
+    public function __construct(SQLPasswordService $sqlPasswordService, TokenService $tokenService, UsuarioService $usuarioService, EmailService $emailService)
     {
         $this->sqlPasswordService = $sqlPasswordService;
         $this->tokenService = $tokenService;
         $this->usuarioService = $usuarioService;
+        $this->emailService = $emailService;
     }
 
     /**
@@ -32,6 +37,14 @@ class SQLPasswordController extends Controller
         ]);
     }
     
+     // Mostrar el formulario de recuperación de contraseña
+     public function showForgotPasswordForm()
+     {
+         return Inertia::render('changePassword/ForgotPassword',[
+            'csrfToken' => csrf_token(), 
+        ]);
+     }
+ 
 
     public function authenticate(SQLPasswordRequest $request)
     {
@@ -101,4 +114,29 @@ class SQLPasswordController extends Controller
             return back()->withErrors(['message' => 'Error al cerrar las sesiones: ' . $e->getMessage()]);
         }
     }
+
+    public function forgotPassword(SQLPasswordRequest $request)
+    {
+   
+        $identifier = $request->input('identifier');
+
+
+        try {
+            // Generar el token
+      
+            $token = $this->sqlPasswordService->generateResetToken($identifier);
+              // Crear el enlace de restablecimiento
+            // Crear el enlace de restablecimiento
+            $resetLink = url("/reset-password?token={$token}");
+
+            // Enviar el correo utilizando EmailService
+            $this->emailService->enviarCorreoRecuperacion($identifier, $resetLink);
+
+      
+            return response()->json(['message' => 'Correo de recuperación enviado.'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
+    }
+
 }

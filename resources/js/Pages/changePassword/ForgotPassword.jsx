@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 import { usePage } from "@inertiajs/inertia-react";
-import { authenticateUser } from "../../services/apiService";
 import { Inertia } from "@inertiajs/inertia";
 
-const SQLLogin = () => {
+const ForgotPassword = () => {
     const { csrfToken } = usePage().props;
     const [formData, setFormData] = useState({
-        username: "",
-        current_password: "",
+        identifier: "", // Puede ser nombre de usuario o correo electrónico
     });
 
-    const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [status, setStatus] = useState(null);
+    const [errors, setErrors] = useState(null);
 
     const handleInputChange = (e) => {
         setFormData({
@@ -20,33 +19,44 @@ const SQLLogin = () => {
         });
     };
 
-    const getError = (field) => {
-        const error = errors[field];
-        return Array.isArray(error) ? error[0] : error;
-    };
-
-    const handleLogin = async () => {
-        if (!csrfToken) {
-            setErrors({
-                general: "Token CSRF no disponible. Inténtelo más tarde.",
-            });
-            return;
-        }
-
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         setIsSubmitting(true);
+        setStatus(null);
+        setErrors(null);
 
         try {
-            const data = await authenticateUser(formData, csrfToken);
-            window.location.href = data.redirect;
-        } catch (error) {
-            if (error.errors) {
-                setErrors(error.errors);
+            const response = await fetch("/sql/forgot-password", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": csrfToken,
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setStatus({
+                    type: "success",
+                    message:
+                        data.message ||
+                        "Si el identificador es válido, recibirás un correo electrónico con instrucciones para recuperar tu contraseña.",
+                });
+            } else if (response.status === 422) {
+                const data = await response.json();
+                setErrors(data.errors || {});
             } else {
-                setErrors({
-                    general:
-                        "Error inesperado. Por favor, inténtelo más tarde.",
+                setStatus({
+                    type: "error",
+                    message: "Algo salió mal. Inténtalo nuevamente más tarde.",
                 });
             }
+        } catch (error) {
+            setStatus({
+                type: "error",
+                message: "Error de conexión. Por favor, inténtalo nuevamente.",
+            });
         } finally {
             setIsSubmitting(false);
         }
@@ -56,58 +66,43 @@ const SQLLogin = () => {
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-400 via-teal-500 to-teal-600 font-poppins">
             <div className="bg-white shadow-xl rounded-xl p-10 max-w-lg w-full">
                 <h1 className="text-4xl font-bold text-teal-600 text-center mb-8">
-                    Iniciar Sesión
+                    Recuperar Contraseña
                 </h1>
-
-                {(getError("general") || getError("authentication")) && (
+                {status && (
+                    <div
+                        className={`mb-6 p-4 rounded ${
+                            status.type === "success"
+                                ? "bg-green-100 text-green-700 border border-green-400"
+                                : "bg-red-100 text-red-700 border border-red-400"
+                        }`}
+                    >
+                        {status.message}
+                    </div>
+                )}
+                {errors && (
                     <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-                        {getError("general") && <p>{getError("general")}</p>}
-                        {getError("authentication") && (
-                            <p>{getError("authentication")}</p>
+                        {errors.identifier && (
+                            <p>{errors.identifier.join(", ")}</p>
                         )}
                     </div>
                 )}
-
-                <form>
+                <form onSubmit={handleSubmit}>
                     <div className="mb-6">
                         <label className="block text-gray-700 font-medium mb-2">
-                            Nombre de Usuario
+                            Nombre de Usuario o Correo Electrónico
                         </label>
                         <input
                             type="text"
-                            name="username"
-                            value={formData.username}
+                            name="identifier"
+                            value={formData.identifier}
                             onChange={handleInputChange}
                             className="w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none"
-                            placeholder="Ingrese su usuario"
+                            placeholder="Ingrese su nombre de usuario o correo electrónico"
+                            required
                         />
-                        {getError("username") && (
-                            <p className="text-red-500 text-sm mt-1">
-                                {getError("username")}
-                            </p>
-                        )}
-                    </div>
-                    <div className="mb-6">
-                        <label className="block text-gray-700 font-medium mb-2">
-                            Contraseña
-                        </label>
-                        <input
-                            type="password"
-                            name="current_password"
-                            value={formData.current_password}
-                            onChange={handleInputChange}
-                            className="w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none"
-                            placeholder="Ingrese su contraseña"
-                        />
-                        {getError("current_password") && (
-                            <p className="text-red-500 text-sm mt-1">
-                                {getError("current_password")}
-                            </p>
-                        )}
                     </div>
                     <button
-                        type="button"
-                        onClick={handleLogin}
+                        type="submit"
                         disabled={isSubmitting}
                         className={`w-full py-3 px-4 bg-teal-600 text-white font-medium rounded-lg shadow-lg hover:bg-teal-700 transition-all duration-200 ${
                             isSubmitting ? "opacity-50 cursor-not-allowed" : ""
@@ -135,17 +130,17 @@ const SQLLogin = () => {
                                 ></path>
                             </svg>
                         ) : (
-                            "Iniciar Sesión"
+                            "Recuperar Contraseña"
                         )}
                     </button>
                 </form>
                 <p className="text-sm text-center text-gray-600 mt-6">
-                    ¿Olvidaste tu contraseña?{" "}
+                    ¿Recordaste tu contraseña?{" "}
                     <button
-                        onClick={() => Inertia.get("forgot-password")}
+                        onClick={() => Inertia.get("login")}
                         className="text-teal-500 hover:underline"
                     >
-                        Recuperar
+                        Iniciar Sesion
                     </button>
                 </p>
             </div>
@@ -153,4 +148,4 @@ const SQLLogin = () => {
     );
 };
 
-export default SQLLogin;
+export default ForgotPassword;

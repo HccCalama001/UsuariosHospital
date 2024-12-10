@@ -17,6 +17,9 @@ Route::get('/', function () {
 Route::prefix('sql')->group(function () {
     Route::get('/login', [SQLPasswordController::class, 'index'])->name('sqlpassword.login');
     Route::post('/authenticate', [SQLPasswordController::class, 'authenticate'])->name('sqlpassword.authenticate');
+    Route::get('/forgot-password', [SQLPasswordController::class, 'showForgotPasswordForm'])->name('forgot-password');
+    Route::post('/forgot-password', [SQLPasswordController::class, 'forgotPassword'])->name('sqlpassword.forgot');
+
 });
 
 Route::middleware(['temporaryToken'])->group(function () {
@@ -38,7 +41,6 @@ Route::middleware(['auth'])->group(function () {
     // Rutas relacionadas con el cambio de contraseña SQL
     Route::prefix('sql')->group(function () {
         Route::post('/close-sessions', [SQLPasswordController::class, 'closeSessions'])->name('sqlpassword.closeSessions');
-        Route::get('/loading', fn() => Inertia::render('changePassword/SQLLoading'))->name('sqlpassword.loading');
     });
 });
 

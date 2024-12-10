@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Facades\JWTFactory;
+use App\Models\ServidorNew\User;
 
 class SQLPasswordService
 {
@@ -84,23 +85,47 @@ class SQLPasswordService
         Session::forget('sql_username');
     }
 
-    public function generateTemporaryToken($username, $password, $userLogin)
+    public function generateResetToken($emailOrUsername)
     {
-        $customClaims = [
-            'sub' => $username,
-            'username' => $username,
-            'userLogin' => $userLogin,
-            'current_password' => $password,
-            'temporary' => true,
-            'exp' => now()->addMinutes(15)->timestamp,
+
+        // Buscar al usuario por correo o nombre de usuario
+        $user = User::where('EmailUsuario', $emailOrUsername)
+            ->orWhere('NombreUsuario', $emailOrUsername)
+            ->first();
+
+        if (!$user) {
+            throw new \Exception('Usuario no encontrado.');
+        }
+       
+
+        // Crear el payload del token
+        $payload = [
+            'sub' => $user->id, // ID del usuario
+            'iat' => now()->timestamp, // Tiempo actual
+            'exp' => now()->addMinutes(30)->timestamp, // Expira en 30 minutos
         ];
 
-        $payload = JWTFactory::customClaims($customClaims)->make();
-        return JWTAuth::encode($payload)->get();
+        // Generar el token JWT
+        $token = JWTAuth::fromUser($user, $payload);
+
+        try {
+            DB::connection('mysql')
+                ->table('password_resets')
+                ->updateOrInsert(
+                    ['email' => $user->EmailUsuario], // Identificar por correo electrónico
+                    ['token' => $token, 'created_at' => now()] // Guardar el token y la fecha
+                );
+        
+            
+        } catch (\Exception $e) {
+           
+        
+            return response()->json([
+                'message' => 'Ocurrió un error al procesar la solicitud. Por favor, inténtelo de nuevo más tarde.'
+            ], 500);
+        }
+
+        return $token;
     }
 
-    public function generateFullToken($user)
-    {
-        return JWTAuth::fromUser($user);
-    }
 }

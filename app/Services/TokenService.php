@@ -79,4 +79,6 @@ class TokenService
     {
         return cookie('auth_token', $token, $minutes, '/', null, false, false, false, 'Lax');
     }
+
+    
 }

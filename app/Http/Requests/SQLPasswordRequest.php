@@ -14,18 +14,20 @@ class SQLPasswordRequest extends FormRequest
 
     public function rules()
     {
-        // Log de la ruta y método actuales
-        Log::info('Ruta actual en SQLPasswordRequest:', ['route' => $this->route()->getName()]);
-        Log::info('Método HTTP en SQLPasswordRequest:', ['method' => $this->method()]);
-
+       
         if ($this->routeIs('sqlpassword.authenticate')) {
-            Log::info('Validando reglas para inicio de sesión.', ['input' => $this->all()]);
+     
             return $this->loginRules();
         }
 
         if ($this->routeIs('sqlpassword.update')) {
-            Log::info('Validando reglas para cambio de contraseña.', ['input' => $this->all()]);
+           
             return $this->updatePasswordRules();
+        }
+
+        if ($this->routeIs('sqlpassword.forgot')) {
+          
+            return $this->forgotPasswordRules();
         }
 
         return [];
@@ -40,12 +42,14 @@ class SQLPasswordRequest extends FormRequest
             'new_password.min' => 'La nueva contraseña debe tener al menos 8 caracteres.',
             'new_password.regex' => 'La nueva contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial.',
             'new_password_confirmation.same' => 'La confirmación de la contraseña no coincide.',
+            'identifier.required' => 'El identificador (correo o usuario) es obligatorio.',
+            'identifier.string' => 'El identificador debe ser un texto válido.',
         ];
     }
 
     private function loginRules()
     {
-        // Log de las reglas aplicadas para el login
+        // Reglas para login
         $rules = [
             'username' => 'required|string',
             'current_password' => 'required|string',
@@ -57,12 +61,12 @@ class SQLPasswordRequest extends FormRequest
 
     private function updatePasswordRules()
     {
-        // Log de las reglas aplicadas para cambio de contraseña
+        // Reglas para cambiar contraseña
         $rules = [
             'new_password' => [
                 'required',
                 'string',
-                'max:8',
+                'min:8',
                 'regex:/[A-Z]/',
                 'regex:/[a-z]/',
                 'regex:/[0-9]/',
@@ -71,6 +75,17 @@ class SQLPasswordRequest extends FormRequest
             'new_password_confirmation' => 'required|same:new_password',
         ];
         Log::info('Reglas de validación para cambio de contraseña:', $rules);
+
+        return $rules;
+    }
+
+    private function forgotPasswordRules()
+    {
+        // Reglas para recuperación de contraseña
+        $rules = [
+            'identifier' => 'required|string',
+        ];
+        Log::info('Reglas de validación para recuperación de contraseña:', $rules);
 
         return $rules;
     }
