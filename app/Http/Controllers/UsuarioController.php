@@ -131,4 +131,31 @@ class UsuarioController extends Controller
             ], 500);
         }
     }
+
+ /**
+     * Actualiza los datos del usuario globalmente, tanto en el sistema nuevo como en el antiguo.
+     *
+     * @param UsuarioRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function actualizarUsuarioGlobal(UsuarioRequest $request)
+    {
+        // Aquí asumes que en el request se recibe un campo `user_id` que indica el ID del usuario a actualizar
+        $username = $request->input('userLogin');
+        // Mapeas las reglas del request a los campos que tu servicio necesita
+        $datos = [
+            'Nombre' => $request->input('name'),
+            'ApellidoPaterno' => $request->input('apellido_paterno'),
+            'ApellidoMaterno' => $request->input('apellido_materno'),
+            'Rut' => $request->input('rut'), // Opcional si quieres permitir actualizar RUT
+            'EmailUsuario' => $request->input('email'),
+            'NumeroTelefono' => $request->input('phone'),
+            // Si quisieras actualizar contraseña u otros campos, agrégalos aquí
+        ];
+    
+        // Llamamos al servicio para actualizar globalmente
+        $this->usuarioService->actualizarUsuarioGlobal($username, $datos);
+
+        return response()->json(['message' => 'Usuario actualizado correctamente.'], 200);
+    }
 }

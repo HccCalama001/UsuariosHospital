@@ -5,6 +5,12 @@ use Inertia\Inertia;
 use App\Http\Controllers\SQLPasswordController;
 use App\Http\Controllers\UsuarioController;
 
+
+// Ruta raíz que redirige a /sql/login
+Route::get('/', function () {
+    return redirect()->route('sqlpassword.login');
+});
+
 // Rutas públicas (sin autenticación JWT)
 Route::prefix('sql')->group(function () {
     Route::get('/login', [SQLPasswordController::class, 'index'])->name('sqlpassword.login');
@@ -23,6 +29,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [UsuarioController::class, 'index'])->name('usuario.index');
         Route::post('/buscar', [UsuarioController::class, 'buscarUsuario'])->name('usuario.buscarUsuario');
         Route::post('/cambiar-contrasena', [UsuarioController::class, 'cambiarContrasena']);
+        Route::post('/actualizar-global', [UsuarioController::class, 'actualizarUsuarioGlobal'])->name('usuario.actualizarUsuarioGlobal');
         
     });
 
@@ -31,4 +38,13 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/close-sessions', [SQLPasswordController::class, 'closeSessions'])->name('sqlpassword.closeSessions');
         Route::get('/loading', fn() => Inertia::render('changePassword/SQLLoading'))->name('sqlpassword.loading');
     });
+});
+
+
+
+
+Route::fallback(function () {
+    return Inertia::render('ErrorPage', [
+        'message' => 'La ruta solicitada no fue encontrada.',
+    ]);
 });

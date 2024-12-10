@@ -21,6 +21,8 @@ class UsuarioServicio extends Model
         'Segu_Usr_RUT',
         'Segu_Usr_FuncionAdmnistr',
         'Segu_Usr_Codigo',
+        'Segu_Usr_Fono',
+        'Segu_Usr_Mail'
     ];
 
     public $timestamps = false;
@@ -33,9 +35,6 @@ class UsuarioServicio extends Model
         'ID_Establecimiento',
         'Segu_Usr_CambioClave',
         'Segu_Usr_CambioCodigo',
-        'Segu_Usr_CodigoAnt',
-        'Segu_Usr_Fono',
-        'Segu_Usr_Mail',
         'enfESI',
         'Segu_Usr_Cuenta',
     ];

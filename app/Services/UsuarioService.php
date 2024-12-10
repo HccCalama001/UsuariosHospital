@@ -104,7 +104,69 @@ class UsuarioService
             'message' => 'La contraseña ha sido cambiada exitosamente en ambos sistemas.',
         ];
     }
-    
+
+
+    /**
+     * Actualiza el usuario en el nuevo sistema y en los sistemas antiguos de manera global.
+     *
+     * @param  int   $userId
+     * @param  array $datos
+     * @return bool
+     *
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws \Throwable
+     */
+    public function actualizarUsuarioGlobal(string $username, array $datos): bool
+    {
+        return DB::transaction(function () use ($username, $datos) {
+            // Obtener el usuario o lanzar excepción si no existe
+
+            $user = User::findOrFailByUsername($username);
+       
+            // Actualizar datos en el sistema nuevo (MySQL)
+            $user->update([
+                'Nombre' => $datos['Nombre'] ?? $user->Nombre,
+                'ApellidoPaterno' => $datos['ApellidoPaterno'] ?? $user->ApellidoPaterno,
+                'ApellidoMaterno' => $datos['ApellidoMaterno'] ?? $user->ApellidoMaterno,
+                'EmailUsuario' => $datos['EmailUsuario'] ?? $user->EmailUsuario,
+                'NumeroTelefono' => $datos['NumeroTelefono'] ?? $user->NumeroTelefono,
+                'Rut' => $datos['Rut'] ?? $user->Rut,
+                'NombreUsuario' => $datos['NombreUsuario'] ?? $user->NombreUsuario,
+            ]);
+
+            // Actualizar datos en UsuarioServicio (sistema antiguo) si existe el registro
+            if ($user->servicio) {
+                $user->servicio->update([
+                    'Segu_Usr_Nombre' => $datos['Nombre'] ?? $user->Nombre,
+                    'Segu_Usr_ApellidoPaterno' => $datos['ApellidoPaterno'] ?? $user->ApellidoPaterno,
+                    'Segu_Usr_ApellidoMaterno' => $datos['ApellidoMaterno'] ?? $user->ApellidoMaterno,
+                    'Segu_Usr_RUT' => $datos['Rut'] ?? $user->Rut,
+                    'Segu_Usr_Fono' => $datos['NumeroTelefono'] ?? $user->NumeroTelefono,
+                    'Segu_Usr_Mail' => $datos['EmailUsuario'] ?? $user->EmailUsuario,
+                    'Segu_Usr_Cuenta' => $datos['NombreUsuario'] ?? $user->NombreUsuario,
+                    // Agregar más campos aquí si existen en la BD antigua, por ejemplo email si está disponible.
+                ]);
+            }
+
+            // Actualizar datos en ServicioProfesional (sistema antiguo) si existe el registro
+            if ($user->profesional) {
+                $user->profesional->update([
+                    'SER_PRO_Nombres' => $datos['Nombre'] ?? $user->Nombre,
+                    'SER_PRO_ApellPater' =>  $datos['ApellidoPaterno'] ?? $user->ApellidoPaterno,
+                    'SER_PRO_ApellMater' => $datos['ApellidoMaterno'] ?? $user->ApellidoMaterno,
+                    'SER_PRO_Rut' => $datos['Rut'] ?? $user->Rut,
+                    'SER_PRO_Telefono' => $datos['NumeroTelefono'] ?? $user->NumeroTelefono,
+
+                    // Agregar más campos si es necesario.
+                ]);
+            }
+
+            // Aquí puedes agregar más lógica para actualizar otros sistemas o relaciones si es necesario.
+            // Ejemplo: si necesitas modificar UsuarioLogin, etc.
+
+            return true;
+        });
+    }
     
 
 }

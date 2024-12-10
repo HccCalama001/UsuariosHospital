@@ -4,14 +4,20 @@ import App from "../../Layouts/App";
 import { Inertia } from "@inertiajs/inertia";
 import { FaUserEdit, FaKey } from "react-icons/fa";
 import ChangePasswordModal from "./components/modals/ChangePasswordModal";
+import EditUserModal from "./components/modals/EditUserModal";
 
 const UsuarioIndex = () => {
     const { resumen, csrfToken } = usePage().props;
     const { userNew, userLogin, usuarioSistema } = resumen || {};
     const [isModalOpen, setModalOpen] = useState(false);
+    const [isEditModalOpen, setEditModalOpen] = useState(false);
 
-    const handleEditProfile = () => {
-        Inertia.get("/editar-datos");
+    const handleOpenEditModal = () => {
+        setEditModalOpen(true);
+    };
+
+    const handleCloseEditModal = () => {
+        setEditModalOpen(false);
     };
 
     const handleChangePassword = () => {
@@ -51,9 +57,9 @@ const UsuarioIndex = () => {
                             <div className="flex space-x-4">
                                 {/* Botón Editar Perfil */}
                                 <button
-                                    onClick={handleEditProfile}
-                                    className="p-2 bg-teal-600 hover:bg-teal-700 text-white font-medium rounded-full shadow transition"
-                                    title="Editar Perfil"
+                                    onClick={handleOpenEditModal}
+                                    className="p-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-full shadow transition"
+                                    title="Editar Información del Usuario"
                                 >
                                     <FaUserEdit className="h-6 w-6" />
                                 </button>
@@ -70,6 +76,13 @@ const UsuarioIndex = () => {
                                     isOpen={isModalOpen}
                                     onClose={handleCloseModal}
                                     csrfToken={csrfToken}
+                                />
+                                <EditUserModal
+                                    isOpen={isEditModalOpen}
+                                    onClose={handleCloseEditModal}
+                                    csrfToken={csrfToken}
+                                    userData={userNew} // datos del usuario
+                                    userLoginData={userLogin} // datos del login
                                 />
                             </div>
                         </div>

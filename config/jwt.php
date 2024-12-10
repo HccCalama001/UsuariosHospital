@@ -11,7 +11,7 @@
 
 return [
     'secret' => env('JWT_SECRET'),
-    'ttl' => 60, // Duración del token en minutos
+    'ttl' => 120, // Duración del token en minutos
     'refresh_ttl' => 20160, // Duración del token para refrescar (en minutos)
     'algo' => 'HS256',
     'required_claims' => ['iss', 'iat', 'exp', 'nbf', 'sub', 'jti'],

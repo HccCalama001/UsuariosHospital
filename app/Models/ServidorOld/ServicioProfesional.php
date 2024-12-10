@@ -22,11 +22,11 @@ class ServicioProfesional extends Model
         'SER_PRO_Procedencia',
         'Farmacia',
         'SER_PRO_Agenda',
+        'SER_PRO_Telefono', // Agregado aquí
     ];
 
     protected $hidden = [
         'SER_PRO_Direccion',
-        'SER_PRO_Telefono', 
         'SER_PRO_Observacio',
         'SER_PRO_TimeStamp',
         'SER_PRO_Soundex',

@@ -109,4 +109,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    public static function findOrFailByUsername($username)
+    {
+        return static::where('NombreUsuario', $username)->firstOrFail();
+    }
 }

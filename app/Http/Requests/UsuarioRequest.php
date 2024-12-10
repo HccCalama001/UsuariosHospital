@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator; // Importar la clase correcta
+use Illuminate\Support\Facades\Log;
 
 class UsuarioRequest extends FormRequest
 {
@@ -25,7 +26,7 @@ class UsuarioRequest extends FormRequest
 
     public function rules()
     {
-        \Log::info('Datos recibidos en UsuarioRequest:', $this->all());
+     
         // Determinar qué reglas usar según la ruta o método
         if ($this->isMethod('post')) {
             if ($this->routeIs('usuario.guardarDatos')) {
@@ -34,6 +35,10 @@ class UsuarioRequest extends FormRequest
 
             if ($this->routeIs('usuario.buscarUsuario')) {
                 return $this->buscarUsuarioRules();
+            }
+            if ($this->routeIs('usuario.actualizarUsuarioGlobal')) {
+               
+                return $this->actualiarDatosRules();
             }
         }
         return [];
@@ -78,4 +83,19 @@ class UsuarioRequest extends FormRequest
             'userLogin' => 'required|string|max:255',
         ];
     }
+    private function actualiarDatosRules()
+    {
+        $userLogin = $this->input('userLogin'); // Obtenemos el valor de userLogin del request
+    
+        return [
+            'name' => 'required|string|max:255',
+            'apellido_paterno' => 'required|string|max:255',
+            'apellido_materno' => 'required|string|max:255',
+            'rut' => "required|string|unique:mysql.usuarios,Rut,{$userLogin},NombreUsuario", // Excluir el registro actual por userLogin
+            'email' => "required|email|unique:mysql.usuarios,EmailUsuario,{$userLogin},NombreUsuario", // Excluir el registro actual por userLogin
+            'phone' => 'nullable|string|max:15',
+            'userLogin' => 'required|string|max:255',
+        ];
+    }
+    
 }

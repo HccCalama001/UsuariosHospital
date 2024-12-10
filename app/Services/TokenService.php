@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Facades\JWTFactory;
+use Illuminate\Support\Facades\Cookie;
 
 class TokenService
 {
@@ -34,7 +35,6 @@ class TokenService
         // Verificar si existe la clave JWT_SECRET
         $jwtSecret = config('jwt.secret');
         if (!$jwtSecret) {
-            \Log::error('JWT_SECRET no está configurado.');
             throw new \Exception('JWT_SECRET no está configurado en el archivo .env.');
         }
     
@@ -66,5 +66,17 @@ class TokenService
     public function generateFullToken($user): string
     {
         return JWTAuth::fromUser($user);
+    }
+
+        /**
+     * Guarda el token en una cookie.
+     *
+     * @param string $token El token que se guardará.
+     * @param int $minutes Duración de la cookie en minutos.
+     * @return \Symfony\Component\HttpFoundation\Cookie
+     */
+    public function guardarEnCookie(string $token, int $minutes = 120)
+    {
+        return cookie('auth_token', $token, $minutes, '/', null, false, false, false, 'Lax');
     }
 }

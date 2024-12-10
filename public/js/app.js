@@ -41808,6 +41808,14 @@ module.exports = function getSideChannel() {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var map = {
+	"./ErrorPage": [
+		"./resources/js/Pages/ErrorPage.jsx",
+		"resources_js_Pages_ErrorPage_jsx"
+	],
+	"./ErrorPage.jsx": [
+		"./resources/js/Pages/ErrorPage.jsx",
+		"resources_js_Pages_ErrorPage_jsx"
+	],
 	"./changePassword/SQLLogin": [
 		"./resources/js/Pages/changePassword/SQLLogin.jsx",
 		"resources_js_Pages_changePassword_SQLLogin_jsx"
@@ -41839,6 +41847,14 @@ var map = {
 	"./usuario/components/modals/ChangePasswordModal.jsx": [
 		"./resources/js/Pages/usuario/components/modals/ChangePasswordModal.jsx",
 		"resources_js_Pages_usuario_components_modals_ChangePasswordModal_jsx"
+	],
+	"./usuario/components/modals/EditUserModal": [
+		"./resources/js/Pages/usuario/components/modals/EditUserModal.jsx",
+		"resources_js_Pages_usuario_components_modals_EditUserModal_jsx"
+	],
+	"./usuario/components/modals/EditUserModal.jsx": [
+		"./resources/js/Pages/usuario/components/modals/EditUserModal.jsx",
+		"resources_js_Pages_usuario_components_modals_EditUserModal_jsx"
 	]
 };
 function webpackAsyncContext(req) {
@@ -41989,7 +42005,7 @@ module.exports = /*#__PURE__*/JSON.parse('{"name":"axios","version":"0.21.4","de
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_Pages_changePassword_SQLLogin_jsx":1,"resources_js_Pages_usuario_CompletarDatos_jsx":1,"resources_js_Pages_usuario_Index_jsx":1,"resources_js_Pages_usuario_components_modals_ChangePasswordModal_jsx":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_Pages_ErrorPage_jsx":1,"resources_js_Pages_changePassword_SQLLogin_jsx":1,"resources_js_Pages_usuario_CompletarDatos_jsx":1,"resources_js_Pages_usuario_Index_jsx":1,"resources_js_Pages_usuario_components_modals_ChangePasswordModal_jsx":1,"resources_js_Pages_usuario_components_modals_EditUserModal_jsx":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};

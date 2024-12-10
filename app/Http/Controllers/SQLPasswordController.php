@@ -54,7 +54,7 @@ class SQLPasswordController extends Controller
                     'current_password' => $request->current_password,
                 ]);
             
-                $cookie = cookie('auth_token', $token, 10, '/', null, false, false, false, 'Lax');
+                $cookie = $this->tokenService->guardarEnCookie($token);
             
                 return response()->json([
                     'status' => 'success',
@@ -65,7 +65,7 @@ class SQLPasswordController extends Controller
             // Usuario existente
             $user = $this->usuarioService->buscarUsuarioExistente($request->username);
             $token = $this->tokenService->generateFullToken($user);
-            $cookie = cookie('auth_token', $token, 120, '/', null, false, false, false, 'Lax');
+            $cookie = $this->tokenService->guardarEnCookie($token);
     
             return response()->json([
                 'status' => 'success',
