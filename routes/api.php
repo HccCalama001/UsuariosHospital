@@ -15,3 +15,4 @@ use App\Http\Controllers\UsuarioController;
 */
 
 Route::get('/usuario/buscar', [UsuarioController::class, 'buscarUsuario'])->name('usuario.buscar');
+Route::get('/usuario/buscar/detalle', [UsuarioController::class, 'obtenerNombreCompleto'])->name('usuario.detalle');
