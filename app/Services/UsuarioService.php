@@ -8,9 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\ServidorOld\UsuarioLogin;
 use App\Models\ServidorOld\UsuarioServicio;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Hash;
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
+
 
 
 class UsuarioService
