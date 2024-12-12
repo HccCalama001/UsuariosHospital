@@ -12,6 +12,7 @@ const SQLLogin = () => {
 
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleInputChange = (e) => {
         setFormData({
@@ -43,8 +44,7 @@ const SQLLogin = () => {
                 setErrors(error.errors);
             } else {
                 setErrors({
-                    general:
-                        "Error inesperado. Por favor, inténtelo más tarde.",
+                    general: "Error inesperado. Por favor, inténtelo más tarde.",
                 });
             }
         } finally {
@@ -87,18 +87,32 @@ const SQLLogin = () => {
                             </p>
                         )}
                     </div>
-                    <div className="mb-6">
+                    <div className="mb-6 relative">
                         <label className="block text-gray-700 font-medium mb-2">
                             Contraseña
                         </label>
-                        <input
-                            type="password"
-                            name="current_password"
-                            value={formData.current_password}
-                            onChange={handleInputChange}
-                            className="w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none"
-                            placeholder="Ingrese su contraseña"
-                        />
+                        <div className="relative">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                name="current_password"
+                                value={formData.current_password}
+                                onChange={handleInputChange}
+                                className="w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                                placeholder="Ingrese su contraseña"
+                            />
+                            {formData.current_password && (
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute top-0 right-3 h-full flex items-center text-gray-500 focus:outline-none"
+                                >
+                                    <i
+                                        className={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"
+                                            }`}
+                                    ></i>
+                                </button>
+                            )}
+                        </div>
                         {getError("current_password") && (
                             <p className="text-red-500 text-sm mt-1">
                                 {getError("current_password")}
@@ -109,9 +123,8 @@ const SQLLogin = () => {
                         type="button"
                         onClick={handleLogin}
                         disabled={isSubmitting}
-                        className={`w-full py-3 px-4 bg-teal-600 text-white font-medium rounded-lg shadow-lg hover:bg-teal-700 transition-all duration-200 ${
-                            isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-                        }`}
+                        className={`w-full py-3 px-4 bg-teal-600 text-white font-medium rounded-lg shadow-lg hover:bg-teal-700 transition-all duration-200 ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+                            }`}
                     >
                         {isSubmitting ? (
                             <svg
