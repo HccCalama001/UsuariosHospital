@@ -184,5 +184,37 @@ class UsuarioService
         return $user->nombre_usuario; // Utiliza el accesor definido en el modelo
     }
 
+    public function resetPassword($token, $newPassword)
+    {
+        $passwordReset = DB::connection('mysql')
+            ->table('password_resets')
+            ->where('token', $token)
+            ->first();
 
+        if (!$passwordReset) {
+            throw new \Exception('Token no válido o expirado.');
+        }
+
+        // Buscar al usuario asociado al correo
+        $user = User::where('EmailUsuario', $passwordReset->email)->first();
+
+        if (!$user) {
+            throw new \Exception('Usuario no encontrado.');
+        }
+
+        // Actualizar la contraseña del usuario
+        $user->update([
+            'password' => bcrypt($newPassword),
+        ]);
+
+        // Eliminar el token de la tabla `password_resets` después de usarlo
+        DB::connection('mysql')
+            ->table('password_resets')
+            ->where('token', $token)
+            ->delete();
+
+        return true;
+    }
+
+    
 }

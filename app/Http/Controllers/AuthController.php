@@ -1,27 +1,27 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Http\Requests\SQLPasswordRequest;
+use App\Http\Requests\AuthRequest;
 use App\Services\EmailService;
-use App\Services\SQLPasswordService;
+use App\Services\AuthService;
 use App\Services\TokenService;
 use App\Services\UsuarioService;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
-use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 
-class SQLPasswordController extends Controller
+
+
+class AuthController extends Controller
 {
-    protected $sqlPasswordService;
+    protected $AuthService;
     protected $tokenService;
     protected $usuarioService;
     protected $emailService;
 
-    public function __construct(SQLPasswordService $sqlPasswordService, TokenService $tokenService, UsuarioService $usuarioService, EmailService $emailService)
+    public function __construct(AuthService $AuthService, TokenService $tokenService, UsuarioService $usuarioService, EmailService $emailService)
     {
-        $this->sqlPasswordService = $sqlPasswordService;
+        $this->AuthService = $AuthService;
         $this->tokenService = $tokenService;
         $this->usuarioService = $usuarioService;
         $this->emailService = $emailService;
@@ -32,7 +32,7 @@ class SQLPasswordController extends Controller
      */
     public function index()
     {
-        return Inertia::render('changePassword/SQLLogin', [
+        return Inertia::render('auth/SQLLogin', [
             'csrfToken' => csrf_token(), 
         ]);
     }
@@ -40,17 +40,53 @@ class SQLPasswordController extends Controller
      // Mostrar el formulario de recuperación de contraseña
      public function showForgotPasswordForm()
      {
-         return Inertia::render('changePassword/ForgotPassword',[
+         return Inertia::render('auth/ForgotPassword',[
             'csrfToken' => csrf_token(), 
         ]);
      }
+
+    /**
+     * Mostrar la vista de verificación de código.
+     *
+     * @return \Inertia\Response
+     */
+    public function showVerifyCode()
+    {
+        return Inertia::render('auth/VerifyCode');
+    }
+
+    /**
+     * Verificar el código de recuperación.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     */
+    public function verifyCode(AuthRequest $request)
+    {
+      /*  $request->validate([
+            'code' => 'required|string|max:10',
+        ]);
+
+        $resetEntry = DB::table('password_resets')
+            ->where('codAleatorio', $request->code)
+            ->first();
+
+        if (!$resetEntry) {
+            return response()->json([
+                'message' => 'El código ingresado es inválido o ha expirado.',
+            ], 400);
+        }
+
+        // Código válido, redirigir a la vista de cambio de contraseña
+        return redirect()->route('password.change', ['code' => $request->code]); */
+    }
  
 
-    public function authenticate(SQLPasswordRequest $request)
+    public function authenticate(AuthRequest $request)
     {
         try {
     
-            $this->sqlPasswordService->authenticateUser($request->username, $request->current_password);
+            $this->AuthService->authenticateUser($request->username, $request->current_password);
     
             $usuarioData = $this->usuarioService->buscarUsuarioResumen($request->username);
             
@@ -107,7 +143,7 @@ class SQLPasswordController extends Controller
             }
 
             // Cerrar sesiones activas
-            $this->sqlPasswordService->closeUserSessions($username);
+            $this->AuthService->closeUserSessions($username);
 
             return redirect()->route('sqlpassword.success');
         } catch (\Exception $e) {
@@ -115,28 +151,33 @@ class SQLPasswordController extends Controller
         }
     }
 
-    public function forgotPassword(SQLPasswordRequest $request)
+    public function forgotPassword(AuthRequest $request)
     {
-   
         $identifier = $request->input('identifier');
-
-
+    
         try {
-            // Generar el token
-      
-            $token = $this->sqlPasswordService->generateResetToken($identifier);
-              // Crear el enlace de restablecimiento
-            // Crear el enlace de restablecimiento
-            $resetLink = url("/reset-password?token={$token}");
+            // Generar el token y obtener el correo del usuario
+            $data = $this->AuthService->generateResetToken($identifier);
+    
+            $codAleatorio = $data['codAleatorio'];
+            $email = $data['email'];
+    
+               // Crear el enlace de verificación
+            $resetLink = url("/verify-code");
 
             // Enviar el correo utilizando EmailService
-            $this->emailService->enviarCorreoRecuperacion($identifier, $resetLink);
-
-      
-            return response()->json(['message' => 'Correo de recuperación enviado.'], 200);
+            $this->emailService->enviarCorreoRecuperacion($email, $resetLink, $codAleatorio);
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 400);
+            // No hacer nada específico aquí, pero podrías registrar el error
+            Log::error('Error en forgotPassword:', ['message' => $e->getMessage()]);
         }
+    
+        // Respuesta genérica para evitar exposición de datos
+        return response()->json(['message' => 'Si los datos proporcionados son válidos, se enviará un correo con las instrucciones.'], 200);
     }
+    
+    
+
+    
 
 }

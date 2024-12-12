@@ -1,7 +1,7 @@
 import Cookies from "js-cookie";
 
 export const authenticateUser = async (formData, csrfToken) => {
-    const response = await fetch("/sql/authenticate", {
+    const response = await fetch("/auth/authenticate", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

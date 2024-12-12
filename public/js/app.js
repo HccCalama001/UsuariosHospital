@@ -41816,21 +41816,37 @@ var map = {
 		"./resources/js/Pages/ErrorPage.jsx",
 		"resources_js_Pages_ErrorPage_jsx"
 	],
-	"./changePassword/ForgotPassword": [
-		"./resources/js/Pages/changePassword/ForgotPassword.jsx",
-		"resources_js_Pages_changePassword_ForgotPassword_jsx"
+	"./auth/ForgotPassword": [
+		"./resources/js/Pages/auth/ForgotPassword.jsx",
+		"resources_js_Pages_auth_ForgotPassword_jsx"
 	],
-	"./changePassword/ForgotPassword.jsx": [
-		"./resources/js/Pages/changePassword/ForgotPassword.jsx",
-		"resources_js_Pages_changePassword_ForgotPassword_jsx"
+	"./auth/ForgotPassword.jsx": [
+		"./resources/js/Pages/auth/ForgotPassword.jsx",
+		"resources_js_Pages_auth_ForgotPassword_jsx"
 	],
-	"./changePassword/SQLLogin": [
-		"./resources/js/Pages/changePassword/SQLLogin.jsx",
-		"resources_js_Pages_changePassword_SQLLogin_jsx"
+	"./auth/ResetPassword": [
+		"./resources/js/Pages/auth/ResetPassword.jsx",
+		"resources_js_Pages_auth_ResetPassword_jsx"
 	],
-	"./changePassword/SQLLogin.jsx": [
-		"./resources/js/Pages/changePassword/SQLLogin.jsx",
-		"resources_js_Pages_changePassword_SQLLogin_jsx"
+	"./auth/ResetPassword.jsx": [
+		"./resources/js/Pages/auth/ResetPassword.jsx",
+		"resources_js_Pages_auth_ResetPassword_jsx"
+	],
+	"./auth/SQLLogin": [
+		"./resources/js/Pages/auth/SQLLogin.jsx",
+		"resources_js_Pages_auth_SQLLogin_jsx"
+	],
+	"./auth/SQLLogin.jsx": [
+		"./resources/js/Pages/auth/SQLLogin.jsx",
+		"resources_js_Pages_auth_SQLLogin_jsx"
+	],
+	"./auth/VerifyCode": [
+		"./resources/js/Pages/auth/VerifyCode.jsx",
+		"resources_js_Pages_auth_VerifyCode_jsx"
+	],
+	"./auth/VerifyCode.jsx": [
+		"./resources/js/Pages/auth/VerifyCode.jsx",
+		"resources_js_Pages_auth_VerifyCode_jsx"
 	],
 	"./usuario/CompletarDatos": [
 		"./resources/js/Pages/usuario/CompletarDatos.jsx",
@@ -42045,7 +42061,7 @@ module.exports = /*#__PURE__*/JSON.parse('{"name":"axios","version":"0.21.4","de
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_Pages_ErrorPage_jsx":1,"resources_js_Pages_changePassword_ForgotPassword_jsx":1,"resources_js_Pages_changePassword_SQLLogin_jsx":1,"resources_js_Pages_usuario_CompletarDatos_jsx":1,"resources_js_Pages_usuario_Index_jsx":1,"resources_js_Pages_usuario_components_Card_CardRoleWeb_jsx":1,"resources_js_Pages_usuario_components_Card_CardSisEscr_jsx":1,"resources_js_Pages_usuario_components_Card_UserInfoCard_jsx":1,"resources_js_Pages_usuario_components_Grid_UserInfoGrid_jsx":1,"resources_js_Pages_usuario_components_modals_ChangePasswordModal_jsx":1,"resources_js_Pages_usuario_components_modals_EditUserModal_jsx":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_Pages_ErrorPage_jsx":1,"resources_js_Pages_auth_ForgotPassword_jsx":1,"resources_js_Pages_auth_ResetPassword_jsx":1,"resources_js_Pages_auth_SQLLogin_jsx":1,"resources_js_Pages_auth_VerifyCode_jsx":1,"resources_js_Pages_usuario_CompletarDatos_jsx":1,"resources_js_Pages_usuario_Index_jsx":1,"resources_js_Pages_usuario_components_Card_CardRoleWeb_jsx":1,"resources_js_Pages_usuario_components_Card_CardSisEscr_jsx":1,"resources_js_Pages_usuario_components_Card_UserInfoCard_jsx":1,"resources_js_Pages_usuario_components_Grid_UserInfoGrid_jsx":1,"resources_js_Pages_usuario_components_modals_ChangePasswordModal_jsx":1,"resources_js_Pages_usuario_components_modals_EditUserModal_jsx":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};

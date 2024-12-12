@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+use App\Mail\PasswordResetMail;
 
 class EmailService
 {
@@ -13,11 +15,9 @@ class EmailService
      * @param string $resetLink
      * @return void
      */
-    public function enviarCorreoRecuperacion($email, $resetLink)
+    public function enviarCorreoRecuperacion($email, $resetLink,$codVery)
     {
-        Mail::send('emails.password_reset', ['link' => $resetLink], function ($message) use ($email) {
-            $message->to($email)
-                ->subject('Recuperación de Contraseña');
-        });
+        Log::info('Enviando correo de recuperación de contraseña a ' . $email);
+        Mail::to($email)->send(new PasswordResetMail($resetLink,$codVery));
     }
 }

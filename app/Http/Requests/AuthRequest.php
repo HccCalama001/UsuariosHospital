@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Log;
 
-class SQLPasswordRequest extends FormRequest
+class AuthRequest extends FormRequest
 {
     public function authorize()
     {

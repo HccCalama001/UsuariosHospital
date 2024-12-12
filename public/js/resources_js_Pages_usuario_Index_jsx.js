@@ -996,7 +996,7 @@ var authenticateUser = /*#__PURE__*/function () {
       while (1) switch (_context.prev = _context.next) {
         case 0:
           _context.next = 2;
-          return fetch("/sql/authenticate", {
+          return fetch("/auth/authenticate", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

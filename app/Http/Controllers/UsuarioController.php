@@ -53,6 +53,20 @@ class UsuarioController extends Controller
         }
     }
 
+    public function showResetPasswordForm(Request $request)
+    {
+        $token = $request->query('token');
+
+        if (!$token) {
+            return redirect()->route('sqlpassword.login')->withErrors(['message' => 'Token no válido o expirado.']);
+        }
+
+        return Inertia::render('usuario/ResetPassword', [
+            'token' => $token,
+            'csrfToken' => csrf_token(),
+        ]);
+    }
+
     /**
      * Busca información de un usuario.
      */

@@ -26,7 +26,7 @@ const ForgotPassword = () => {
         setErrors(null);
 
         try {
-            const response = await fetch("/sql/forgot-password", {
+            const response = await fetch("/auth/forgot-password", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
