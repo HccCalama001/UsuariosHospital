@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\SQLPasswordController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UsuarioController;
 
 
@@ -14,11 +14,13 @@ Route::get('/', function () {
 
 
 // Rutas públicas (sin autenticación JWT)
-Route::prefix('sql')->group(function () {
-    Route::get('/login', [SQLPasswordController::class, 'index'])->name('sqlpassword.login');
-    Route::post('/authenticate', [SQLPasswordController::class, 'authenticate'])->name('sqlpassword.authenticate');
-    Route::get('/forgot-password', [SQLPasswordController::class, 'showForgotPasswordForm'])->name('forgot-password');
-    Route::post('/forgot-password', [SQLPasswordController::class, 'forgotPassword'])->name('sqlpassword.forgot');
+Route::prefix('auth')->group(function () {
+    Route::get('/login', [AuthController::class, 'index'])->name('sqlpassword.login');
+    Route::post('/authenticate', [AuthController::class, 'authenticate'])->name('sqlpassword.authenticate');
+    Route::get('/forgot-password', [AuthController::class, 'showForgotPasswordForm'])->name('forgot-password');
+    Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('sqlpassword.forgot');
+    Route::get('/verify-code', [AuthController::class, 'showVerifyCode'])->name('verify-code');
+    Route::post('/verify-code', [AuthController::class, 'verifyCode']);
 
 });
 
@@ -38,11 +40,8 @@ Route::middleware(['auth'])->group(function () {
         
     });
 
-    // Rutas relacionadas con el cambio de contraseña SQL
-    Route::prefix('sql')->group(function () {
-        Route::post('/close-sessions', [SQLPasswordController::class, 'closeSessions'])->name('sqlpassword.closeSessions');
-    });
 });
+
 
 
 

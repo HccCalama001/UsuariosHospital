@@ -500,6 +500,14 @@ var ChangePasswordModal = function ChangePasswordModal(_ref) {
     _useState10 = _slicedToArray(_useState9, 2),
     status = _useState10[0],
     setStatus = _useState10[1];
+  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+      current_password: false,
+      new_password: false,
+      new_password_confirmation: false
+    }),
+    _useState12 = _slicedToArray(_useState11, 2),
+    showPassword = _useState12[0],
+    setShowPassword = _useState12[1];
   var handleInputChange = function handleInputChange(e) {
     var _e$target = e.target,
       name = _e$target.name,
@@ -561,6 +569,37 @@ var ChangePasswordModal = function ChangePasswordModal(_ref) {
     };
   }();
   if (!isOpen) return null;
+  var renderPasswordInput = function renderPasswordInput(name, placeholder, label) {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+      className: "relative",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
+        className: "block text-gray-700 font-medium mb-2",
+        children: label
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        className: "relative",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
+          type: showPassword[name] ? "text" : "password",
+          name: name,
+          value: formData[name],
+          onChange: handleInputChange,
+          className: "w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none ".concat(errors[name] ? "border-red-500" : "border-gray-300"),
+          placeholder: placeholder
+        }), formData[name] && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+          type: "button",
+          onClick: function onClick() {
+            return setShowPassword(function (prev) {
+              return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, name, !prev[name]));
+            });
+          },
+          className: "absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 focus:outline-none",
+          children: showPassword[name] ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_3__.FaEyeSlash, {}) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_3__.FaEye, {})
+        })]
+      }), errors[name] && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("p", {
+        className: "text-red-500 text-sm mt-1",
+        children: errors[name][0]
+      })]
+    });
+  };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
     className: "fixed inset-0 z-50 flex items-center justify-center",
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
@@ -594,52 +633,7 @@ var ChangePasswordModal = function ChangePasswordModal(_ref) {
       }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("form", {
         onSubmit: handleSubmit,
         className: "mt-6 space-y-6",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
-            className: "block text-gray-700 font-medium mb-2",
-            children: "Contrase\xF1a Actual"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
-            type: "password",
-            name: "current_password",
-            value: formData.current_password,
-            onChange: handleInputChange,
-            className: "w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none ".concat(errors.current_password ? "border-red-500" : "border-gray-300"),
-            placeholder: "Ingresa tu contrase\xF1a actual"
-          }), errors.current_password && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("p", {
-            className: "text-red-500 text-sm mt-1",
-            children: errors.current_password[0]
-          })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
-            className: "block text-gray-700 font-medium mb-2",
-            children: "Nueva Contrase\xF1a"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
-            type: "password",
-            name: "new_password",
-            value: formData.new_password,
-            onChange: handleInputChange,
-            className: "w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none ".concat(!passwordsMatch ? "border-red-500" : "border-gray-300"),
-            placeholder: "Ingresa tu nueva contrase\xF1a"
-          }), errors.new_password && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("p", {
-            className: "text-red-500 text-sm mt-1",
-            children: errors.new_password[0]
-          })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
-            className: "block text-gray-700 font-medium mb-2",
-            children: "Confirmar Contrase\xF1a"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
-            type: "password",
-            name: "new_password_confirmation",
-            value: formData.new_password_confirmation,
-            onChange: handleInputChange,
-            className: "w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none ".concat(!passwordsMatch ? "border-red-500" : "border-gray-300"),
-            placeholder: "Confirma tu nueva contrase\xF1a"
-          }), !passwordsMatch && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("p", {
-            className: "text-red-500 text-sm mt-1",
-            children: "Las contrase\xF1as no coinciden."
-          })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        children: [renderPasswordInput("current_password", "Ingresa tu contraseña actual", "Contraseña Actual"), renderPasswordInput("new_password", "Ingresa tu nueva contraseña", "Nueva Contraseña"), renderPasswordInput("new_password_confirmation", "Confirma tu nueva contraseña", "Confirmar Contraseña"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
           className: "flex justify-end space-x-3 mt-6",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
             type: "button",
@@ -996,7 +990,7 @@ var authenticateUser = /*#__PURE__*/function () {
       while (1) switch (_context.prev = _context.next) {
         case 0:
           _context.next = 2;
-          return fetch("/sql/authenticate", {
+          return fetch("/auth/authenticate", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

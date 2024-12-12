@@ -46,7 +46,7 @@ const CompletarDatos = ({ userLogin, current_password, csrfToken }) => {
                 userLogin: "",
             }); // Reiniciar el formulario
             // Redirigir al inicio de sesión con un mensaje de éxito
-            window.location.href = `/sql/login?success=${encodeURIComponent(
+            window.location.href = `/auth/login?success=${encodeURIComponent(
                 "Usuario actualizado con éxito."
             )}`;
         } catch (error) {
