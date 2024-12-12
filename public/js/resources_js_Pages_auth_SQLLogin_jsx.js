@@ -54,6 +54,10 @@ var SQLLogin = function SQLLogin() {
     _useState6 = _slicedToArray(_useState5, 2),
     isSubmitting = _useState6[0],
     setIsSubmitting = _useState6[1];
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState8 = _slicedToArray(_useState7, 2),
+    showPassword = _useState8[0],
+    setShowPassword = _useState8[1];
   var handleInputChange = function handleInputChange(e) {
     setFormData(_objectSpread(_objectSpread({}, formData), {}, _defineProperty({}, e.target.name, e.target.value)));
   };
@@ -141,17 +145,29 @@ var SQLLogin = function SQLLogin() {
             children: getError("username")
           })]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-          className: "mb-6",
+          className: "mb-6 relative",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("label", {
             className: "block text-gray-700 font-medium mb-2",
             children: "Contrase\xF1a"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("input", {
-            type: "password",
-            name: "current_password",
-            value: formData.current_password,
-            onChange: handleInputChange,
-            className: "w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none",
-            placeholder: "Ingrese su contrase\xF1a"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+            className: "relative",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("input", {
+              type: showPassword ? "text" : "password",
+              name: "current_password",
+              value: formData.current_password,
+              onChange: handleInputChange,
+              className: "w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none",
+              placeholder: "Ingrese su contrase\xF1a"
+            }), formData.current_password && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
+              type: "button",
+              onClick: function onClick() {
+                return setShowPassword(!showPassword);
+              },
+              className: "absolute top-0 right-3 h-full flex items-center text-gray-500 focus:outline-none",
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("i", {
+                className: "fas ".concat(showPassword ? "fa-eye-slash" : "fa-eye")
+              })
+            })]
           }), getError("current_password") && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
             className: "text-red-500 text-sm mt-1",
             children: getError("current_password")
