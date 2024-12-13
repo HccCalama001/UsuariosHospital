@@ -44,6 +44,11 @@ class User extends Authenticatable implements JWTSubject
 
     protected $dates = ['deleted_at'];
 
+    public function passwordReset()
+    {
+        return $this->hasOne(PasswordReset::class, 'email', 'EmailUsuario'); // Relación por `email`
+    }
+
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value);

@@ -11,8 +11,6 @@ class ResetPasswordRequest extends FormRequest
 {
     protected function failedValidation(Validator $validator)
     {
-        \Log::error('Errores de validación:', $validator->errors()->toArray());
-        \Log::info('Datos al validador:', $this->all());
         throw new HttpResponseException(
             response()->json([
                 'message' => 'Errores de validación.',
@@ -41,7 +39,7 @@ class ResetPasswordRequest extends FormRequest
                 'regex:/[@$!%*?&#.]/',
                 'confirmed', // Validar que coincida con password_confirmation
             ],
-            'password_confirmation' => 'required|string', // Asegurar que este campo exista
+            'new_password_confirmation' => 'required|string', // Asegurar que este campo exista
         ];
     }
 

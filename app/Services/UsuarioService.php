@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use App\Models\ServidorOld\UsuarioLogin;
 use App\Models\ServidorOld\UsuarioServicio;
+use App\Models\ServidorNew\PasswordReset;
 use Illuminate\Validation\ValidationException;
 
 
@@ -74,7 +75,6 @@ class UsuarioService
 
     public function cambiarContrasena($username, $data)
     {
-        Log::info("Iniciando cambio de contraseña para el usuario: {$username}");
 
         DB::transaction(function () use ($username, $data) {
             // Verificar existencia del usuario en SQL Server
@@ -87,6 +87,7 @@ class UsuarioService
                 throw ValidationException::withMessages([
                     'current_password' => ['Usuario no encontrado en el sistema de SQL Server.'],
                 ]);
+
             }
 
             // Actualizar contraseña en SQL Server
@@ -99,8 +100,6 @@ class UsuarioService
                 ->where('NombreUsuario', $username)
                 ->update(['password' => Hash::make($data['new_password'])]);
         });
-
-        Log::info("Cambio de contraseña completado exitosamente para el usuario: {$username}");
 
         return [
             'message' => 'La contraseña ha sido cambiada exitosamente en ambos sistemas.',

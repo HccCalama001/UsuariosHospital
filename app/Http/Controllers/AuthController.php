@@ -26,7 +26,6 @@ class AuthController extends Controller
         $this->usuarioService = $usuarioService;
         $this->emailService = $emailService;
     }
-
     /**
      * Muestra la vista de inicio de sesión.
      */
@@ -36,7 +35,6 @@ class AuthController extends Controller
             'csrfToken' => csrf_token(), 
         ]);
     }
-    
      // Mostrar el formulario de recuperación de contraseña
      public function showForgotPasswordForm()
      {
@@ -44,7 +42,6 @@ class AuthController extends Controller
             'csrfToken' => csrf_token(), 
         ]);
      }
-
     /**
      * Mostrar la vista de verificación de código.
      *
@@ -56,7 +53,6 @@ class AuthController extends Controller
             'csrfToken' => csrf_token(), 
         ]);
     }
-
     /**
      * Manejar la verificación del código.
      *
@@ -67,10 +63,8 @@ class AuthController extends Controller
     {
         try {
             $token = $this->AuthService->verifyCodeAndToken($request->code);
-    
             // Crear una cookie segura con el token
             $cookie = $this->tokenService->guardarEnCookieReset($token, 15);
-    
             // Respuesta JSON con el estado y adjuntando la cookie
             return response()->json([
                 'message' => 'Código verificado con éxito',
@@ -86,7 +80,6 @@ class AuthController extends Controller
     public function showChangePassword()
     {
         $token = request()->cookie('reset_token');
-    
         return Inertia::render('auth/ChangePassword', [
             'token' => $token,
             'csrfToken' => csrf_token(), // Enviar el token CSRF
@@ -103,7 +96,6 @@ class AuthController extends Controller
     
             $usuarioData = $this->usuarioService->buscarUsuarioResumen($request->username);
             
-    
             if (is_null($usuarioData['userNew'])) {
                 // Usuario nuevo o temporal
                 $token = $this->tokenService->generateTemporaryToken([
@@ -123,7 +115,6 @@ class AuthController extends Controller
                     'redirect' => route('usuario.completarDatos'),
                 ])->withCookie($cookie);
             }
-    
             // Usuario existente
             $user = $this->usuarioService->buscarUsuarioExistente($request->username);
             $token = $this->tokenService->generateFullToken($user);
@@ -154,7 +145,6 @@ class AuthController extends Controller
             if (!$username) {
                 return back()->withErrors(['message' => 'No autorizado.']);
             }
-
             // Cerrar sesiones activas
             $this->AuthService->closeUserSessions($username);
 
@@ -174,8 +164,6 @@ class AuthController extends Controller
     
             $codAleatorio = $data['codAleatorio'];
             $email = $data['email'];
-    
-               // Crear el enlace de verificación
             $resetLink = url("/auth/verify-code");
 
             // Enviar el correo utilizando EmailService
@@ -191,37 +179,31 @@ class AuthController extends Controller
     
     public function resetPassword(ResetPasswordRequest $request)
     {
+        $token = $request->input('token');
+        $newPassword = $request->input('new_password');
+    
         try {
-            log::info('ResetPasswordRequest');
-            // Obtener el token desde la solicitud
-            $token = $request->input('token');
-
-            // Buscar el usuario asociado al token (en tu base de datos MySQL)
-            $user = DB::connection('mysql')->table('password_resets')->where('token', $token)->first();
-
-            if (!$user) {
-                return response()->json([
-                    'message' => 'El token de recuperación no es válido o ha expirado.',
-                ], 422);
-            }
-
             // Llamar al servicio para cambiar la contraseña
-            $response = $this->usuarioService->cambiarContrasena($user->email, [
-                'new_password' => $request->input('new_password'),
-            ]);
-
-            // Eliminar el token de recuperación para evitar reutilización
-            DB::connection('mysql')->table('password_resets')->where('token', $token)->delete();
-
+            $response = $this->AuthService->ResetPassword($token, $newPassword);
+    
+            // Registro exitoso
+            Log::info('Contraseña restablecida exitosamente para el token: ' . $token);
+    
             return response()->json($response, 200);
         } catch (\Exception $e) {
+            // Manejo de errores
+            Log::error('Error al restablecer la contraseña.', [
+                'token' => $token,
+                'error' => $e->getMessage(),
+            ]);
+    
             return response()->json([
                 'message' => 'Error al cambiar la contraseña.',
                 'error' => $e->getMessage(),
             ], 500);
         }
     }
-
+    
     
 
 }

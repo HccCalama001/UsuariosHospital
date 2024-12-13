@@ -8,10 +8,20 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Models\ServidorNew\User;
+use App\Models\ServidorNew\PasswordReset;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
+use App\Services\UsuarioService;
 use Exception;
 
 class AuthService
 {
+    protected $usuarioService;
+
+    public function __construct(UsuarioService $usuarioService)
+    {
+        $this->usuarioService = $usuarioService;
+    }
 
         /**
      * Verifica la conexión con SQL Server.
@@ -186,6 +196,44 @@ class AuthService
             'codAleatorio' => $codAleatorio,
             'email' => $user->EmailUsuario,
         ];
+    }
+
+    public function ResetPassword($token, $newPassword)
+    {
+        try {
+            // Buscar el token de restablecimiento
+            $passwordReset = PasswordReset::where('token', $token)->first();
+    
+            if (!$passwordReset) {
+    
+                return response()->json([
+                    'message' => 'El token de recuperación no es válido o ha expirado.',
+                ], 422);
+            }
+    
+            // Obtener el usuario asociado
+            $user = $passwordReset->user;
+            if (!$user) {
+    
+                return response()->json([
+                    'message' => 'El usuario asociado al token no existe.',
+                ], 422);
+            }
+    
+            // Cambiar la contraseña del usuario
+            $response = $this->usuarioService->cambiarContrasena($user->NombreUsuario, [
+                'new_password' => $newPassword,
+            ]);
+    
+            // Eliminar el token de recuperación
+            DB::connection('mysql')->table('password_resets')->where('token', $token)->delete();
+            return response()->json($response, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al cambiar la contraseña.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
 }

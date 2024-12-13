@@ -48,6 +48,8 @@ class Handler extends ExceptionHandler
             ], $this->getExceptionStatusCode($exception));
         }
 
+        
+
         return parent::render($request, $exception);
     }
 

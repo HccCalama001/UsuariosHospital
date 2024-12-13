@@ -20,7 +20,7 @@ const ChangePassword = ({ token, csrfToken }) => {
                 body: JSON.stringify({
                     token,
                     new_password: newPassword,
-                    password_confirmation: confirmPassword,
+                    new_password_confirmation: confirmPassword,
                 }),
             });
 
@@ -91,7 +91,6 @@ const ChangePassword = ({ token, csrfToken }) => {
                             required
                         />
                     </div>
-
                     <button
                         type="submit"
                         className="w-full py-3 px-4 bg-teal-600 text-white font-medium rounded-lg shadow-lg hover:bg-teal-700 transition-all duration-200"
