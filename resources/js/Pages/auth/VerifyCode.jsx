@@ -1,12 +1,34 @@
 import React from "react";
 
-const VerifyCode = ({ errors }) => {
+const VerifyCode = ({ errors, csrfToken }) => {
     const [code, setCode] = React.useState("");
+    const [error, setError] = React.useState(null);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Aquí puedes manejar la lógica de envío del código
-        console.log("Código enviado:", code);
+        try {
+            const response = await fetch("/auth/verify-code", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": csrfToken, // Enviar el token CSRF
+                },
+                body: JSON.stringify({ code }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setError(data.errors?.code || "Error al verificar el código.");
+            } else {
+                console.log(data.message);
+                // Redirigir a la página de cambio de contraseña
+                window.location.href = data.redirect;
+            }
+        } catch (err) {
+            setError("Ocurrió un error inesperado.");
+            console.error(err);
+        }
     };
 
     return (
@@ -16,9 +38,9 @@ const VerifyCode = ({ errors }) => {
                     Verificar Código
                 </h1>
 
-                {errors?.general && (
+                {(errors?.general || error) && (
                     <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-                        <p>{errors.general}</p>
+                        <p>{errors?.general || error}</p>
                     </div>
                 )}
 

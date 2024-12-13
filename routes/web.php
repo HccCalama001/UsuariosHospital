@@ -20,7 +20,14 @@ Route::prefix('auth')->group(function () {
     Route::get('/forgot-password', [AuthController::class, 'showForgotPasswordForm'])->name('forgot-password');
     Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('sqlpassword.forgot');
     Route::get('/verify-code', [AuthController::class, 'showVerifyCode'])->name('verify-code');
-    Route::post('/verify-code', [AuthController::class, 'verifyCode']);
+    Route::post('/verify-code', [AuthController::class, 'handleVerifyCode']);
+    Route::get('/change-password', [AuthController::class, 'showChangePassword'])
+    ->name('password.change')
+    ->middleware('validate.reset.token');
+    Route::post('/reset-password', [AuthController::class, 'resetPassword'])
+    ->name('password.reset')
+    ->middleware('validate.reset.token');;
+
 
 });
 

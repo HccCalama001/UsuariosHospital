@@ -544,11 +544,11 @@ video {
 .inset-0 {
   inset: 0px;
 }
-.top-0 {
-  top: 0px;
-}
 .right-3 {
   right: 0.75rem;
+}
+.top-0 {
+  top: 0px;
 }
 .top-1\/2 {
   top: 50%;

@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AuthRequest;
+use App\Http\Requests\ResetPasswordRequest;
 use App\Services\EmailService;
 use App\Services\AuthService;
 use App\Services\TokenService;
@@ -9,8 +10,7 @@ use App\Services\UsuarioService;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
-
-
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -52,35 +52,48 @@ class AuthController extends Controller
      */
     public function showVerifyCode()
     {
-        return Inertia::render('auth/VerifyCode');
+        return Inertia::render('auth/VerifyCode',[
+            'csrfToken' => csrf_token(), 
+        ]);
     }
 
     /**
-     * Verificar el código de recuperación.
+     * Manejar la verificación del código.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function verifyCode(AuthRequest $request)
+    public function handleVerifyCode(AuthRequest $request)
     {
-      /*  $request->validate([
-            'code' => 'required|string|max:10',
-        ]);
-
-        $resetEntry = DB::table('password_resets')
-            ->where('codAleatorio', $request->code)
-            ->first();
-
-        if (!$resetEntry) {
+        try {
+            $token = $this->AuthService->verifyCodeAndToken($request->code);
+    
+            // Crear una cookie segura con el token
+            $cookie = $this->tokenService->guardarEnCookieReset($token, 15);
+    
+            // Respuesta JSON con el estado y adjuntando la cookie
             return response()->json([
-                'message' => 'El código ingresado es inválido o ha expirado.',
-            ], 400);
+                'message' => 'Código verificado con éxito',
+                'redirect' => '/auth/change-password',
+            ])->withCookie($cookie);
+        } catch (\Exception $e) {
+            return response()->json([
+                'errors' => ['code' => $e->getMessage()],
+            ], 422);
         }
-
-        // Código válido, redirigir a la vista de cambio de contraseña
-        return redirect()->route('password.change', ['code' => $request->code]); */
     }
- 
+
+    public function showChangePassword()
+    {
+        $token = request()->cookie('reset_token');
+    
+        return Inertia::render('auth/ChangePassword', [
+            'token' => $token,
+            'csrfToken' => csrf_token(), // Enviar el token CSRF
+        ]);
+        
+    }
+    
 
     public function authenticate(AuthRequest $request)
     {
@@ -163,7 +176,7 @@ class AuthController extends Controller
             $email = $data['email'];
     
                // Crear el enlace de verificación
-            $resetLink = url("/verify-code");
+            $resetLink = url("/auth/verify-code");
 
             // Enviar el correo utilizando EmailService
             $this->emailService->enviarCorreoRecuperacion($email, $resetLink, $codAleatorio);
@@ -176,7 +189,38 @@ class AuthController extends Controller
         return response()->json(['message' => 'Si los datos proporcionados son válidos, se enviará un correo con las instrucciones.'], 200);
     }
     
-    
+    public function resetPassword(ResetPasswordRequest $request)
+    {
+        try {
+            log::info('ResetPasswordRequest');
+            // Obtener el token desde la solicitud
+            $token = $request->input('token');
+
+            // Buscar el usuario asociado al token (en tu base de datos MySQL)
+            $user = DB::connection('mysql')->table('password_resets')->where('token', $token)->first();
+
+            if (!$user) {
+                return response()->json([
+                    'message' => 'El token de recuperación no es válido o ha expirado.',
+                ], 422);
+            }
+
+            // Llamar al servicio para cambiar la contraseña
+            $response = $this->usuarioService->cambiarContrasena($user->email, [
+                'new_password' => $request->input('new_password'),
+            ]);
+
+            // Eliminar el token de recuperación para evitar reutilización
+            DB::connection('mysql')->table('password_resets')->where('token', $token)->delete();
+
+            return response()->json($response, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al cambiar la contraseña.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 
     
 

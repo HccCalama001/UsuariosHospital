@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Models\ServidorNew\User;
+use Exception;
 
 class AuthService
 {
@@ -35,6 +36,34 @@ class AuthService
         sqlsrv_close($connection);
 
         return true;
+    }
+
+    /**
+     * Verificar el código de recuperación y el token.
+     *
+     * @param string $code
+     * @return string
+     * @throws \Exception
+     */
+    public function verifyCodeAndToken(string $code): string
+    {
+        $resetEntry = DB::connection('mysql')
+        ->table('password_resets')
+        ->where('codAleatorio', $code)
+        ->first();
+
+
+        if (!$resetEntry) {
+            throw new Exception('El código ingresado es inválido o ha expirado.');
+        }
+
+        // Verificar la validez del token
+        $isTokenExpired = now()->diffInMinutes($resetEntry->created_at) > 30;
+        if ($isTokenExpired) {
+            throw new Exception('El token ha expirado.');
+        }
+
+        return $resetEntry->token; // Retornar el token si es válido
     }
 
     /**
