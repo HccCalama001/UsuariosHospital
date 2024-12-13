@@ -1,8 +1,13 @@
 import React, { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const ChangePassword = ({ token, csrfToken }) => {
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [showPassword, setShowPassword] = useState({
+        newPassword: false,
+        confirmPassword: false,
+    });
     const [error, setError] = useState(null);
     const [successMessage, setSuccessMessage] = useState("");
 
@@ -15,7 +20,6 @@ const ChangePassword = ({ token, csrfToken }) => {
                 headers: {
                     "Content-Type": "application/json",
                     "X-CSRF-TOKEN": csrfToken,
-                    // Enviar el token CSRF
                 },
                 body: JSON.stringify({
                     token,
@@ -29,13 +33,12 @@ const ChangePassword = ({ token, csrfToken }) => {
             if (!response.ok) {
                 setError(data.errors || "Error al cambiar la contraseña.");
             } else {
-                setError(null); // Limpiar cualquier error previo
+                setError(null);
                 setSuccessMessage(
                     data.message || "Contraseña cambiada con éxito."
                 );
-                // Redirigir si es necesario
                 setTimeout(() => {
-                    window.location.href = "/success-page"; // Redirigir después de un tiempo
+                    window.location.href = "/success-page";
                 }, 2000);
             }
         } catch (err) {
@@ -43,6 +46,38 @@ const ChangePassword = ({ token, csrfToken }) => {
             console.error(err);
         }
     };
+
+    const renderPasswordInput = (label, value, setValue, field) => (
+        <div className="mb-6 relative">
+            <label className="block text-gray-700 font-medium mb-2">
+                {label}
+            </label>
+            <div className="relative">
+                <input
+                    type={showPassword[field] ? "text" : "password"}
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
+                    className="w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                    placeholder={`Ingrese su ${label.toLowerCase()}`}
+                    required
+                />
+                {value && (
+                    <button
+                        type="button"
+                        onClick={() =>
+                            setShowPassword((prev) => ({
+                                ...prev,
+                                [field]: !prev[field],
+                            }))
+                        }
+                        className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+                    >
+                        {showPassword[field] ? <FaEyeSlash /> : <FaEye />}
+                    </button>
+                )}
+            </div>
+        </div>
+    );
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-400 via-teal-500 to-teal-600 font-poppins">
@@ -64,33 +99,20 @@ const ChangePassword = ({ token, csrfToken }) => {
                 )}
 
                 <form onSubmit={handleSubmit}>
-                    <div className="mb-6">
-                        <label className="block text-gray-700 font-medium mb-2">
-                            Nueva Contraseña
-                        </label>
-                        <input
-                            type="password"
-                            value={newPassword}
-                            onChange={(e) => setNewPassword(e.target.value)}
-                            className="w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none"
-                            placeholder="Ingrese su nueva contraseña"
-                            required
-                        />
-                    </div>
+                    {renderPasswordInput(
+                        "Nueva Contraseña",
+                        newPassword,
+                        setNewPassword,
+                        "newPassword"
+                    )}
 
-                    <div className="mb-6">
-                        <label className="block text-gray-700 font-medium mb-2">
-                            Confirmar Contraseña
-                        </label>
-                        <input
-                            type="password"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            className="w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none"
-                            placeholder="Confirme su nueva contraseña"
-                            required
-                        />
-                    </div>
+                    {renderPasswordInput(
+                        "Confirmar Contraseña",
+                        confirmPassword,
+                        setConfirmPassword,
+                        "confirmPassword"
+                    )}
+
                     <button
                         type="submit"
                         className="w-full py-3 px-4 bg-teal-600 text-white font-medium rounded-lg shadow-lg hover:bg-teal-700 transition-all duration-200"
