@@ -126,8 +126,6 @@ class AuthController extends Controller
             ])->withCookie($cookie);
     
         } catch (\Exception $e) {
-            Log::error('Error de autenticación:', ['message' => $e->getMessage()]);
-    
             return response()->json([
                 'status' => 'error',
                 'errors' => ['authentication' => $e->getMessage()],
@@ -183,20 +181,9 @@ class AuthController extends Controller
         $newPassword = $request->input('new_password');
     
         try {
-            // Llamar al servicio para cambiar la contraseña
             $response = $this->AuthService->ResetPassword($token, $newPassword);
-    
-            // Registro exitoso
-            Log::info('Contraseña restablecida exitosamente para el token: ' . $token);
-    
             return response()->json($response, 200);
         } catch (\Exception $e) {
-            // Manejo de errores
-            Log::error('Error al restablecer la contraseña.', [
-                'token' => $token,
-                'error' => $e->getMessage(),
-            ]);
-    
             return response()->json([
                 'message' => 'Error al cambiar la contraseña.',
                 'error' => $e->getMessage(),

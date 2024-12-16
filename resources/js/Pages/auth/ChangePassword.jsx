@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import getCookie from "../../services/cookieService";
 
 const ChangePassword = ({ token, csrfToken }) => {
     const [newPassword, setNewPassword] = useState("");
@@ -11,15 +12,17 @@ const ChangePassword = ({ token, csrfToken }) => {
     const [error, setError] = useState(null);
     const [successMessage, setSuccessMessage] = useState("");
 
+    const resetToken = getCookie("reset_token"); // Recuperar el token de la cookie
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         try {
             const response = await fetch("/auth/reset-password", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "X-CSRF-TOKEN": csrfToken,
+                    Authorization: `Bearer ${resetToken}`, // Enviar el token en el encabezado
                 },
                 body: JSON.stringify({
                     token,
@@ -29,16 +32,22 @@ const ChangePassword = ({ token, csrfToken }) => {
             });
 
             const data = await response.json();
-
             if (!response.ok) {
-                setError(data.errors || "Error al cambiar la contraseña.");
+                if (data.errors) {
+                    const errorMessages = Object.values(data.errors)
+                        .flat()
+                        .join(" ");
+                    setError(errorMessages);
+                } else {
+                    setError("Error al cambiar la contraseña.");
+                }
             } else {
                 setError(null);
                 setSuccessMessage(
                     data.message || "Contraseña cambiada con éxito."
                 );
                 setTimeout(() => {
-                    window.location.href = "/success-page";
+                    window.location.href = "login";
                 }, 2000);
             }
         } catch (err) {
