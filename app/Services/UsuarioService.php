@@ -16,37 +16,45 @@ class UsuarioService
 {
     public function buscarUsuarioResumen($nameuser)
     {
+        // 1. Buscar userNew
         $userNew = User::with('login.roleUserSistema.role', 'login.roleUserSistema.sistema')
-        ->where('NombreUsuario', $nameuser)
-        ->orWhere('Rut', $nameuser)
-        ->first();
+            ->where('NombreUsuario', $nameuser)
+            ->orWhere('Rut', $nameuser)
+            ->first();
 
+        // Si no se encuentra userNew, simplemente lo dejamos en null
         if ($userNew) {
             $userNew->makeHidden(['login', 'created_at', 'updated_at', 'deleted_at','RolID','email_verified_at','remember_token']);
-            // Extraer los nombres de los sistemas
+        } else {
+            $userNew = null;
+        }
+
+        // 2. Generar sistemasWeb solo si existe userNew->login
+        $sistemasWeb = [];
+        if ($userNew && $userNew->login && $userNew->login->roleUserSistema) {
             $sistemasWeb = $userNew->login->roleUserSistema->map(function ($roleUserSistema) {
                 return [
                     'role_id' => $roleUserSistema->role_id,
-                    'role_name' => $roleUserSistema->role->nombre ?? 'Sin rol', // Manejar roles sin nombre
+                    'role_name' => $roleUserSistema->role->nombre ?? 'Sin rol',
                     'sistema_id' => $roleUserSistema->sistemas_id,
-                    'sistema_name' => $roleUserSistema->sistema->nombre ?? 'Sin sistema', // Manejar sistemas sin nombre
+                    'sistema_name' => $roleUserSistema->sistema->nombre ?? 'Sin sistema',
                 ];
-            });
-        
-        } else {
-            return response()->json(['error' => 'Usuario no encontrado'], 404);
+            })->toArray();
         }
 
+        // 3. Buscar userLogin
         $userLogin = UsuarioLogin::with('seguUsuario.servicioProfesional.tipoProfesional')
             ->where('name', $nameuser)
             ->first();
-        if($userLogin){
-            $userLogin->makeHidden(['modify_date', 'type_desc']);
-        }else{
-            return response()->json(['error' => 'Usuario no encontrado'], 404);
-        }
-        
 
+        // Si no se encuentra userLogin, lo dejamos en null
+        if ($userLogin) {
+            $userLogin->makeHidden(['modify_date', 'type_desc']);
+        } else {
+            $userLogin = null;
+        }
+
+        // 4. Buscar usuarioSistema
         $usuarioSistema = DB::connection('sqlsrv2')->select("
             SELECT us.TAB_Login, us.TAB_ID_Sistema, ss.TAB_Text AS sistemaSalud
             FROM TAB_UsuarioSistema us
@@ -54,8 +62,9 @@ class UsuarioService
             WHERE us.TAB_Login = ?
         ", [$nameuser]);
 
-        if(!$usuarioSistema){
-            return response()->json(['error' => 'Usuario no encontrado'], 404);
+        // Si no se encuentra usuarioSistema, queda como un array vacío
+        if (!$usuarioSistema) {
+            $usuarioSistema = [];
         }
 
         return [
@@ -65,6 +74,11 @@ class UsuarioService
             'usuarioSistemaWeb' => $sistemasWeb,
         ];
     }
+
+
+        
+    
+
 
     public function formatUserData($user)
     {

@@ -12,6 +12,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 
+
 class AuthController extends Controller
 {
     protected $AuthService;
@@ -95,8 +96,9 @@ class AuthController extends Controller
             $this->AuthService->authenticateUser($request->username, $request->current_password);
     
             $usuarioData = $this->usuarioService->buscarUsuarioResumen($request->username);
-            
+            log::info('Usuario nuevo o temporal' , $usuarioData);
             if (is_null($usuarioData['userNew'])) {
+              
                 // Usuario nuevo o temporal
                 $token = $this->tokenService->generateTemporaryToken([
                     'username' => $request->username,

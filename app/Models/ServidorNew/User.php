@@ -35,11 +35,14 @@ class User extends Authenticatable implements JWTSubject
         'Nombre',
         'ApellidoPaterno',
         'ApellidoMaterno',
+        'is_active', // Campo para el estado activo/inactivo
+        'email_verified_at', // Fecha de verificación del email
     ];
-
+    
     protected $hidden = [
-        'password',
-        'remember_token',
+        'password', // Oculta la contraseña en los resultados JSON
+        'remember_token', // Oculta el token de sesión
+        'deleted_at', // Oculta la fecha de eliminación lógica en los resultados JSON
     ];
 
     protected $dates = ['deleted_at'];

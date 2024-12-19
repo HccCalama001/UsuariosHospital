@@ -2,35 +2,44 @@
 
 namespace App\Models\ServidorNew;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\ServidorNew\User;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\ServidorNew\Usuario;
 
 class Rol extends Model
 {
-    use HasFactory;
-
-    // Si la tabla se llama 'roles', puedes omitir esta línea
+    use SoftDeletes;
+    protected $connection = 'sqlsrvUsers';
     protected $table = 'roles';
 
-    // Si la clave primaria es 'id', puedes omitir esta línea
-    protected $primaryKey = 'id';
+    // Definir clave primaria personalizada
+    protected $primaryKey = 'RolID';
 
-    // Si no utilizas timestamps en la tabla 'roles', añade esta línea
-    public $timestamps = false;
+    // Especificar que la clave primaria es autoincremental y de tipo entero
+    public $incrementing = true;
+    protected $keyType = 'int';
 
-    // Campos asignables masivamente
+    // Definir los campos asignables masivamente
     protected $fillable = [
-        'nombre',       // Nombre del rol
-        'descripcion',  // Descripción del rol
+        'NombreRol',
+        'Descripcion',
     ];
 
-    /**
-     * Relación con el modelo User
-     * Un rol puede tener muchos usuarios
-     */
+    // Definir las fechas manejadas por Laravel
+    protected $dates = ['created_at', 'updated_at', 'deleted_at']; // Nombres de fechas en minúsculas por convención de Laravel
+
+    // Laravel manejará los timestamps automáticamente
+    public $timestamps = true; // Cambiado a true para permitir que Laravel maneje created_at y updated_at
+
+    // Relación con la tabla Usuarios
     public function usuarios()
     {
-        return $this->hasMany(User::class, 'RolID', 'id');
+        return $this->hasMany(User::class, 'RolID', 'RolID');
+    }
+
+    // Especificar el nombre de la clave para el route model binding
+    public function getRouteKeyName()
+    {
+        return 'RolID';
     }
 }
