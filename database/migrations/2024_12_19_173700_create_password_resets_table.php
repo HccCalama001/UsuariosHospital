@@ -7,14 +7,15 @@ use Illuminate\Support\Facades\Schema;
 class CreatePasswordResetsTable extends Migration
 {
     protected $connection = 'sqlsrvUsers';
-
     public function up()
     {
         Schema::create('password_resets', function (Blueprint $table) {
             $table->id();
-            $table->string('email')->index();
-            $table->text('token'); // NVARCHAR(MAX)
-            $table->timestamp('created_at')->nullable();
+            $table->string('email', 255);
+            $table->text('token');
+            $table->string('codAleatorio', 5)->nullable();
+            $table->dateTime('created_at')->nullable();
+            $table->index('email', 'password_resets_email_index');
         });
     }
 

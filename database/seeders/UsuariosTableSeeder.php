@@ -21,7 +21,7 @@ class UsuariosTableSeeder extends Seeder
         DB::connection($this->connection)->table($this->table)->insert([
             [
       
-                'NombreUsuario' => 'Alejandra Velasquez',
+                'NombreUsuario' => 'velasquez',
                 'EmailUsuario' => 'alejandra.velasquez@redsalud.gob.cl',
                 'Rut' => '14586983-8',
                 'password' => $hashedPassword,
@@ -38,7 +38,7 @@ class UsuariosTableSeeder extends Seeder
             ],
             [
             
-                'NombreUsuario' => 'Jean Aranda',
+                'NombreUsuario' => 'jaranda001',
                 'EmailUsuario' => 'jean.aranda.s@redsalud.gob.cl',
                 'Rut' => '19690677-0',
                 'password' => $hashedPassword,
@@ -55,7 +55,7 @@ class UsuariosTableSeeder extends Seeder
             ],
             [
           
-                'NombreUsuario' => 'Sebastian Huanca',
+                'NombreUsuario' => 'shuanca',
                 'EmailUsuario' => 'sebastian.huanca.a@redsalud.gob.cl',
                 'Rut' => '19463712-8',
                 'password' =>  $hashedPasswordS,
@@ -72,7 +72,7 @@ class UsuariosTableSeeder extends Seeder
             ],
             [
              
-                'NombreUsuario' => 'Leandro Eade',
+                'NombreUsuario' => 'lplaza',
                 'EmailUsuario' => 'leando.plaza@redsalud.gob.cl',
                 'Rut' => '21260927-7',
                 'password' => $hashedPassword,
@@ -89,7 +89,7 @@ class UsuariosTableSeeder extends Seeder
             ],
             [
         
-                'NombreUsuario' => 'Cristian Torres',
+                'NombreUsuario' => 'ctorres',
                 'EmailUsuario' => 'cristian.torresm@redsalud.gob.cl',
                 'Rut' => '17974505-4',
                 'password' => $hashedPassword,
@@ -106,7 +106,7 @@ class UsuariosTableSeeder extends Seeder
             ],
             [
            
-                'NombreUsuario' => 'Bryan Venenciano',
+                'NombreUsuario' => 'bryanv',
                 'EmailUsuario' => 'bryan.venenciano@redsalud.gob.cl',
                 'Rut' => '18183903-1',
                 'password' => $hashedPassword,
@@ -123,7 +123,7 @@ class UsuariosTableSeeder extends Seeder
             ],
             [
             
-                'NombreUsuario' => 'Joel Cruz',
+                'NombreUsuario' => 'jcruzp',
                 'EmailUsuario' => 'soporte.informatico@redsalud.gob.cl',
                 'Rut' => '11720146-5',
                 'password' => $hashedPassword,
@@ -139,7 +139,7 @@ class UsuariosTableSeeder extends Seeder
                 'deleted_at' => null,
             ],
             [
-                'NombreUsuario' => 'Nicolas Alvarez Orrego',
+                'NombreUsuario' => 'nalvare001',
                 'EmailUsuario' => 'nicolas.alvares.o@redsalud.gob.cl',
                 'Rut' => '20262113-9',
                 'password' => $hashedPassword,

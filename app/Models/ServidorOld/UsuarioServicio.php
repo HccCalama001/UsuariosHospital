@@ -62,4 +62,14 @@ class UsuarioServicio extends Model
     {
         return $query->where('Segu_Usr_Cuenta', '=', $id);
     }
+
+       /**
+     * Relación con SistemaConsolidado.
+     * Un ServicioProfesional puede estar relacionado con un SistemaConsolidado.
+     */
+    public function sistemaConsolidado()
+    {
+        return $this->hasMany(SistemaConsolidado::class, 'codigo', 'SER_PRO_Rut')
+            ->where('tipo', 'escritorio'); // Filtrar por tipo si es necesario
+    }
 }
