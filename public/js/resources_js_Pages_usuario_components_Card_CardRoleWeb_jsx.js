@@ -18,23 +18,34 @@ __webpack_require__.r(__webpack_exports__);
 
 var CardRoleWeb = function CardRoleWeb(_ref) {
   var role = _ref.role;
+  var handleButtonClick = function handleButtonClick() {
+    // Acción al hacer clic en el botón (puedes personalizarlo)
+    console.log("Acceso al sistema: ".concat(role.sistema_name));
+    // O redireccionar, por ejemplo:
+    // window.location.href = `/sistema/${role.sistema_id}`;
+  };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-    className: "bg-teal-50 p-4 rounded-md shadow-sm hover:shadow-md transition-shadow",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("p", {
-      className: "font-medium text-gray-700",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
-        className: "font-bold",
-        children: "Rol:"
-      }), " ", role.role_nombre]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("p", {
-      className: "font-medium text-gray-700",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
-        className: "font-bold",
-        children: "ID Sistema:"
-      }), " ", role.sistemas_id]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("p", {
-      className: "text-gray-600 text-sm mt-2",
-      children: role.descripcion
+    className: "bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow p-6",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("h3", {
+      className: "text-lg font-semibold text-teal-800 mb-2",
+      children: ["Sistema: ", role.sistema_name]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+      className: "text-sm text-gray-600 mb-4",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("p", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+          className: "font-bold",
+          children: "ID Sistema:"
+        }), " ", role.sistema_id]
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("p", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+          className: "font-bold",
+          children: "Permisos:"
+        }), " ", role.role_name]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("button", {
+      className: "w-full bg-teal-600 text-white py-2 px-4 rounded-lg hover:bg-teal-700 transition-colors",
+      onClick: handleButtonClick,
+      children: "Dirigirse a Sistema"
     })]
   });
 };

@@ -16,11 +16,36 @@ class UsuarioService
 {
     public function buscarUsuarioResumen($nameuser)
     {
-        $userNew = User::with('rol', 'login.roleUserSistema.role')->where('NombreUsuario', $nameuser)->orWhere('Rut', $nameuser)->first();
+        $userNew = User::with('login.roleUserSistema.role', 'login.roleUserSistema.sistema')
+        ->where('NombreUsuario', $nameuser)
+        ->orWhere('Rut', $nameuser)
+        ->first();
+
+        if ($userNew) {
+            $userNew->makeHidden(['login', 'created_at', 'updated_at', 'deleted_at','RolID','email_verified_at','remember_token']);
+            // Extraer los nombres de los sistemas
+            $sistemasWeb = $userNew->login->roleUserSistema->map(function ($roleUserSistema) {
+                return [
+                    'role_id' => $roleUserSistema->role_id,
+                    'role_name' => $roleUserSistema->role->nombre ?? 'Sin rol', // Manejar roles sin nombre
+                    'sistema_id' => $roleUserSistema->sistemas_id,
+                    'sistema_name' => $roleUserSistema->sistema->nombre ?? 'Sin sistema', // Manejar sistemas sin nombre
+                ];
+            });
+        
+        } else {
+            return response()->json(['error' => 'Usuario no encontrado'], 404);
+        }
 
         $userLogin = UsuarioLogin::with('seguUsuario.servicioProfesional.tipoProfesional')
             ->where('name', $nameuser)
             ->first();
+        if($userLogin){
+            $userLogin->makeHidden(['modify_date', 'type_desc']);
+        }else{
+            return response()->json(['error' => 'Usuario no encontrado'], 404);
+        }
+        
 
         $usuarioSistema = DB::connection('sqlsrv2')->select("
             SELECT us.TAB_Login, us.TAB_ID_Sistema, ss.TAB_Text AS sistemaSalud
@@ -29,10 +54,15 @@ class UsuarioService
             WHERE us.TAB_Login = ?
         ", [$nameuser]);
 
+        if(!$usuarioSistema){
+            return response()->json(['error' => 'Usuario no encontrado'], 404);
+        }
+
         return [
             'userNew' => $userNew ? $userNew->toArray() : null,
             'userLogin' => $userLogin ? $userLogin->toArray() : null,
             'usuarioSistema' => $usuarioSistema,
+            'usuarioSistemaWeb' => $sistemasWeb,
         ];
     }
 
@@ -95,8 +125,8 @@ class UsuarioService
                 ALTER LOGIN [$username] WITH PASSWORD = '{$data['new_password']}'
             ");
 
-            // Actualizar contraseña en MySQL
-            DB::connection('mysql')->table('usuarios')
+            // Actualizar contraseña en SQL
+            DB::connection('sqlsrvUsers')->table('usuarios')
                 ->where('NombreUsuario', $username)
                 ->update(['password' => Hash::make($data['new_password'])]);
         });
@@ -124,7 +154,7 @@ class UsuarioService
 
             $user = User::findOrFailByUsername($username);
 
-            // Actualizar datos en el sistema nuevo (MySQL)
+            // Actualizar datos en el sistema nuevo (SQL)
             $user->update([
                 'Nombre' => $datos['Nombre'] ?? $user->Nombre,
                 'ApellidoPaterno' => $datos['ApellidoPaterno'] ?? $user->ApellidoPaterno,
@@ -185,7 +215,7 @@ class UsuarioService
 
     public function resetPassword($token, $newPassword)
     {
-        $passwordReset = DB::connection('mysql')
+        $passwordReset = DB::connection('sqlsrvUsers')
             ->table('password_resets')
             ->where('token', $token)
             ->first();
@@ -207,7 +237,7 @@ class UsuarioService
         ]);
 
         // Eliminar el token de la tabla `password_resets` después de usarlo
-        DB::connection('mysql')
+        DB::connection('sqlsrvUsers')
             ->table('password_resets')
             ->where('token', $token)
             ->delete();

@@ -6,12 +6,12 @@ use Illuminate\Support\Facades\Schema;
 
 class AddCodAleatorioToPasswordResetsTable extends Migration
 {
-    protected $connection = 'mysql';
+    protected $connection = 'sqlsrvUsers';
 
     public function up()
     {
         Schema::table('password_resets', function (Blueprint $table) {
-            $table->string('codAleatorio', 5)->after('token')->nullable();
+            $table->string('codAleatorio', 5)->nullable()->after('token');
         });
     }
 

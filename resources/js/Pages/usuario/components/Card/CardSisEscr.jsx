@@ -2,15 +2,16 @@ import React from "react";
 
 const CardSisEscr = ({ sistema }) => {
     return (
-        <div className="bg-gray-50 p-4 rounded-md shadow-sm hover:shadow-md transition-shadow">
-            <p className="font-medium text-gray-700">
-                <span className="font-bold">Sistema:</span>{" "}
-                {sistema.sistemaSalud}
-            </p>
-            <p className="font-medium text-gray-700">
-                <span className="font-bold">ID Sistema:</span>{" "}
-                {sistema.TAB_ID_Sistema}
-            </p>
+        <div className="bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow p-6">
+            <h3 className="text-lg font-semibold text-teal-800 mb-2">
+                Sistema: {sistema.sistemaSalud}
+            </h3>
+            <div className="text-sm text-gray-600">
+                <p>
+                    <span className="font-bold">ID Sistema:</span>{" "}
+                    {sistema.TAB_ID_Sistema.trim()}
+                </p>
+            </div>
         </div>
     );
 };

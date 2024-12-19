@@ -6,14 +6,15 @@ use Illuminate\Support\Facades\Schema;
 
 class CreatePasswordResetsTable extends Migration
 {
-    protected $connection = 'mysql';
+    protected $connection = 'sqlsrvUsers';
+
     public function up()
     {
         Schema::create('password_resets', function (Blueprint $table) {
             $table->id();
-            $table->string('email')->index(); // Correo del usuario
-            $table->text('token'); // Token JWT
-            $table->timestamp('created_at')->nullable(); // Fecha de creación
+            $table->string('email')->index();
+            $table->text('token'); // NVARCHAR(MAX)
+            $table->timestamp('created_at')->nullable();
         });
     }
 

@@ -57,7 +57,7 @@ class AuthService
      */
     public function verifyCodeAndToken(string $code): string
     {
-        $resetEntry = DB::connection('mysql')
+        $resetEntry = DB::connection('sqlsrvUsers')
         ->table('password_resets')
         ->where('codAleatorio', $code)
         ->first();
@@ -177,7 +177,7 @@ class AuthService
     
         try {
             // Insertar o actualizar el token y el código en la tabla de restablecimiento
-            DB::connection('mysql')
+            DB::connection('sqlsrvUsers')
                 ->table('password_resets')
                 ->updateOrInsert(
                     ['email' => $user->EmailUsuario], // Identificar por correo electrónico
@@ -226,7 +226,7 @@ class AuthService
             ]);
     
             // Eliminar el token de recuperación
-            DB::connection('mysql')->table('password_resets')->where('token', $token)->delete();
+            DB::connection('sqlsrvUsers')->table('password_resets')->where('token', $token)->delete();
             return response()->json($response, 200);
         } catch (\Exception $e) {
             return response()->json([

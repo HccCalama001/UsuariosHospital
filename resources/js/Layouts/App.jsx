@@ -12,14 +12,14 @@ const App = ({ children }) => {
         // Eliminar el token de las cookies
         document.cookie =
             "auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        // Recargar la página
-        window.location.reload();
+        // Redirigir a la página de inicio de sesión
+        window.location.href = "/login";
     };
 
     return (
-        <div className="flex flex-col min-h-screen bg-gray-50 font-poppins">
+        <div className="flex flex-col min-h-screen bg-gray-100 font-poppins">
             {/* Barra de Navegación */}
-            <header className="bg-teal-600 text-white shadow fixed top-0 w-full z-50">
+            <header className="bg-gradient-to-r from-teal-600 to-teal-500 text-white shadow fixed top-0 w-full z-50">
                 <div className="container mx-auto px-6 py-4 flex items-center justify-between">
                     {/* Título del Panel */}
                     <h1 className="text-2xl font-bold flex items-center">

@@ -19,19 +19,18 @@ __webpack_require__.r(__webpack_exports__);
 var CardSisEscr = function CardSisEscr(_ref) {
   var sistema = _ref.sistema;
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-    className: "bg-gray-50 p-4 rounded-md shadow-sm hover:shadow-md transition-shadow",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("p", {
-      className: "font-medium text-gray-700",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
-        className: "font-bold",
-        children: "Sistema:"
-      }), " ", sistema.sistemaSalud]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("p", {
-      className: "font-medium text-gray-700",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
-        className: "font-bold",
-        children: "ID Sistema:"
-      }), " ", sistema.TAB_ID_Sistema]
+    className: "bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow p-6",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("h3", {
+      className: "text-lg font-semibold text-teal-800 mb-2",
+      children: ["Sistema: ", sistema.sistemaSalud]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+      className: "text-sm text-gray-600",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("p", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+          className: "font-bold",
+          children: "ID Sistema:"
+        }), " ", sistema.TAB_ID_Sistema.trim()]
+      })
     })]
   });
 };

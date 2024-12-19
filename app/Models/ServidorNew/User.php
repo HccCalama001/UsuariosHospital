@@ -18,8 +18,8 @@ class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, SoftDeletes;
 
-    // Especificar la conexión a la base de datos (opcional si 'mysql' es la predeterminada)
-    protected $connection = 'mysql';
+    // Especificar la conexión a la base de datos (opcional si 'sql' es la predeterminada)
+    protected $connection = 'sqlsrvUsers';
 
     protected $table = 'usuarios';
     protected $primaryKey = 'id';
@@ -90,7 +90,7 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(UsuarioSistema::class, 'TAB_Login', 'NombreUsuario');
     }
 
-    public function rolesSistema()
+    public function rolesSistemas()
     {
         return $this->hasManyThrough(
             RolUsuarioSistema::class,

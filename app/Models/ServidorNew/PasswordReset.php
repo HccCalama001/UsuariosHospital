@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class PasswordReset extends Model
 {
-    // Especificar la conexión a la base de datos (opcional si 'mysql' es la predeterminada)
-    protected $connection = 'mysql';
+    // Especificar la conexión a la base de datos (opcional si 'sql' es la predeterminada)
+    protected $connection = 'sqlsrvUsers';
     protected $table = 'password_resets';
     public $timestamps = false; // La tabla no tiene `created_at` ni `updated_at`
 

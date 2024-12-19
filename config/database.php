@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql'),
+    'default' => env('DB_CONNECTION', 'sqlsrv'),
 
     /*
     |--------------------------------------------------------------------------
@@ -43,24 +43,22 @@ return [
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ],
 
-        'mysql' => [
-            'driver' => 'mysql',
-            'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOSTM', '127.0.0.1'),
-            'port' => env('DB_PORTM', '3306'), // Elimina la coma adicional
-            'database' => env('DB_DATABASEM', 'forge'),
-            'username' => env('DB_USERNAMEM', 'forge'),
-            'password' => env('DB_PASSWORDM', ''),
-            'unix_socket' => env('DB_SOCKET', ''),
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
+
+        'sqlsrvUsers' => [
+            'driver' => 'sqlsrv',
+            'url' => env('DATABASE_URL_Users'),
+            'host' => env('DB_HOST_Users', 'localhost'),
+            'port' => env('DB_PORT_Users', ''),
+            'database' => env('DB_DATABASE_Users', 'forge'),
+            'username' => env('DB_USERNAME_Users', 'forge'),
+            'password' => env('DB_PASSWORD_Users', ''),
+            'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
-            'strict' => true,
-            'engine' => null,
-            'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+            'strict' => false, // Importante: cambiar a false para SQL Server
+            'options' => [
+                PDO::ATTR_STRINGIFY_FETCHES => true,
+            ],
         ],
 
         'pgsql' => [
