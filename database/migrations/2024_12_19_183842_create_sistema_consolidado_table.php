@@ -6,24 +6,27 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateSistemaConsolidadoTable extends Migration
 {
+    protected $connection = 'sqlsrvUsers';
+
     public function up()
     {
-        Schema::connection('sqlsrvUsers')->create('sistema_consolidado', function (Blueprint $table) {
-            $table->id();
-            $table->string('codigo');
-            $table->string('nombre');
-            $table->text('descripcion')->nullable();
-            $table->string('valida_rut')->nullable();
-            $table->integer('usuario_bd')->nullable();
-            $table->boolean('vigencia');
-            $table->string('tipo'); // Puede ser 'escritorio' o 'web'
+        Schema::create('sistema_consolidado', function (Blueprint $table) {
+            $table->id('SistemaID');
+            $table->string('Codigo', 50);
+            $table->string('Nombre', 255);
+            $table->text('Descripcion')->nullable(); // Agregada columna Descripcion
+            $table->boolean('ValidaRUT')->default(false)->nullable();
+            $table->integer('UsuarioBD')->nullable();
+            $table->boolean('Vigencia')->default(true);
+            $table->unsignedBigInteger('GrupoID')->nullable();
+            $table->foreign('GrupoID')->references('GrupoID')->on('grupos_sistemas');
             $table->timestamps();
-            $table->softDeletes(); // Agrega la columna deleted_at para SoftDeletes
+            $table->softDeletes();
         });
     }
 
     public function down()
     {
-        Schema::connection('sqlsrvUsers')->dropIfExists('sistema_consolidado');
+        Schema::dropIfExists('sistema_consolidado');
     }
 }
