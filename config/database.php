@@ -78,7 +78,7 @@ return [
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',
-            'date_format' => 'd/m/Y H:i:s', 
+            'date_format' => 'd/m/Y H:i:s',
             'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST', 'localhost'),
             'port' => env('DB_PORT', '1433'),

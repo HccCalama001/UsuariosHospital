@@ -2,8 +2,7 @@
 
 namespace App\Models\ServidorNew;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\{Database\Eloquent\Factories\HasFactory, Database\Eloquent\Model};
 
 class SistemaConsolidado extends Model
 {
@@ -24,7 +23,7 @@ class SistemaConsolidado extends Model
          'created_at',
          'updated_at',
      ];
- 
+
      // Indica si los timestamps son manejados automáticamente
      public $timestamps = true;
 }

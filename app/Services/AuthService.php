@@ -34,7 +34,7 @@ class AuthService
         $connection = @sqlsrv_connect(env('DB_HOST'), [
             'UID' => env('DB_USERNAME'),
             'PWD' => env('DB_PASSWORD'),
-            'Database' => 'master',
+            'Database' => 'master'
         ]);
 
         if (!$connection) {
@@ -157,24 +157,24 @@ class AuthService
         $user = User::where('EmailUsuario', $emailOrUsername)
             ->orWhere('NombreUsuario', $emailOrUsername)
             ->first();
-    
+
         if (!$user) {
             throw new \Exception('Usuario no encontrado.');
         }
-    
+
         // Crear el payload del token
         $payload = [
             'sub' => $user->id, // ID del usuario
             'iat' => now()->timestamp, // Tiempo actual
             'exp' => now()->addMinutes(30)->timestamp, // Expira en 30 minutos
         ];
-    
+
         // Generar el token JWT
         $token = JWTAuth::fromUser($user, $payload);
-    
+
         // Generar un código aleatorio único
         $codAleatorio = strtoupper(Str::random(5));
-    
+
         try {
             // Insertar o actualizar el token y el código en la tabla de restablecimiento
             DB::connection('sqlsrvUsers')
@@ -190,7 +190,7 @@ class AuthService
         } catch (\Exception $e) {
             throw new \Exception('Error al guardar el token en la base de datos: ' . $e->getMessage());
         }
-    
+
         // Retornar el código y el correo
         return [
             'codAleatorio' => $codAleatorio,
@@ -203,28 +203,28 @@ class AuthService
         try {
             // Buscar el token de restablecimiento
             $passwordReset = PasswordReset::where('token', $token)->first();
-    
+
             if (!$passwordReset) {
-    
+
                 return response()->json([
                     'message' => 'El token de recuperación no es válido o ha expirado.',
                 ], 422);
             }
-    
+
             // Obtener el usuario asociado
             $user = $passwordReset->user;
             if (!$user) {
-    
+
                 return response()->json([
                     'message' => 'El usuario asociado al token no existe.',
                 ], 422);
             }
-    
+
             // Cambiar la contraseña del usuario
             $response = $this->usuarioService->cambiarContrasena($user->NombreUsuario, [
                 'new_password' => $newPassword,
             ]);
-    
+
             // Eliminar el token de recuperación
             DB::connection('sqlsrvUsers')->table('password_resets')->where('token', $token)->delete();
             return response()->json($response, 200);
