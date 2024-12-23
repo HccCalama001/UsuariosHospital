@@ -13,7 +13,7 @@ const App = ({ children }) => {
         document.cookie =
             "auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         // Redirigir a la página de inicio de sesión
-        window.location.href = "/login";
+        window.location.href = "auth/login";
     };
 
     return (
