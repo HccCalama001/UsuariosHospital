@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Log;
 
-class SQLPasswordRequest extends FormRequest
+class AuthRequest extends FormRequest
 {
     public function authorize()
     {
@@ -29,6 +29,9 @@ class SQLPasswordRequest extends FormRequest
           
             return $this->forgotPasswordRules();
         }
+        if ($this->routeIs('verify-code')) {
+            return $this->verifyCodeRules();
+        }
 
         return [];
     }
@@ -44,6 +47,9 @@ class SQLPasswordRequest extends FormRequest
             'new_password_confirmation.same' => 'La confirmación de la contraseña no coincide.',
             'identifier.required' => 'El identificador (correo o usuario) es obligatorio.',
             'identifier.string' => 'El identificador debe ser un texto válido.',
+            'code.required' => 'El código de verificación es obligatorio.',
+            'code.string' => 'El código de verificación debe ser un texto válido.',
+            'code.max' => 'El código de verificación no puede exceder los 10 caracteres.',
         ];
     }
 
@@ -86,6 +92,15 @@ class SQLPasswordRequest extends FormRequest
             'identifier' => 'required|string',
         ];
         Log::info('Reglas de validación para recuperación de contraseña:', $rules);
+
+        return $rules;
+    }
+    private function verifyCodeRules()
+    {
+        $rules = [
+            'code' => 'required|string|max:10',
+        ];
+      
 
         return $rules;
     }

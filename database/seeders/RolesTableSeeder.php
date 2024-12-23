@@ -3,20 +3,25 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Rol;
+use App\Models\ServidorNew\Rol;
 
 class RolesTableSeeder extends Seeder
 {
     public function run()
     {
-        $roles = [
-            ['nombre' => 'Administrador', 'descripcion' => 'Rol de administrador'],
-            ['nombre' => 'Usuario', 'descripcion' => 'Rol de usuario estándar'],
-            // Añade más roles según necesites
-        ];
+        Rol::create([
+            'NombreRol' => 'Admin',
+            'Descripcion' => 'Administrador del sistema',
+        ]);
 
-        foreach ($roles as $rol) {
-            Rol::create($rol);
-        }
+        Rol::create([
+            'NombreRol' => 'Informatico',
+            'Descripcion' => 'Personal de informática',
+        ]);
+
+        Rol::create([
+            'NombreRol' => 'Personal Hospital',
+            'Descripcion' => 'Personal del hospital',
+        ]);
     }
 }

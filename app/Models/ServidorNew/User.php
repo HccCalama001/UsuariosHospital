@@ -18,8 +18,8 @@ class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, SoftDeletes;
 
-    // Especificar la conexión a la base de datos (opcional si 'mysql' es la predeterminada)
-    protected $connection = 'mysql';
+    // Especificar la conexión a la base de datos (opcional si 'sql' es la predeterminada)
+    protected $connection = 'sqlsrvUsers';
 
     protected $table = 'usuarios';
     protected $primaryKey = 'id';
@@ -35,14 +35,22 @@ class User extends Authenticatable implements JWTSubject
         'Nombre',
         'ApellidoPaterno',
         'ApellidoMaterno',
+        'is_active', // Campo para el estado activo/inactivo
+        'email_verified_at', // Fecha de verificación del email
     ];
-
+    
     protected $hidden = [
-        'password',
-        'remember_token',
+        'password', // Oculta la contraseña en los resultados JSON
+        'remember_token', // Oculta el token de sesión
+        'deleted_at', // Oculta la fecha de eliminación lógica en los resultados JSON
     ];
 
     protected $dates = ['deleted_at'];
+
+    public function passwordReset()
+    {
+        return $this->hasOne(PasswordReset::class, 'email', 'EmailUsuario'); // Relación por `email`
+    }
 
     public function setPasswordAttribute($value)
     {
@@ -85,7 +93,7 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(UsuarioSistema::class, 'TAB_Login', 'NombreUsuario');
     }
 
-    public function rolesSistema()
+    public function rolesSistemas()
     {
         return $this->hasManyThrough(
             RolUsuarioSistema::class,

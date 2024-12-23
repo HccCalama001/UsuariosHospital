@@ -2,25 +2,59 @@
 namespace App\Services;
 
 use App\Models\ServidorNew\User;
-use App\Models\ServidorOld\UsuarioLogin;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Hash;
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
+use App\Models\ServidorOld\UsuarioLogin;
+use App\Models\ServidorOld\UsuarioServicio;
+use App\Models\ServidorNew\PasswordReset;
+use Illuminate\Validation\ValidationException;
+
 
 
 class UsuarioService
 {
     public function buscarUsuarioResumen($nameuser)
     {
-        $userNew = User::with('rol', 'login.roleUserSistema.role')->where('NombreUsuario', $nameuser)->orWhere('Rut', $nameuser)->first();
+        // 1. Buscar userNew
+        $userNew = User::with('login.roleUserSistema.role', 'login.roleUserSistema.sistema')
+            ->where('NombreUsuario', $nameuser)
+            ->orWhere('Rut', $nameuser)
+            ->first();
 
+        // Si no se encuentra userNew, simplemente lo dejamos en null
+        if ($userNew) {
+            $userNew->makeHidden(['login', 'created_at', 'updated_at', 'deleted_at','RolID','email_verified_at','remember_token']);
+        } else {
+            $userNew = null;
+        }
+
+        // 2. Generar sistemasWeb solo si existe userNew->login
+        $sistemasWeb = [];
+        if ($userNew && $userNew->login && $userNew->login->roleUserSistema) {
+            $sistemasWeb = $userNew->login->roleUserSistema->map(function ($roleUserSistema) {
+                return [
+                    'role_id' => $roleUserSistema->role_id,
+                    'role_name' => $roleUserSistema->role->nombre ?? 'Sin rol',
+                    'sistema_id' => $roleUserSistema->sistemas_id,
+                    'sistema_name' => $roleUserSistema->sistema->nombre ?? 'Sin sistema',
+                ];
+            })->toArray();
+        }
+
+        // 3. Buscar userLogin
         $userLogin = UsuarioLogin::with('seguUsuario.servicioProfesional.tipoProfesional')
             ->where('name', $nameuser)
             ->first();
 
+        // Si no se encuentra userLogin, lo dejamos en null
+        if ($userLogin) {
+            $userLogin->makeHidden(['modify_date', 'type_desc']);
+        } else {
+            $userLogin = null;
+        }
+
+        // 4. Buscar usuarioSistema
         $usuarioSistema = DB::connection('sqlsrv2')->select("
             SELECT us.TAB_Login, us.TAB_ID_Sistema, ss.TAB_Text AS sistemaSalud
             FROM TAB_UsuarioSistema us
@@ -28,12 +62,23 @@ class UsuarioService
             WHERE us.TAB_Login = ?
         ", [$nameuser]);
 
+        // Si no se encuentra usuarioSistema, queda como un array vacío
+        if (!$usuarioSistema) {
+            $usuarioSistema = [];
+        }
+
         return [
             'userNew' => $userNew ? $userNew->toArray() : null,
             'userLogin' => $userLogin ? $userLogin->toArray() : null,
             'usuarioSistema' => $usuarioSistema,
+            'usuarioSistemaWeb' => $sistemasWeb,
         ];
     }
+
+
+        
+    
+
 
     public function formatUserData($user)
     {
@@ -74,34 +119,32 @@ class UsuarioService
 
     public function cambiarContrasena($username, $data)
     {
-        Log::info("Iniciando cambio de contraseña para el usuario: {$username}");
-    
+
         DB::transaction(function () use ($username, $data) {
             // Verificar existencia del usuario en SQL Server
             $sqlServerUser = DB::connection('sqlsrv')->selectOne("
                 SELECT name AS username
                 FROM sys.sql_logins
                 WHERE name = ?", [$username]);
-    
+
             if (!$sqlServerUser) {
                 throw ValidationException::withMessages([
                     'current_password' => ['Usuario no encontrado en el sistema de SQL Server.'],
                 ]);
+
             }
-    
+
             // Actualizar contraseña en SQL Server
             DB::connection('sqlsrv')->statement("
                 ALTER LOGIN [$username] WITH PASSWORD = '{$data['new_password']}'
             ");
-    
-            // Actualizar contraseña en MySQL
-            DB::connection('mysql')->table('usuarios')
+
+            // Actualizar contraseña en SQL
+            DB::connection('sqlsrvUsers')->table('usuarios')
                 ->where('NombreUsuario', $username)
                 ->update(['password' => Hash::make($data['new_password'])]);
         });
-    
-        Log::info("Cambio de contraseña completado exitosamente para el usuario: {$username}");
-    
+
         return [
             'message' => 'La contraseña ha sido cambiada exitosamente en ambos sistemas.',
         ];
@@ -124,8 +167,8 @@ class UsuarioService
             // Obtener el usuario o lanzar excepción si no existe
 
             $user = User::findOrFailByUsername($username);
-       
-            // Actualizar datos en el sistema nuevo (MySQL)
+
+            // Actualizar datos en el sistema nuevo (SQL)
             $user->update([
                 'Nombre' => $datos['Nombre'] ?? $user->Nombre,
                 'ApellidoPaterno' => $datos['ApellidoPaterno'] ?? $user->ApellidoPaterno,
@@ -169,6 +212,52 @@ class UsuarioService
             return true;
         });
     }
-    
 
+    public function obtenerNombreCompleto($username)
+    {
+        // Busca el usuario en la base de datos
+        $user = UsuarioServicio::where('Segu_Usr_Cuenta', $username)->first();
+
+        // Si el usuario no existe, lanza una excepción
+        if (!$user) {
+            throw new \Exception('Usuario no encontrado');
+        }
+
+        // Devuelve el nombre completo
+        return $user->nombre_usuario; // Utiliza el accesor definido en el modelo
+    }
+
+    public function resetPassword($token, $newPassword)
+    {
+        $passwordReset = DB::connection('sqlsrvUsers')
+            ->table('password_resets')
+            ->where('token', $token)
+            ->first();
+
+        if (!$passwordReset) {
+            throw new \Exception('Token no válido o expirado.');
+        }
+
+        // Buscar al usuario asociado al correo
+        $user = User::where('EmailUsuario', $passwordReset->email)->first();
+
+        if (!$user) {
+            throw new \Exception('Usuario no encontrado.');
+        }
+
+        // Actualizar la contraseña del usuario
+        $user->update([
+            'password' => bcrypt($newPassword),
+        ]);
+
+        // Eliminar el token de la tabla `password_resets` después de usarlo
+        DB::connection('sqlsrvUsers')
+            ->table('password_resets')
+            ->where('token', $token)
+            ->delete();
+
+        return true;
+    }
+
+    
 }

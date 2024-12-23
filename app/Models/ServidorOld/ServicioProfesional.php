@@ -48,4 +48,16 @@ class ServicioProfesional extends Model
     {
         return $this->belongsTo(TipoProfesional::class, 'SER_PRO_Tipo', 'TAB_Codigo');
     }
+
+      /**
+     * Relación con SistemaConsolidado.
+     * Un ServicioProfesional puede estar relacionado con un SistemaConsolidado.
+     */
+    public function sistemaConsolidado()
+    {
+        return $this->hasMany(SistemaConsolidado::class, 'codigo', 'SER_PRO_Rut')
+            ->where('tipo', 'escritorio'); // Filtrar por tipo si es necesario
+    }
+
+    
 }
