@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import CardRoleWeb from "../Card/CardRoleWeb";
 
-const PaginatedRoles = ({ usuarioSistemaWeb }) => {
+const PaginatedRoles = ({ gruposWeb }) => {
     // Estado para la página actual
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -13,13 +13,10 @@ const PaginatedRoles = ({ usuarioSistemaWeb }) => {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
     // Obtener los elementos de la página actual
-    const currentItems = usuarioSistemaWeb.slice(
-        indexOfFirstItem,
-        indexOfLastItem
-    );
+    const currentItems = gruposWeb.slice(indexOfFirstItem, indexOfLastItem);
 
     // Calcular el número total de páginas
-    const totalPages = Math.ceil(usuarioSistemaWeb.length / itemsPerPage);
+    const totalPages = Math.ceil(gruposWeb.length / itemsPerPage);
 
     // Función para cambiar de página
     const handlePageChange = (pageNumber) => {
@@ -28,11 +25,11 @@ const PaginatedRoles = ({ usuarioSistemaWeb }) => {
 
     return (
         <section>
-            {usuarioSistemaWeb.length ? (
+            {gruposWeb.length ? (
                 <>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {currentItems.map((role, index) => (
-                            <CardRoleWeb key={index} role={role} />
+                        {currentItems.map((gruposWeb, index) => (
+                            <CardRoleWeb key={index} gruposWeb={gruposWeb} />
                         ))}
                     </div>
                     <div className="flex justify-center items-center mt-6 space-x-2">

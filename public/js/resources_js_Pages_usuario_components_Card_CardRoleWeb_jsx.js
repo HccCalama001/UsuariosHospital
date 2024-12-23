@@ -17,31 +17,29 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var CardRoleWeb = function CardRoleWeb(_ref) {
-  var role = _ref.role;
+  var gruposWeb = _ref.gruposWeb;
   var handleButtonClick = function handleButtonClick() {
-    // Acción al hacer clic en el botón (puedes personalizarlo)
-    console.log("Acceso al sistema: ".concat(role.sistema_name));
-    // O redireccionar, por ejemplo:
-    // window.location.href = `/sistema/${role.sistema_id}`;
+    // Si la URL no es "Desconocido" o "No Aplica", redirigimos
+    if (gruposWeb.Url && gruposWeb.Url !== "No Aplica" && gruposWeb.Url !== "Desconocido") {
+      // Abre la URL en otra pestaña/ventana
+      window.open(gruposWeb.Url, "_blank");
+    } else {
+      console.log("La URL no es válida o no se puede aplicar.");
+    }
   };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
     className: "bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow p-6",
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("h3", {
       className: "text-lg font-semibold text-teal-800 mb-2",
-      children: ["Sistema: ", role.sistema_name]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+      children: ["Sistema: ", gruposWeb.NombreGrupo]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
       className: "text-sm text-gray-600 mb-4",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("p", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("p", {
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
           className: "font-bold",
           children: "ID Sistema:"
-        }), " ", role.sistema_id]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("p", {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
-          className: "font-bold",
-          children: "Permisos:"
-        }), " ", role.role_name]
-      })]
+        }), " ", gruposWeb.NombreGrupo]
+      })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("button", {
       className: "w-full bg-teal-600 text-white py-2 px-4 rounded-lg hover:bg-teal-700 transition-colors",
       onClick: handleButtonClick,

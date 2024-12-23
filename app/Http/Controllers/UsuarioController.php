@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Services\TokenService;
+use App\Services\SistemaService;
 use App\Services\UsuarioService;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\UsuarioRequest;
@@ -16,11 +17,13 @@ class UsuarioController extends Controller
 {
     protected $usuarioService;
     protected $tokenService;
+    protected $sistemaService;
 
-    public function __construct(UsuarioService $usuarioService, TokenService $tokenService)
+    public function __construct(UsuarioService $usuarioService, TokenService $tokenService, SistemaService $sistemaService)
     {
         $this->usuarioService = $usuarioService;
         $this->tokenService = $tokenService;
+        $this->sistemaService = $sistemaService;
     }
 
     /**
@@ -42,11 +45,19 @@ class UsuarioController extends Controller
             }
 
             $resumen = $this->usuarioService->buscarUsuarioResumen($user->NombreUsuario);
+        
+
+               // 2) Aquí mandas a tu servicio (o controlador) de sistemas la parte del JSON con los sistemas
+            //    para que te devuelva un array (o colección) con la información de los grupos
+            $gruposDelUsuario = $this->sistemaService->obtenerUsuarioGrupos($resumen);
+
 
             return Inertia::render('usuario/Index', [
                 'user' => $this->usuarioService->formatUserData($user),
                 'resumen' => $resumen,
-                'csrfToken' => csrf_token()
+                'csrfToken' => csrf_token(),
+                'gruposDelUsuario' => $gruposDelUsuario,
+                
             ]);
         } catch (\Exception $e) {
             return redirect()->route('sqlpassword.login')->withErrors(['message' => $e->getMessage()]);

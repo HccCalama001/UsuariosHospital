@@ -1,21 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { usePage } from "@inertiajs/inertia-react";
 import App from "../../Layouts/App";
 import { FaUserEdit, FaKey } from "react-icons/fa";
 import ChangePasswordModal from "./components/modals/ChangePasswordModal";
 import EditUserModal from "./components/modals/EditUserModal";
-import CardRoleWeb from "./components/Card/CardRoleWeb";
-import CardSisEscr from "./components/Card/CardSisEscr";
 import UserInfoGrid from "./components/Grid/UserInfoGrid";
 import PaginatedRoles from "./components/Paginated/PaginatedRoles";
 import PaginatedEscritorio from "./components/Paginated/PaginatedEscritorio";
 
 const UsuarioIndex = () => {
-    const { resumen, csrfToken } = usePage().props;
+    const { resumen, csrfToken, gruposDelUsuario } = usePage().props;
     const { userNew, userLogin, usuarioSistema, usuarioSistemaWeb } =
         resumen || {};
     const [isModalOpen, setModalOpen] = useState(false);
     const [isEditModalOpen, setEditModalOpen] = useState(false);
+
+    const gruposEscritorio = gruposDelUsuario.filter(
+        (g) => g.Tipo === "escritorio"
+    );
+    const gruposWeb = gruposDelUsuario.filter((g) => g.Tipo === "web");
+
+    console.log("gruposEscritorio", gruposEscritorio);
 
     const handleOpenEditModal = () => {
         setEditModalOpen(true);
@@ -89,7 +94,7 @@ const UsuarioIndex = () => {
                         <h2 className="text-2xl font-semibold text-teal-800 mb-4">
                             Sistemas Web
                         </h2>
-                        <PaginatedRoles usuarioSistemaWeb={usuarioSistemaWeb} />
+                        <PaginatedRoles gruposWeb={gruposWeb} />
                     </section>
 
                     {/* Sistemas de Escritorio */}
@@ -97,7 +102,9 @@ const UsuarioIndex = () => {
                         <h2 className="text-2xl font-semibold text-teal-800 mb-4">
                             Sistemas de Escritorio
                         </h2>
-                        <PaginatedEscritorio usuarioSistema={usuarioSistema} />
+                        <PaginatedEscritorio
+                            gruposEscritorio={gruposEscritorio}
+                        />
                     </section>
                 </div>
             </div>

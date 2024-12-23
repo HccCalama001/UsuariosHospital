@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import CardSisEscr from "../Card/CardSisEscr";
 
-const PaginatedEscritorio = ({ usuarioSistema }) => {
+const PaginatedEscritorio = ({ gruposEscritorio }) => {
     // Estado para la paginación
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 6;
@@ -9,13 +9,13 @@ const PaginatedEscritorio = ({ usuarioSistema }) => {
     // Calcular los índices para los elementos de la página actual
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = usuarioSistema.slice(
+    const currentItems = gruposEscritorio.slice(
         indexOfFirstItem,
         indexOfLastItem
     );
 
     // Calcular el número total de páginas
-    const totalPages = Math.ceil(usuarioSistema.length / itemsPerPage);
+    const totalPages = Math.ceil(gruposEscritorio.length / itemsPerPage);
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -23,11 +23,11 @@ const PaginatedEscritorio = ({ usuarioSistema }) => {
 
     return (
         <section>
-            {usuarioSistema?.length ? (
+            {gruposEscritorio?.length ? (
                 <>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {currentItems.map((sistema, index) => (
-                            <CardSisEscr key={index} sistema={sistema} />
+                        {currentItems.map((escritorio, index) => (
+                            <CardSisEscr key={index} escritorio={escritorio} />
                         ))}
                     </div>
                     <div className="flex justify-center items-center mt-6 space-x-2">

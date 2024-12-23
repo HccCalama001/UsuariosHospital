@@ -123,15 +123,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @inertiajs/inertia-react */ "./node_modules/@inertiajs/inertia-react/dist/index.js");
 /* harmony import */ var _Layouts_App__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Layouts/App */ "./resources/js/Layouts/App.jsx");
-/* harmony import */ var react_icons_fa__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! react-icons/fa */ "./node_modules/react-icons/fa/index.mjs");
+/* harmony import */ var react_icons_fa__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react-icons/fa */ "./node_modules/react-icons/fa/index.mjs");
 /* harmony import */ var _components_modals_ChangePasswordModal__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/modals/ChangePasswordModal */ "./resources/js/Pages/usuario/components/modals/ChangePasswordModal.jsx");
 /* harmony import */ var _components_modals_EditUserModal__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/modals/EditUserModal */ "./resources/js/Pages/usuario/components/modals/EditUserModal.jsx");
-/* harmony import */ var _components_Card_CardRoleWeb__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/Card/CardRoleWeb */ "./resources/js/Pages/usuario/components/Card/CardRoleWeb.jsx");
-/* harmony import */ var _components_Card_CardSisEscr__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/Card/CardSisEscr */ "./resources/js/Pages/usuario/components/Card/CardSisEscr.jsx");
-/* harmony import */ var _components_Grid_UserInfoGrid__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/Grid/UserInfoGrid */ "./resources/js/Pages/usuario/components/Grid/UserInfoGrid.jsx");
-/* harmony import */ var _components_Paginated_PaginatedRoles__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./components/Paginated/PaginatedRoles */ "./resources/js/Pages/usuario/components/Paginated/PaginatedRoles.jsx");
-/* harmony import */ var _components_Paginated_PaginatedEscritorio__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./components/Paginated/PaginatedEscritorio */ "./resources/js/Pages/usuario/components/Paginated/PaginatedEscritorio.jsx");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _components_Grid_UserInfoGrid__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/Grid/UserInfoGrid */ "./resources/js/Pages/usuario/components/Grid/UserInfoGrid.jsx");
+/* harmony import */ var _components_Paginated_PaginatedRoles__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/Paginated/PaginatedRoles */ "./resources/js/Pages/usuario/components/Paginated/PaginatedRoles.jsx");
+/* harmony import */ var _components_Paginated_PaginatedEscritorio__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/Paginated/PaginatedEscritorio */ "./resources/js/Pages/usuario/components/Paginated/PaginatedEscritorio.jsx");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
@@ -148,12 +146,11 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 
-
-
 var UsuarioIndex = function UsuarioIndex() {
   var _usePage$props = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props,
     resumen = _usePage$props.resumen,
-    csrfToken = _usePage$props.csrfToken;
+    csrfToken = _usePage$props.csrfToken,
+    gruposDelUsuario = _usePage$props.gruposDelUsuario;
   var _ref = resumen || {},
     userNew = _ref.userNew,
     userLogin = _ref.userLogin,
@@ -167,6 +164,13 @@ var UsuarioIndex = function UsuarioIndex() {
     _useState4 = _slicedToArray(_useState3, 2),
     isEditModalOpen = _useState4[0],
     setEditModalOpen = _useState4[1];
+  var gruposEscritorio = gruposDelUsuario.filter(function (g) {
+    return g.Tipo === "escritorio";
+  });
+  var gruposWeb = gruposDelUsuario.filter(function (g) {
+    return g.Tipo === "web";
+  });
+  console.log("gruposEscritorio", gruposEscritorio);
   var handleOpenEditModal = function handleOpenEditModal() {
     setEditModalOpen(true);
   };
@@ -179,74 +183,74 @@ var UsuarioIndex = function UsuarioIndex() {
   var handleCloseModal = function handleCloseModal() {
     setModalOpen(false);
   };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)(_Layouts_App__WEBPACK_IMPORTED_MODULE_2__["default"], {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_Layouts_App__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
       className: "max-w-7xl mx-auto mt-10 bg-gray-50 shadow-lg rounded-lg overflow-hidden",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
         className: "bg-gradient-to-r from-teal-600 to-teal-400 text-white text-center py-10 shadow-md",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
           className: "max-w-4xl mx-auto",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("h1", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("h1", {
             className: "text-4xl font-extrabold tracking-tight leading-tight",
             children: "Panel de Usuario"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("p", {
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("p", {
             className: "text-lg font-light mt-2 opacity-90",
             children: "Gestiona tu informaci\xF3n y accesos en el sistema"
           })]
         })
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
         className: "p-8 space-y-12",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("section", {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("section", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
             className: "flex justify-between items-center mb-6",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("h2", {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("h2", {
               className: "text-2xl font-semibold text-teal-800",
               children: "Informaci\xF3n General"
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("div", {
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
               className: "flex space-x-4",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("button", {
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("button", {
                 onClick: handleOpenEditModal,
                 className: "p-2 bg-teal-500 hover:bg-teal-600 text-white font-medium rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-teal-400",
                 title: "Editar Informaci\xF3n del Usuario",
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_11__.FaUserEdit, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_9__.FaUserEdit, {
                   className: "h-6 w-6"
                 })
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("button", {
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("button", {
                 onClick: handleChangePassword,
                 className: "p-2 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400",
                 title: "Cambiar Contrase\xF1a",
-                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_11__.FaKey, {
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_9__.FaKey, {
                   className: "h-6 w-6"
                 })
               })]
             })]
-          }), userNew ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_components_Grid_UserInfoGrid__WEBPACK_IMPORTED_MODULE_7__["default"], {
+          }), userNew ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_Grid_UserInfoGrid__WEBPACK_IMPORTED_MODULE_5__["default"], {
             userNew: userNew
-          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("p", {
+          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("p", {
             className: "text-gray-500 italic",
             children: "No hay informaci\xF3n general disponible."
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("section", {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("h2", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("section", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("h2", {
             className: "text-2xl font-semibold text-teal-800 mb-4",
             children: "Sistemas Web"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_components_Paginated_PaginatedRoles__WEBPACK_IMPORTED_MODULE_8__["default"], {
-            usuarioSistemaWeb: usuarioSistemaWeb
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_Paginated_PaginatedRoles__WEBPACK_IMPORTED_MODULE_6__["default"], {
+            gruposWeb: gruposWeb
           })]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsxs)("section", {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)("h2", {
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("section", {
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("h2", {
             className: "text-2xl font-semibold text-teal-800 mb-4",
             children: "Sistemas de Escritorio"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_components_Paginated_PaginatedEscritorio__WEBPACK_IMPORTED_MODULE_9__["default"], {
-            usuarioSistema: usuarioSistema
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_Paginated_PaginatedEscritorio__WEBPACK_IMPORTED_MODULE_7__["default"], {
+            gruposEscritorio: gruposEscritorio
           })]
         })]
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_components_modals_ChangePasswordModal__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_modals_ChangePasswordModal__WEBPACK_IMPORTED_MODULE_3__["default"], {
       isOpen: isModalOpen,
       onClose: handleCloseModal,
       csrfToken: csrfToken
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_10__.jsx)(_components_modals_EditUserModal__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_modals_EditUserModal__WEBPACK_IMPORTED_MODULE_4__["default"], {
       isOpen: isEditModalOpen,
       onClose: handleCloseEditModal,
       csrfToken: csrfToken,
@@ -275,31 +279,29 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var CardRoleWeb = function CardRoleWeb(_ref) {
-  var role = _ref.role;
+  var gruposWeb = _ref.gruposWeb;
   var handleButtonClick = function handleButtonClick() {
-    // Acción al hacer clic en el botón (puedes personalizarlo)
-    console.log("Acceso al sistema: ".concat(role.sistema_name));
-    // O redireccionar, por ejemplo:
-    // window.location.href = `/sistema/${role.sistema_id}`;
+    // Si la URL no es "Desconocido" o "No Aplica", redirigimos
+    if (gruposWeb.Url && gruposWeb.Url !== "No Aplica" && gruposWeb.Url !== "Desconocido") {
+      // Abre la URL en otra pestaña/ventana
+      window.open(gruposWeb.Url, "_blank");
+    } else {
+      console.log("La URL no es válida o no se puede aplicar.");
+    }
   };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
     className: "bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow p-6",
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("h3", {
       className: "text-lg font-semibold text-teal-800 mb-2",
-      children: ["Sistema: ", role.sistema_name]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+      children: ["Sistema: ", gruposWeb.NombreGrupo]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
       className: "text-sm text-gray-600 mb-4",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("p", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("p", {
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
           className: "font-bold",
           children: "ID Sistema:"
-        }), " ", role.sistema_id]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("p", {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
-          className: "font-bold",
-          children: "Permisos:"
-        }), " ", role.role_name]
-      })]
+        }), " ", gruposWeb.NombreGrupo]
+      })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("button", {
       className: "w-full bg-teal-600 text-white py-2 px-4 rounded-lg hover:bg-teal-700 transition-colors",
       onClick: handleButtonClick,
@@ -327,19 +329,19 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var CardSisEscr = function CardSisEscr(_ref) {
-  var sistema = _ref.sistema;
+  var escritorio = _ref.escritorio;
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
     className: "bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow p-6",
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("h3", {
       className: "text-lg font-semibold text-teal-800 mb-2",
-      children: ["Sistema: ", sistema.sistemaSalud]
+      children: ["Sistema: ", escritorio.NombreGrupo]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
       className: "text-sm text-gray-600",
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("p", {
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
           className: "font-bold",
           children: "ID Sistema:"
-        }), " ", sistema.TAB_ID_Sistema.trim()]
+        }), " ", escritorio.GrupoID.trim()]
       })
     })]
   });
@@ -460,7 +462,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 var PaginatedEscritorio = function PaginatedEscritorio(_ref) {
-  var usuarioSistema = _ref.usuarioSistema;
+  var gruposEscritorio = _ref.gruposEscritorio;
   // Estado para la paginación
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(1),
     _useState2 = _slicedToArray(_useState, 2),
@@ -471,20 +473,20 @@ var PaginatedEscritorio = function PaginatedEscritorio(_ref) {
   // Calcular los índices para los elementos de la página actual
   var indexOfLastItem = currentPage * itemsPerPage;
   var indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  var currentItems = usuarioSistema.slice(indexOfFirstItem, indexOfLastItem);
+  var currentItems = gruposEscritorio.slice(indexOfFirstItem, indexOfLastItem);
 
   // Calcular el número total de páginas
-  var totalPages = Math.ceil(usuarioSistema.length / itemsPerPage);
+  var totalPages = Math.ceil(gruposEscritorio.length / itemsPerPage);
   var handlePageChange = function handlePageChange(pageNumber) {
     setCurrentPage(pageNumber);
   };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("section", {
-    children: usuarioSistema !== null && usuarioSistema !== void 0 && usuarioSistema.length ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
+    children: gruposEscritorio !== null && gruposEscritorio !== void 0 && gruposEscritorio.length ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
         className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6",
-        children: currentItems.map(function (sistema, index) {
+        children: currentItems.map(function (escritorio, index) {
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_Card_CardSisEscr__WEBPACK_IMPORTED_MODULE_1__["default"], {
-            sistema: sistema
+            escritorio: escritorio
           }, index);
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
@@ -535,7 +537,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 var PaginatedRoles = function PaginatedRoles(_ref) {
-  var usuarioSistemaWeb = _ref.usuarioSistemaWeb;
+  var gruposWeb = _ref.gruposWeb;
   // Estado para la página actual
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(1),
     _useState2 = _slicedToArray(_useState, 2),
@@ -550,22 +552,22 @@ var PaginatedRoles = function PaginatedRoles(_ref) {
   var indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
   // Obtener los elementos de la página actual
-  var currentItems = usuarioSistemaWeb.slice(indexOfFirstItem, indexOfLastItem);
+  var currentItems = gruposWeb.slice(indexOfFirstItem, indexOfLastItem);
 
   // Calcular el número total de páginas
-  var totalPages = Math.ceil(usuarioSistemaWeb.length / itemsPerPage);
+  var totalPages = Math.ceil(gruposWeb.length / itemsPerPage);
 
   // Función para cambiar de página
   var handlePageChange = function handlePageChange(pageNumber) {
     setCurrentPage(pageNumber);
   };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("section", {
-    children: usuarioSistemaWeb.length ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
+    children: gruposWeb.length ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
         className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6",
-        children: currentItems.map(function (role, index) {
+        children: currentItems.map(function (gruposWeb, index) {
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_Card_CardRoleWeb__WEBPACK_IMPORTED_MODULE_1__["default"], {
-            role: role
+            gruposWeb: gruposWeb
           }, index);
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
