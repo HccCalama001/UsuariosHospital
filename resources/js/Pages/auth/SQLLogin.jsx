@@ -9,7 +9,6 @@ const SQLLogin = () => {
         username: "",
         current_password: "",
     });
-
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
@@ -44,7 +43,8 @@ const SQLLogin = () => {
                 setErrors(error.errors);
             } else {
                 setErrors({
-                    general: "Error inesperado. Por favor, inténtelo más tarde.",
+                    general:
+                        "Error inesperado. Por favor, inténtelo más tarde.",
                 });
             }
         } finally {
@@ -103,12 +103,17 @@ const SQLLogin = () => {
                             {formData.current_password && (
                                 <button
                                     type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
+                                    onClick={() =>
+                                        setShowPassword(!showPassword)
+                                    }
                                     className="absolute top-0 right-3 h-full flex items-center text-gray-500 focus:outline-none"
                                 >
                                     <i
-                                        className={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"
-                                            }`}
+                                        className={`fas ${
+                                            showPassword
+                                                ? "fa-eye-slash"
+                                                : "fa-eye"
+                                        }`}
                                     ></i>
                                 </button>
                             )}
@@ -123,8 +128,9 @@ const SQLLogin = () => {
                         type="button"
                         onClick={handleLogin}
                         disabled={isSubmitting}
-                        className={`w-full py-3 px-4 bg-teal-600 text-white font-medium rounded-lg shadow-lg hover:bg-teal-700 transition-all duration-200 ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-                            }`}
+                        className={`w-full py-3 px-4 bg-teal-600 text-white font-medium rounded-lg shadow-lg hover:bg-teal-700 transition-all duration-200 ${
+                            isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+                        }`}
                     >
                         {isSubmitting ? (
                             <svg
