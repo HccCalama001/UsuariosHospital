@@ -35,5 +35,4 @@ const CardRoleWeb = ({ gruposWeb }) => {
         </div>
     );
 };
-
 export default CardRoleWeb;
