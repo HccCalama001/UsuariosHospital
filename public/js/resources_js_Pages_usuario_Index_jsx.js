@@ -24,7 +24,7 @@ var App = function App(_ref) {
     // Eliminar el token de las cookies
     document.cookie = "auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     // Redirigir a la página de inicio de sesión
-    window.location.href = "/login";
+    window.location.href = "auth/login";
   };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
     className: "flex flex-col min-h-screen bg-gray-100 font-poppins",
