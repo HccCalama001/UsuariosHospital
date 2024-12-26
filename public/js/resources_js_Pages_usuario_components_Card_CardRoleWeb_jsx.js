@@ -17,24 +17,33 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var CardRoleWeb = function CardRoleWeb(_ref) {
-  var role = _ref.role;
+  var gruposWeb = _ref.gruposWeb;
+  var handleButtonClick = function handleButtonClick() {
+    // Si la URL no es "Desconocido" o "No Aplica", redirigimos
+    if (gruposWeb.Url && gruposWeb.Url !== "No Aplica" && gruposWeb.Url !== "Desconocido") {
+      // Abre la URL en otra pestaña/ventana
+      window.open(gruposWeb.Url, "_blank");
+    } else {
+      console.log("La URL no es válida o no se puede aplicar.");
+    }
+  };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-    className: "bg-teal-50 p-4 rounded-md shadow-sm hover:shadow-md transition-shadow",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("p", {
-      className: "font-medium text-gray-700",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
-        className: "font-bold",
-        children: "Rol:"
-      }), " ", role.role_nombre]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("p", {
-      className: "font-medium text-gray-700",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
-        className: "font-bold",
-        children: "ID Sistema:"
-      }), " ", role.sistemas_id]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("p", {
-      className: "text-gray-600 text-sm mt-2",
-      children: role.descripcion
+    className: "bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow p-6",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("h3", {
+      className: "text-lg font-semibold text-teal-800 mb-2",
+      children: ["Sistema: ", gruposWeb.NombreGrupo]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+      className: "text-sm text-gray-600 mb-4",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("p", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+          className: "font-bold",
+          children: "ID Sistema:"
+        }), " ", gruposWeb.NombreGrupo]
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("button", {
+      className: "w-full bg-teal-600 text-white py-2 px-4 rounded-lg hover:bg-teal-700 transition-colors",
+      onClick: handleButtonClick,
+      children: "Dirigirse a Sistema"
     })]
   });
 };

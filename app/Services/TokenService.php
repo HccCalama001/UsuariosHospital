@@ -79,4 +79,18 @@ class TokenService
     {
         return cookie('auth_token', $token, $minutes, '/', null, false, false, false, 'Lax');
     }
+
+            /**
+     * Guarda el token en una cookie.
+     *
+     * @param string $token El token que se guardará.
+     * @param int $minutes Duración de la cookie en minutos.
+     * @return \Symfony\Component\HttpFoundation\Cookie
+     */
+    public function guardarEnCookieReset(string $token, int $minutes = 30)
+    {
+        return cookie('reset_token', $token, $minutes, '/', null, false, false, false, 'Lax');
+    }
+
+    
 }

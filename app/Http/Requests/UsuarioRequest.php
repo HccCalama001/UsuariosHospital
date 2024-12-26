@@ -76,8 +76,8 @@ class UsuarioRequest extends FormRequest
             'name' => 'required|string|max:255',
             'apellido_paterno' => 'required|string|max:255',
             'apellido_materno' => 'required|string|max:255',
-            'rut' => 'required|string|unique:mysql.usuarios,Rut',
-            'email' => 'required|email|unique:mysql.usuarios,EmailUsuario',
+            'rut' => 'required|string|unique:sqlsrvUsers.usuarios,Rut',
+            'email' => 'required|email|unique:sqlsrvUsers.usuarios,EmailUsuario',
             'phone' => 'nullable|string|max:15',
             'current_password' => 'required|string|min:8',
             'userLogin' => 'required|string|max:255',
@@ -91,8 +91,8 @@ class UsuarioRequest extends FormRequest
             'name' => 'required|string|max:255',
             'apellido_paterno' => 'required|string|max:255',
             'apellido_materno' => 'required|string|max:255',
-            'rut' => "required|string|unique:mysql.usuarios,Rut,{$userLogin},NombreUsuario", // Excluir el registro actual por userLogin
-            'email' => "required|email|unique:mysql.usuarios,EmailUsuario,{$userLogin},NombreUsuario", // Excluir el registro actual por userLogin
+            'rut' => "required|string|unique:sqlsrvUsers.usuarios,Rut,{$userLogin},NombreUsuario", // Excluir el registro actual por userLogin
+            'email' => "required|email|unique:sqlsrvUsers.usuarios,EmailUsuario,{$userLogin},NombreUsuario", // Excluir el registro actual por userLogin
             'phone' => 'nullable|string|max:15',
             'userLogin' => 'required|string|max:255',
         ];

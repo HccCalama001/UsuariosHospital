@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaTimes, FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
+import { FaTimes, FaCheckCircle, FaExclamationCircle, FaEye, FaEyeSlash } from "react-icons/fa";
 import { cambiarContrasena } from "../../../../services/apiService";
 
 const ChangePasswordModal = ({ isOpen, onClose, csrfToken }) => {
@@ -13,6 +13,11 @@ const ChangePasswordModal = ({ isOpen, onClose, csrfToken }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [passwordsMatch, setPasswordsMatch] = useState(true);
     const [status, setStatus] = useState(null);
+    const [showPassword, setShowPassword] = useState({
+        current_password: false,
+        new_password: false,
+        new_password_confirmation: false,
+    });
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -64,6 +69,40 @@ const ChangePasswordModal = ({ isOpen, onClose, csrfToken }) => {
 
     if (!isOpen) return null;
 
+    const renderPasswordInput = (name, placeholder, label) => (
+        <div className="relative">
+            <label className="block text-gray-700 font-medium mb-2">{label}</label>
+            <div className="relative">
+                <input
+                    type={showPassword[name] ? "text" : "password"}
+                    name={name}
+                    value={formData[name]}
+                    onChange={handleInputChange}
+                    className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none ${errors[name] ? "border-red-500" : "border-gray-300"
+                        }`}
+                    placeholder={placeholder}
+                />
+                {formData[name] && (
+                    <button
+                        type="button"
+                        onClick={() =>
+                            setShowPassword((prev) => ({
+                                ...prev,
+                                [name]: !prev[name],
+                            }))
+                        }
+                        className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+                    >
+                        {showPassword[name] ? <FaEyeSlash /> : <FaEye />}
+                    </button>
+                )}
+            </div>
+            {errors[name] && (
+                <p className="text-red-500 text-sm mt-1">{errors[name][0]}</p>
+            )}
+        </div>
+    );
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
             <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-lg p-8">
@@ -101,76 +140,25 @@ const ChangePasswordModal = ({ isOpen, onClose, csrfToken }) => {
                 ) : (
                     <form onSubmit={handleSubmit} className="mt-6 space-y-6">
                         {/* Contraseña Actual */}
-                        <div>
-                            <label className="block text-gray-700 font-medium mb-2">
-                                Contraseña Actual
-                            </label>
-                            <input
-                                type="password"
-                                name="current_password"
-                                value={formData.current_password}
-                                onChange={handleInputChange}
-                                className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none ${
-                                    errors.current_password
-                                        ? "border-red-500"
-                                        : "border-gray-300"
-                                }`}
-                                placeholder="Ingresa tu contraseña actual"
-                            />
-                            {errors.current_password && (
-                                <p className="text-red-500 text-sm mt-1">
-                                    {errors.current_password[0]}
-                                </p>
-                            )}
-                        </div>
+                        {renderPasswordInput(
+                            "current_password",
+                            "Ingresa tu contraseña actual",
+                            "Contraseña Actual"
+                        )}
 
                         {/* Nueva Contraseña */}
-                        <div>
-                            <label className="block text-gray-700 font-medium mb-2">
-                                Nueva Contraseña
-                            </label>
-                            <input
-                                type="password"
-                                name="new_password"
-                                value={formData.new_password}
-                                onChange={handleInputChange}
-                                className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none ${
-                                    !passwordsMatch
-                                        ? "border-red-500"
-                                        : "border-gray-300"
-                                }`}
-                                placeholder="Ingresa tu nueva contraseña"
-                            />
-                            {errors.new_password && (
-                                <p className="text-red-500 text-sm mt-1">
-                                    {errors.new_password[0]}
-                                </p>
-                            )}
-                        </div>
+                        {renderPasswordInput(
+                            "new_password",
+                            "Ingresa tu nueva contraseña",
+                            "Nueva Contraseña"
+                        )}
 
                         {/* Confirmar Contraseña */}
-                        <div>
-                            <label className="block text-gray-700 font-medium mb-2">
-                                Confirmar Contraseña
-                            </label>
-                            <input
-                                type="password"
-                                name="new_password_confirmation"
-                                value={formData.new_password_confirmation}
-                                onChange={handleInputChange}
-                                className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none ${
-                                    !passwordsMatch
-                                        ? "border-red-500"
-                                        : "border-gray-300"
-                                }`}
-                                placeholder="Confirma tu nueva contraseña"
-                            />
-                            {!passwordsMatch && (
-                                <p className="text-red-500 text-sm mt-1">
-                                    Las contraseñas no coinciden.
-                                </p>
-                            )}
-                        </div>
+                        {renderPasswordInput(
+                            "new_password_confirmation",
+                            "Confirma tu nueva contraseña",
+                            "Confirmar Contraseña"
+                        )}
 
                         {/* Botones */}
                         <div className="flex justify-end space-x-3 mt-6">
@@ -184,11 +172,10 @@ const ChangePasswordModal = ({ isOpen, onClose, csrfToken }) => {
                             <button
                                 type="submit"
                                 disabled={isSubmitting || !passwordsMatch}
-                                className={`px-6 py-2 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700 transition ${
-                                    isSubmitting || !passwordsMatch
-                                        ? "opacity-50 cursor-not-allowed"
-                                        : ""
-                                }`}
+                                className={`px-6 py-2 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700 transition ${isSubmitting || !passwordsMatch
+                                    ? "opacity-50 cursor-not-allowed"
+                                    : ""
+                                    }`}
                             >
                                 {isSubmitting ? "Cambiando..." : "Cambiar"}
                             </button>
