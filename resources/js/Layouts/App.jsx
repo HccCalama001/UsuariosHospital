@@ -97,7 +97,6 @@ const App = ({ children }) => {
 
             {/* Espaciador para no tapar el contenido con el Header fijo */}
             <div className="h-16" />
-
             {/**
              * MAIN:
              *  - flex-grow: ocupa el espacio vertical sobrante
