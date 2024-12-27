@@ -17,7 +17,7 @@ class EmailService
      */
     public function enviarCorreoRecuperacion($email, $resetLink,$codVery)
     {
-        Log::info('Enviando correo de recuperación de contraseña a ' . $email);
+        
         Mail::to($email)->send(new PasswordResetMail($resetLink,$codVery));
     }
 }
