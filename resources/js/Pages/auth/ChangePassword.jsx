@@ -11,8 +11,43 @@ const ChangePassword = ({ token, csrfToken }) => {
     });
     const [error, setError] = useState(null);
     const [successMessage, setSuccessMessage] = useState("");
+    const [showChecklist, setShowChecklist] = useState(false);
+    const [validationChecks, setValidationChecks] = useState({
+        length: false,
+        uppercase: false,
+        lowercase: false,
+        number: false,
+        special: false,
+        match: false,
+    });
 
     const resetToken = getCookie("reset_token"); // Recuperar el token de la cookie
+
+    const validatePassword = (password, confirmPassword) => {
+        setValidationChecks({
+            length: password.length >= 5 && password.length <= 8,
+            uppercase: /[A-Z]/.test(password),
+            lowercase: /[a-z]/.test(password),
+            number: /[0-9]/.test(password),
+            special: /[@$!%*?&#.]/.test(password),
+            match: password === confirmPassword,
+        });
+    };
+
+    const handleNewPasswordChange = (e) => {
+        const value = e.target.value;
+        setNewPassword(value);
+
+        // Mostrar el checklist solo si hay datos
+        setShowChecklist(value.length > 0);
+        validatePassword(value, confirmPassword);
+    };
+
+    const handleConfirmPasswordChange = (e) => {
+        const value = e.target.value;
+        setConfirmPassword(value);
+        validatePassword(newPassword, value);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -22,7 +57,7 @@ const ChangePassword = ({ token, csrfToken }) => {
                 headers: {
                     "Content-Type": "application/json",
                     "X-CSRF-TOKEN": csrfToken,
-                    Authorization: `Bearer ${resetToken}`, // Enviar el token en el encabezado
+                    Authorization: `Bearer ${resetToken}`,
                 },
                 body: JSON.stringify({
                     token,
@@ -56,7 +91,7 @@ const ChangePassword = ({ token, csrfToken }) => {
         }
     };
 
-    const renderPasswordInput = (label, value, setValue, field) => (
+    const renderPasswordInput = (label, value, setValue, field, onChange) => (
         <div className="mb-6 relative">
             <label className="block text-gray-700 font-medium mb-2">
                 {label}
@@ -65,7 +100,7 @@ const ChangePassword = ({ token, csrfToken }) => {
                 <input
                     type={showPassword[field] ? "text" : "password"}
                     value={value}
-                    onChange={(e) => setValue(e.target.value)}
+                    onChange={onChange}
                     className="w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none"
                     placeholder={`Ingrese su ${label.toLowerCase()}`}
                     required
@@ -85,6 +120,75 @@ const ChangePassword = ({ token, csrfToken }) => {
                     </button>
                 )}
             </div>
+        </div>
+    );
+
+    const renderValidationChecklist = () => (
+        <div className="mt-4 p-4 bg-gray-100 rounded-lg text-sm text-gray-700">
+            <p className="font-semibold mb-2">
+                La contraseña debe cumplir los siguientes requisitos:
+            </p>
+            <ul className="space-y-1">
+                <li
+                    className={
+                        validationChecks.length
+                            ? "text-green-600"
+                            : "text-red-600"
+                    }
+                >
+                    {validationChecks.length ? "✅" : "❌"} Entre 5 y 8
+                    caracteres.
+                </li>
+                <li
+                    className={
+                        validationChecks.uppercase
+                            ? "text-green-600"
+                            : "text-red-600"
+                    }
+                >
+                    {validationChecks.uppercase ? "✅" : "❌"} Al menos una letra
+                    mayúscula.
+                </li>
+                <li
+                    className={
+                        validationChecks.lowercase
+                            ? "text-green-600"
+                            : "text-red-600"
+                    }
+                >
+                    {validationChecks.lowercase ? "✅" : "❌"} Al menos una letra
+                    minúscula.
+                </li>
+                <li
+                    className={
+                        validationChecks.number
+                            ? "text-green-600"
+                            : "text-red-600"
+                    }
+                >
+                    {validationChecks.number ? "✅" : "❌"} Al menos un número.
+                </li>
+                <li
+                    className={
+                        validationChecks.special
+                            ? "text-green-600"
+                            : "text-red-600"
+                    }
+                >
+                    {validationChecks.special ? "✅" : "❌"} Al menos un
+                    carácter especial.
+                </li>
+                <li
+                    className={
+                        validationChecks.match
+                            ? "text-green-600"
+                            : "text-red-600"
+                    }
+                >
+                    {validationChecks.match ? "✅" : "❌"} Las contraseñas deben
+                    coincidir.
+                </li>
+            </ul>
         </div>
     );
 
@@ -112,14 +216,18 @@ const ChangePassword = ({ token, csrfToken }) => {
                         "Nueva Contraseña",
                         newPassword,
                         setNewPassword,
-                        "newPassword"
+                        "newPassword",
+                        handleNewPasswordChange
                     )}
+
+                    {showChecklist && renderValidationChecklist()}
 
                     {renderPasswordInput(
                         "Confirmar Contraseña",
                         confirmPassword,
                         setConfirmPassword,
-                        "confirmPassword"
+                        "confirmPassword",
+                        handleConfirmPasswordChange
                     )}
 
                     <button

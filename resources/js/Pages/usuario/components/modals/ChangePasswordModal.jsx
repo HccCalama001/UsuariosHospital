@@ -1,5 +1,11 @@
-import React, { useState } from "react";
-import { FaTimes, FaCheckCircle, FaExclamationCircle, FaEye, FaEyeSlash } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import {
+    FaTimes,
+    FaCheckCircle,
+    FaExclamationCircle,
+    FaEye,
+    FaEyeSlash,
+} from "react-icons/fa";
 import { cambiarContrasena } from "../../../../services/apiService";
 
 const ChangePasswordModal = ({ isOpen, onClose, csrfToken }) => {
@@ -9,15 +15,58 @@ const ChangePasswordModal = ({ isOpen, onClose, csrfToken }) => {
         new_password_confirmation: "",
     });
 
+    const [validationChecks, setValidationChecks] = useState({
+        length: false,
+        uppercase: false,
+        lowercase: false,
+        number: false,
+        special: false,
+        match: false,
+    });
+
     const [errors, setErrors] = useState({});
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [passwordsMatch, setPasswordsMatch] = useState(true);
     const [status, setStatus] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [showPassword, setShowPassword] = useState({
         current_password: false,
         new_password: false,
         new_password_confirmation: false,
     });
+    const [showChecklist, setShowChecklist] = useState(false);
+
+    // Restablecer el estado interno al abrir el modal
+    useEffect(() => {
+        if (isOpen) {
+            setFormData({
+                current_password: "",
+                new_password: "",
+                new_password_confirmation: "",
+            });
+            setValidationChecks({
+                length: false,
+                uppercase: false,
+                lowercase: false,
+                number: false,
+                special: false,
+                match: false,
+            });
+            setErrors({});
+            setStatus(null);
+            setIsSubmitting(false);
+            setShowChecklist(false);
+        }
+    }, [isOpen]);
+
+    const validatePassword = (password, confirmPassword) => {
+        setValidationChecks({
+            length: password.length >= 5 && password.length <= 8,
+            uppercase: /[A-Z]/.test(password),
+            lowercase: /[a-z]/.test(password),
+            number: /[0-9]/.test(password),
+            special: /[@$!%*?&#.]/.test(password),
+            match: password === confirmPassword,
+        });
+    };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -28,11 +77,12 @@ const ChangePasswordModal = ({ isOpen, onClose, csrfToken }) => {
         });
 
         if (name === "new_password" || name === "new_password_confirmation") {
-            setPasswordsMatch(
-                name === "new_password"
-                    ? value === formData.new_password_confirmation
-                    : value === formData.new_password
+            validatePassword(
+                name === "new_password" ? value : formData.new_password,
+                name === "new_password_confirmation" ? value : formData.new_password
             );
+
+            setShowChecklist(value.length > 0);
         }
     };
 
@@ -43,15 +93,10 @@ const ChangePasswordModal = ({ isOpen, onClose, csrfToken }) => {
         setIsSubmitting(true);
 
         try {
-            const response = await cambiarContrasena(formData, csrfToken);
+            await cambiarContrasena(formData, csrfToken);
             setStatus({
                 type: "success",
                 message: "Contraseña actualizada exitosamente.",
-            });
-            setFormData({
-                current_password: "",
-                new_password: "",
-                new_password_confirmation: "",
             });
         } catch (error) {
             if (error.errors) {
@@ -103,10 +148,35 @@ const ChangePasswordModal = ({ isOpen, onClose, csrfToken }) => {
         </div>
     );
 
+    const renderValidationChecklist = () => (
+        <div className="mt-4 p-4 bg-gray-100 rounded-lg text-sm text-gray-700">
+            <p className="font-semibold mb-2">La contraseña debe cumplir los siguientes requisitos:</p>
+            <ul className="space-y-1">
+                <li className={validationChecks.length ? "text-green-600" : "text-red-600"}>
+                    {validationChecks.length ? "✅" : "❌"} Entre 5 y 8 caracteres.
+                </li>
+                <li className={validationChecks.uppercase ? "text-green-600" : "text-red-600"}>
+                    {validationChecks.uppercase ? "✅" : "❌"} Al menos una letra mayúscula.
+                </li>
+                <li className={validationChecks.lowercase ? "text-green-600" : "text-red-600"}>
+                    {validationChecks.lowercase ? "✅" : "❌"} Al menos una letra minúscula.
+                </li>
+                <li className={validationChecks.number ? "text-green-600" : "text-red-600"}>
+                    {validationChecks.number ? "✅" : "❌"} Al menos un número.
+                </li>
+                <li className={validationChecks.special ? "text-green-600" : "text-red-600"}>
+                    {validationChecks.special ? "✅" : "❌"} Al menos un carácter especial.
+                </li>
+                <li className={validationChecks.match ? "text-green-600" : "text-red-600"}>
+                    {validationChecks.match ? "✅" : "❌"} Las contraseñas deben coincidir.
+                </li>
+            </ul>
+        </div>
+    );
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
             <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-lg p-8">
-                {/* Header */}
                 <div className="flex justify-between items-center border-b pb-4">
                     <h2 className="text-2xl font-bold text-teal-600">
                         {status ? "Resultado" : "Cambiar Contraseña"}
@@ -118,8 +188,6 @@ const ChangePasswordModal = ({ isOpen, onClose, csrfToken }) => {
                         <FaTimes size={24} />
                     </button>
                 </div>
-
-                {/* Contenido */}
                 {status ? (
                     <div className="flex flex-col items-center justify-center mt-6 space-y-4">
                         {status.type === "success" ? (
@@ -127,9 +195,7 @@ const ChangePasswordModal = ({ isOpen, onClose, csrfToken }) => {
                         ) : (
                             <FaExclamationCircle className="text-red-500 text-6xl" />
                         )}
-                        <p className="text-center text-lg font-medium">
-                            {status.message}
-                        </p>
+                        <p className="text-center text-lg font-medium">{status.message}</p>
                         <button
                             onClick={onClose}
                             className="px-6 py-2 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700 transition"
@@ -139,28 +205,10 @@ const ChangePasswordModal = ({ isOpen, onClose, csrfToken }) => {
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit} className="mt-6 space-y-6">
-                        {/* Contraseña Actual */}
-                        {renderPasswordInput(
-                            "current_password",
-                            "Ingresa tu contraseña actual",
-                            "Contraseña Actual"
-                        )}
-
-                        {/* Nueva Contraseña */}
-                        {renderPasswordInput(
-                            "new_password",
-                            "Ingresa tu nueva contraseña",
-                            "Nueva Contraseña"
-                        )}
-
-                        {/* Confirmar Contraseña */}
-                        {renderPasswordInput(
-                            "new_password_confirmation",
-                            "Confirma tu nueva contraseña",
-                            "Confirmar Contraseña"
-                        )}
-
-                        {/* Botones */}
+                        {renderPasswordInput("current_password", "Ingresa tu contraseña actual", "Contraseña Actual")}
+                        {renderPasswordInput("new_password", "Ingresa tu nueva contraseña", "Nueva Contraseña")}
+                        {showChecklist && renderValidationChecklist()}
+                        {renderPasswordInput("new_password_confirmation", "Confirma tu nueva contraseña", "Confirmar Contraseña")}
                         <div className="flex justify-end space-x-3 mt-6">
                             <button
                                 type="button"
@@ -171,8 +219,12 @@ const ChangePasswordModal = ({ isOpen, onClose, csrfToken }) => {
                             </button>
                             <button
                                 type="submit"
-                                disabled={isSubmitting || !passwordsMatch}
-                                className={`px-6 py-2 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700 transition ${isSubmitting || !passwordsMatch
+                                disabled={
+                                    isSubmitting ||
+                                    !Object.values(validationChecks).every((check) => check)
+                                }
+                                className={`px-6 py-2 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700 transition ${isSubmitting ||
+                                    !Object.values(validationChecks).every((check) => check)
                                     ? "opacity-50 cursor-not-allowed"
                                     : ""
                                     }`}
