@@ -96,7 +96,7 @@ class AuthController extends Controller
             $this->AuthService->authenticateUser($request->username, $request->current_password);
     
             $usuarioData = $this->usuarioService->buscarUsuarioResumen($request->username);
-            log::info('Usuario nuevo o temporal' , $usuarioData);
+           
             if (is_null($usuarioData['userNew'])) {
               
                 // Usuario nuevo o temporal
@@ -170,7 +170,7 @@ class AuthController extends Controller
             $this->emailService->enviarCorreoRecuperacion($email, $resetLink, $codAleatorio);
         } catch (\Exception $e) {
             // No hacer nada específico aquí, pero podrías registrar el error
-            Log::error('Error en forgotPassword:', ['message' => $e->getMessage()]);
+          
         }
     
         // Respuesta genérica para evitar exposición de datos

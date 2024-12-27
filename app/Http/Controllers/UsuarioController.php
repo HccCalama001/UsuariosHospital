@@ -124,7 +124,7 @@ class UsuarioController extends Controller
             ], 201);
         } catch (ValidationException $e) {
             // Captura los errores de validación y los envía al cliente
-            Log::error('Errores de validación:', $e->errors());
+           
 
             return response()->json([
                 'message' => 'Errores de validación.',
@@ -132,7 +132,7 @@ class UsuarioController extends Controller
             ], 422);
         } catch (\Exception $e) {
             // Manejo de cualquier otro tipo de error
-            Log::error('Error al completar los datos: ' . $e->getMessage());
+        
 
             return response()->json([
                 'message' => 'Error al completar los datos.',
@@ -188,7 +188,7 @@ class UsuarioController extends Controller
     {
         try {
             $username = $request->input('username');
-            Log::info('Buscando nombre completo para: ' . $username);
+            
 
             $nombreCompleto = $this->usuarioService->obtenerNombreCompleto($username);
 
@@ -197,7 +197,7 @@ class UsuarioController extends Controller
                 'nombre_completo' => $nombreCompleto,
             ]);
         } catch (\Exception $e) {
-            Log::error('Error al obtener nombre completo: ' . $e->getMessage());
+           
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
