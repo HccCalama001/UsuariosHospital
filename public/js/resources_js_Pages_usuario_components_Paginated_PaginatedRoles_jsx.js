@@ -18,31 +18,41 @@ __webpack_require__.r(__webpack_exports__);
 
 var CardRoleWeb = function CardRoleWeb(_ref) {
   var gruposWeb = _ref.gruposWeb;
-  var handleButtonClick = function handleButtonClick() {
-    // Si la URL no es "Desconocido" o "No Aplica", redirigimos
-    if (gruposWeb.Url && gruposWeb.Url !== "No Aplica" && gruposWeb.Url !== "Desconocido") {
-      // Abre la URL en otra pestaña/ventana
-      window.open(gruposWeb.Url, "_blank");
+  var Url = gruposWeb.Url,
+    NombreGrupo = gruposWeb.NombreGrupo,
+    imagen = gruposWeb.imagen,
+    GrupoID = gruposWeb.GrupoID;
+  var handleOpenSystem = function handleOpenSystem() {
+    if (Url && Url !== "No Aplica" && Url !== "Desconocido") {
+      window.open(Url, "_blank", "noopener,noreferrer");
     } else {
       console.log("La URL no es válida o no se puede aplicar.");
     }
   };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-    className: "bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow p-6",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("h3", {
-      className: "text-lg font-semibold text-teal-800 mb-2",
-      children: ["Sistema: ", gruposWeb.NombreGrupo]
+    className: "\r flex flex-col items-center justify-between\r bg-white border border-gray-200 rounded-lg shadow-md\r hover:shadow-lg transition-shadow\r w-full max-w-xs sm:max-w-sm\r mx-auto               /* Esto centra la tarjeta horizontalmente */\r p-4                   /* Ajustamos el padding para que sea algo menor */\r h-[300px]            /* Reducimos la altura total */\r ",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+      className: "w-full text-sm text-gray-600",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+        className: "font-bold",
+        children: "ID Sistema:"
+      }), " ", GrupoID]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-      className: "text-sm text-gray-600 mb-4",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("p", {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
-          className: "font-bold",
-          children: "ID Sistema:"
-        }), " ", gruposWeb.NombreGrupo]
+      className: "flex justify-center my-4",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+        className: "w-24 h-24 overflow-hidden rounded-full shadow-md",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
+          src: imagen || "/images/default.png",
+          alt: NombreGrupo || "Imagen del sistema",
+          className: "w-full h-full object-cover"
+        })
       })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("h3", {
+      className: "text-lg font-semibold text-teal-800 text-center mb-2",
+      children: ["Sistema: ", NombreGrupo]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("button", {
-      className: "w-full bg-teal-600 text-white py-2 px-4 rounded-lg hover:bg-teal-700 transition-colors",
-      onClick: handleButtonClick,
+      onClick: handleOpenSystem,
+      className: "\r w-full bg-teal-600 text-white py-2 px-4 rounded-lg\r hover:bg-teal-700 transition-colors\r ",
       children: "Dirigirse a Sistema"
     })]
   });
@@ -90,7 +100,7 @@ var PaginatedRoles = function PaginatedRoles(_ref) {
   var indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
   // Obtener los elementos de la página actual
-  var currentItems = gruposWeb.slice(indexOfFirstItem, indexOfLastItem);
+  var paginatedGroups = gruposWeb.slice(indexOfFirstItem, indexOfLastItem);
 
   // Calcular el número total de páginas
   var totalPages = Math.ceil(gruposWeb.length / itemsPerPage);
@@ -100,26 +110,29 @@ var PaginatedRoles = function PaginatedRoles(_ref) {
     setCurrentPage(pageNumber);
   };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("section", {
-    children: gruposWeb.length ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
+    children: gruposWeb.length > 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.Fragment, {
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
         className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6",
-        children: currentItems.map(function (gruposWeb, index) {
+        children: paginatedGroups.map(function (grupo, index) {
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_Card_CardRoleWeb__WEBPACK_IMPORTED_MODULE_1__["default"], {
-            gruposWeb: gruposWeb
+            gruposWeb: grupo
           }, index);
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
         className: "flex justify-center items-center mt-6 space-x-2",
         children: Array.from({
           length: totalPages
-        }, function (_, index) {
+        }, function (_, idx) {
+          var pageNum = idx + 1;
+          var isActive = currentPage === pageNum;
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
-            className: "px-4 py-2 border rounded ".concat(currentPage === index + 1 ? "bg-teal-600 text-white" : "bg-gray-200 text-gray-800"),
             onClick: function onClick() {
-              return handlePageChange(index + 1);
+              return handlePageChange(pageNum);
             },
-            children: index + 1
-          }, index);
+            "aria-label": "Ir a la p\xE1gina ".concat(pageNum),
+            className: "px-4 py-2 border rounded \n                    transition-colors duration-150 focus:outline-none\n                    ".concat(isActive ? "bg-teal-600 text-white border-teal-600" : "bg-gray-200 text-gray-800 hover:bg-gray-300"),
+            children: pageNum
+          }, pageNum);
         })
       })]
     }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("p", {
