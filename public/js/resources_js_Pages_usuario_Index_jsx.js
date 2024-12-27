@@ -811,22 +811,29 @@ var ChangePasswordModal = function ChangePasswordModal(_ref) {
     _useState2 = _slicedToArray(_useState, 2),
     formData = _useState2[0],
     setFormData = _useState2[1];
-  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({}),
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+      length: false,
+      uppercase: false,
+      lowercase: false,
+      number: false,
+      special: false,
+      match: false
+    }),
     _useState4 = _slicedToArray(_useState3, 2),
-    errors = _useState4[0],
-    setErrors = _useState4[1];
-  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    validationChecks = _useState4[0],
+    setValidationChecks = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({}),
     _useState6 = _slicedToArray(_useState5, 2),
-    isSubmitting = _useState6[0],
-    setIsSubmitting = _useState6[1];
-  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
+    errors = _useState6[0],
+    setErrors = _useState6[1];
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
     _useState8 = _slicedToArray(_useState7, 2),
-    passwordsMatch = _useState8[0],
-    setPasswordsMatch = _useState8[1];
-  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    status = _useState8[0],
+    setStatus = _useState8[1];
+  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
     _useState10 = _slicedToArray(_useState9, 2),
-    status = _useState10[0],
-    setStatus = _useState10[1];
+    isSubmitting = _useState10[0],
+    setIsSubmitting = _useState10[1];
   var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
       current_password: false,
       new_password: false,
@@ -835,18 +842,55 @@ var ChangePasswordModal = function ChangePasswordModal(_ref) {
     _useState12 = _slicedToArray(_useState11, 2),
     showPassword = _useState12[0],
     setShowPassword = _useState12[1];
+  var _useState13 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState14 = _slicedToArray(_useState13, 2),
+    showChecklist = _useState14[0],
+    setShowChecklist = _useState14[1];
+
+  // Restablecer el estado interno al abrir el modal
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    if (isOpen) {
+      setFormData({
+        current_password: "",
+        new_password: "",
+        new_password_confirmation: ""
+      });
+      setValidationChecks({
+        length: false,
+        uppercase: false,
+        lowercase: false,
+        number: false,
+        special: false,
+        match: false
+      });
+      setErrors({});
+      setStatus(null);
+      setIsSubmitting(false);
+      setShowChecklist(false);
+    }
+  }, [isOpen]);
+  var validatePassword = function validatePassword(password, confirmPassword) {
+    setValidationChecks({
+      length: password.length >= 5 && password.length <= 8,
+      uppercase: /[A-Z]/.test(password),
+      lowercase: /[a-z]/.test(password),
+      number: /[0-9]/.test(password),
+      special: /[@$!%*?&#.]/.test(password),
+      match: password === confirmPassword
+    });
+  };
   var handleInputChange = function handleInputChange(e) {
     var _e$target = e.target,
       name = _e$target.name,
       value = _e$target.value;
     setFormData(_objectSpread(_objectSpread({}, formData), {}, _defineProperty({}, name, value)));
     if (name === "new_password" || name === "new_password_confirmation") {
-      setPasswordsMatch(name === "new_password" ? value === formData.new_password_confirmation : value === formData.new_password);
+      validatePassword(name === "new_password" ? value : formData.new_password, name === "new_password_confirmation" ? value : formData.new_password);
+      setShowChecklist(value.length > 0);
     }
   };
   var handleSubmit = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(e) {
-      var response;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -858,20 +902,14 @@ var ChangePasswordModal = function ChangePasswordModal(_ref) {
             _context.next = 7;
             return (0,_services_apiService__WEBPACK_IMPORTED_MODULE_1__.cambiarContrasena)(formData, csrfToken);
           case 7:
-            response = _context.sent;
             setStatus({
               type: "success",
               message: "Contraseña actualizada exitosamente."
             });
-            setFormData({
-              current_password: "",
-              new_password: "",
-              new_password_confirmation: ""
-            });
-            _context.next = 15;
+            _context.next = 13;
             break;
-          case 12:
-            _context.prev = 12;
+          case 10:
+            _context.prev = 10;
             _context.t0 = _context["catch"](4);
             if (_context.t0.errors) {
               setErrors(_context.t0.errors);
@@ -881,15 +919,15 @@ var ChangePasswordModal = function ChangePasswordModal(_ref) {
                 message: _context.t0.message
               });
             }
-          case 15:
-            _context.prev = 15;
+          case 13:
+            _context.prev = 13;
             setIsSubmitting(false);
-            return _context.finish(15);
-          case 18:
+            return _context.finish(13);
+          case 16:
           case "end":
             return _context.stop();
         }
-      }, _callee, null, [[4, 12, 15, 18]]);
+      }, _callee, null, [[4, 10, 13, 16]]);
     }));
     return function handleSubmit(_x) {
       return _ref2.apply(this, arguments);
@@ -927,6 +965,36 @@ var ChangePasswordModal = function ChangePasswordModal(_ref) {
       })]
     });
   };
+  var renderValidationChecklist = function renderValidationChecklist() {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+      className: "mt-4 p-4 bg-gray-100 rounded-lg text-sm text-gray-700",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("p", {
+        className: "font-semibold mb-2",
+        children: "La contrase\xF1a debe cumplir los siguientes requisitos:"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("ul", {
+        className: "space-y-1",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("li", {
+          className: validationChecks.length ? "text-green-600" : "text-red-600",
+          children: [validationChecks.length ? "✅" : "❌", " Entre 5 y 8 caracteres."]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("li", {
+          className: validationChecks.uppercase ? "text-green-600" : "text-red-600",
+          children: [validationChecks.uppercase ? "✅" : "❌", " Al menos una letra may\xFAscula."]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("li", {
+          className: validationChecks.lowercase ? "text-green-600" : "text-red-600",
+          children: [validationChecks.lowercase ? "✅" : "❌", " Al menos una letra min\xFAscula."]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("li", {
+          className: validationChecks.number ? "text-green-600" : "text-red-600",
+          children: [validationChecks.number ? "✅" : "❌", " Al menos un n\xFAmero."]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("li", {
+          className: validationChecks.special ? "text-green-600" : "text-red-600",
+          children: [validationChecks.special ? "✅" : "❌", " Al menos un car\xE1cter especial."]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("li", {
+          className: validationChecks.match ? "text-green-600" : "text-red-600",
+          children: [validationChecks.match ? "✅" : "❌", " Las contrase\xF1as deben coincidir."]
+        })]
+      })]
+    });
+  };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
     className: "fixed inset-0 z-50 flex items-center justify-center",
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
@@ -960,7 +1028,7 @@ var ChangePasswordModal = function ChangePasswordModal(_ref) {
       }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("form", {
         onSubmit: handleSubmit,
         className: "mt-6 space-y-6",
-        children: [renderPasswordInput("current_password", "Ingresa tu contraseña actual", "Contraseña Actual"), renderPasswordInput("new_password", "Ingresa tu nueva contraseña", "Nueva Contraseña"), renderPasswordInput("new_password_confirmation", "Confirma tu nueva contraseña", "Confirmar Contraseña"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+        children: [renderPasswordInput("current_password", "Ingresa tu contraseña actual", "Contraseña Actual"), renderPasswordInput("new_password", "Ingresa tu nueva contraseña", "Nueva Contraseña"), showChecklist && renderValidationChecklist(), renderPasswordInput("new_password_confirmation", "Confirma tu nueva contraseña", "Confirmar Contraseña"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
           className: "flex justify-end space-x-3 mt-6",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
             type: "button",
@@ -969,8 +1037,12 @@ var ChangePasswordModal = function ChangePasswordModal(_ref) {
             children: "Cancelar"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
             type: "submit",
-            disabled: isSubmitting || !passwordsMatch,
-            className: "px-6 py-2 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700 transition ".concat(isSubmitting || !passwordsMatch ? "opacity-50 cursor-not-allowed" : ""),
+            disabled: isSubmitting || !Object.values(validationChecks).every(function (check) {
+              return check;
+            }),
+            className: "px-6 py-2 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700 transition ".concat(isSubmitting || !Object.values(validationChecks).every(function (check) {
+              return check;
+            }) ? "opacity-50 cursor-not-allowed" : ""),
             children: isSubmitting ? "Cambiando..." : "Cambiar"
           })]
         })]

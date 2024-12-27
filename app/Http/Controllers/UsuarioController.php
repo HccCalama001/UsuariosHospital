@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Requests\UsuarioRequest;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\ChangePasswordRequest;
+use App\Services\AuthService;
 use Illuminate\Validation\ValidationException;
 
 class UsuarioController extends Controller
@@ -18,12 +19,16 @@ class UsuarioController extends Controller
     protected $usuarioService;
     protected $tokenService;
     protected $sistemaService;
+    protected $authService;
 
-    public function __construct(UsuarioService $usuarioService, TokenService $tokenService, SistemaService $sistemaService)
+
+    public function __construct(UsuarioService $usuarioService, TokenService $tokenService, SistemaService $sistemaService, AuthService $authService)
     {
         $this->usuarioService = $usuarioService;
         $this->tokenService = $tokenService;
         $this->sistemaService = $sistemaService;
+        $this->authService = $authService;
+
     }
 
     /**
@@ -45,9 +50,9 @@ class UsuarioController extends Controller
             }
 
             $resumen = $this->usuarioService->buscarUsuarioResumen($user->NombreUsuario);
-        
 
-               // 2) Aquí mandas a tu servicio (o controlador) de sistemas la parte del JSON con los sistemas
+
+            // 2) Aquí mandas a tu servici        o (o controlador) de sistemas la parte del JSON con los sistemas
             //    para que te devuelva un array (o colección) con la información de los grupos
             $gruposDelUsuario = $this->sistemaService->obtenerUsuarioGrupos($resumen);
 
@@ -57,7 +62,7 @@ class UsuarioController extends Controller
                 'resumen' => $resumen,
                 'csrfToken' => csrf_token(),
                 'gruposDelUsuario' => $gruposDelUsuario,
-                
+
             ]);
         } catch (\Exception $e) {
             return redirect()->route('sqlpassword.login')->withErrors(['message' => $e->getMessage()]);
@@ -144,6 +149,12 @@ class UsuarioController extends Controller
     public function cambiarContrasena(ChangePasswordRequest $request)
     {
         try {
+            $validateUser = $this->authService->authenticateUser(auth()->user()->NombreUsuario, $request->current_password);
+            if (!$validateUser) {
+                return response()->json([
+                    'message' => 'Contraseña actual incorrecta.',
+                ], 422);
+            }
 
             // Llamar al servicio para cambiar la contraseña
             $response = $this->usuarioService->cambiarContrasena(auth()->user()->NombreUsuario, $request->validated());
