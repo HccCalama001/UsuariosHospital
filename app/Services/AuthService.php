@@ -39,7 +39,7 @@ class AuthService
 
         if (!$connection) {
             $errorDetails = sqlsrv_errors();
-            Log::error('Error al conectar con SQL Server (test de conexión):', $errorDetails);
+
             throw new \Exception('Error al conectar con SQL Server. Verifique la configuración.');
         }
 
@@ -107,7 +107,7 @@ class AuthService
 
         if (!$connection) {
             $errorDetails = sqlsrv_errors();
-            Log::error('Error al conectar con SQL Server para autenticación:', ['error' => $errorDetails]);
+           
             throw new \Exception('Error al conectar con SQL Server.');
         }
 
@@ -119,7 +119,7 @@ class AuthService
 
         if (!$stmt) {
             $errorDetails = sqlsrv_errors();
-            Log::error('Error al ejecutar consulta de autenticación:', ['error' => $errorDetails]);
+          
             sqlsrv_close($connection);
             throw new \Exception('Error al autenticar al usuario.');
         }

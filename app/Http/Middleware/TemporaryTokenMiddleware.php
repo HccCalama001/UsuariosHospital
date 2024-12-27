@@ -24,7 +24,7 @@ class TemporaryTokenMiddleware
 
     public function handle($request, Closure $next)
     {
-        \Log::info('Middleware TemporaryTokenMiddleware ejecutado');
+        
         
         $token = $request->bearerToken() ?? $request->cookie('auth_token');
         if (!$token) {

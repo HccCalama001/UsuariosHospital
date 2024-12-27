@@ -1,75 +1,134 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     FaHome,
     FaSignOutAlt,
     FaFacebook,
     FaTwitter,
     FaInstagram,
+    FaBars,
+    FaTimes,
 } from "react-icons/fa";
 
+/**
+ * Layout principal con:
+ * - Header fijo con menú desktop/mobile
+ * - Footer con borde diagonal en lugar de ola
+ * - Responsividad y transiciones sutiles
+ */
 const App = ({ children }) => {
+    const [menuOpen, setMenuOpen] = useState(false);
+
+    // Cierra sesión eliminando la cookie y redireccionando
     const handleLogout = () => {
-        // Eliminar el token de las cookies
         document.cookie =
             "auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        // Redirigir a la página de inicio de sesión
         window.location.href = "auth/login";
     };
 
-    return (
-        <div className="flex flex-col min-h-screen bg-gray-100 font-poppins">
-            {/* Barra de Navegación */}
-            <header className="bg-gradient-to-r from-teal-600 to-teal-500 text-white shadow fixed top-0 w-full z-50">
-                <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-                    {/* Título del Panel */}
-                    <h1 className="text-2xl font-bold flex items-center">
-                        Panel de Usuario
-                    </h1>
+    // Alterna el menú móvil
+    const toggleMenu = () => setMenuOpen((prev) => !prev);
 
-                    {/* Menú de Navegación */}
-                    <nav>
-                        <ul className="flex space-x-6 items-center">
-                            <li>
-                                <a
-                                    href="/usuario"
-                                    className="flex items-center hover:text-gray-200 transition duration-200"
-                                >
-                                    <FaHome className="w-5 h-5 mr-2" />
-                                    Inicio
-                                </a>
-                            </li>
-                            <li>
-                                <button
-                                    onClick={handleLogout}
-                                    className="flex items-center hover:text-gray-200 transition duration-200"
-                                >
-                                    <FaSignOutAlt className="w-5 h-5 mr-2" />
-                                    Salir
-                                </button>
-                            </li>
-                        </ul>
+    return (
+        <div className="min-h-screen flex flex-col bg-gray-50 font-poppins relative w-full">
+            {/* HEADER fijo */}
+            <header className="fixed top-0 w-full z-50 bg-gradient-to-r from-teal-600 to-teal-500 text-white shadow-lg">
+                <div className="flex items-center justify-between px-6 py-4">
+                    {/* LOGO / TÍTULO */}
+                    <a href="/usuario" className="flex items-center space-x-2">
+                        <span className="text-2xl font-extrabold tracking-wide">
+                            Panel de Usuario
+                        </span>
+                    </a>
+
+                    {/* Navegación Desktop */}
+                    <nav className="hidden md:flex space-x-8 items-center">
+                        <a
+                            href="/usuario"
+                            className="flex items-center hover:text-gray-200 transition-colors"
+                        >
+                            <FaHome className="w-5 h-5 mr-2" />
+                            Inicio
+                        </a>
+                        <button
+                            onClick={handleLogout}
+                            className="flex items-center hover:text-gray-200 transition-colors"
+                        >
+                            <FaSignOutAlt className="w-5 h-5 mr-2" />
+                            Salir
+                        </button>
                     </nav>
+
+                    {/* Botón para abrir/cerrar el menú móvil */}
+                    <button
+                        onClick={toggleMenu}
+                        className="md:hidden text-white hover:text-gray-200 transition-colors"
+                        aria-label="Toggle Menu"
+                    >
+                        {menuOpen ? (
+                            <FaTimes className="w-6 h-6" />
+                        ) : (
+                            <FaBars className="w-6 h-6" />
+                        )}
+                    </button>
                 </div>
+
+                {/* Menú móvil (solo se muestra si menuOpen es true) */}
+                {menuOpen && (
+                    <div className="md:hidden bg-teal-700">
+                        <nav className="flex flex-col space-y-4 px-6 py-4">
+                            <a
+                                href="/usuario"
+                                className="flex items-center hover:text-gray-200 transition-colors"
+                            >
+                                <FaHome className="w-5 h-5 mr-2" />
+                                Inicio
+                            </a>
+                            <button
+                                onClick={handleLogout}
+                                className="flex items-center hover:text-gray-200 transition-colors"
+                            >
+                                <FaSignOutAlt className="w-5 h-5 mr-2" />
+                                Salir
+                            </button>
+                        </nav>
+                    </div>
+                )}
             </header>
 
-            {/* Espaciador para el header fijo */}
-            <div className="h-16"></div>
+            {/* Espaciador para no tapar el contenido con el Header fijo */}
+            <div className="h-16" />
+            {/**
+             * MAIN:
+             *  - flex-grow: ocupa el espacio vertical sobrante
+             *  - relative + z-10: mantiene el contenido sobre posibles capas del footer
+             *  - pb-16: deja un margen al final antes del footer
+             */}
+            <main className="flex-grow relative z-10 pb-16">{children}</main>
 
-            {/* Contenido Principal */}
-            <main className="flex-grow">
-                <div className="container mx-auto px-6 py-12">{children}</div>
-            </main>
+            {/* FOOTER con borde diagonal (sin ola) */}
+            <footer className="relative bg-gradient-to-r from-teal-700 to-teal-600 text-gray-200 w-full">
+                {/* Capa diagonal suave en la parte superior */}
+                <div
+                    className="absolute top-0 left-0 w-full h-8 
+               bg-white bg-opacity-10
+               transform translate-y-[-80%]
+               pointer-events-none"
+                    style={{
+                        clipPath: "polygon(0 100%, 100% 0, 100% 100%)",
+                    }}
+                />
 
-            {/* Pie de Página */}
-            <footer className="bg-teal-700 text-gray-200 py-6">
-                <div className="container mx-auto px-6 text-center">
+                {/* Contenido principal del footer */}
+                <div className="relative z-10 px-6 pt-8 pb-6 text-center">
                     <p className="text-sm">
                         © {new Date().getFullYear()}{" "}
-                        <span className="text-white font-semibold">
+                        <span className="font-semibold text-white">
                             Sistema Hospitalario
                         </span>
                         . Todos los derechos reservados.
                     </p>
+
+                    {/* Redes Sociales */}
                     <div className="mt-4 flex justify-center space-x-6">
                         <a
                             href="#"

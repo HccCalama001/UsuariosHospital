@@ -60,7 +60,7 @@ class AuthRequest extends FormRequest
             'username' => 'required|string',
             'current_password' => 'required|string',
         ];
-        Log::info('Reglas de validación para inicio de sesión:', $rules);
+       
 
         return $rules;
     }
@@ -80,7 +80,7 @@ class AuthRequest extends FormRequest
             ],
             'new_password_confirmation' => 'required|same:new_password',
         ];
-        Log::info('Reglas de validación para cambio de contraseña:', $rules);
+      
 
         return $rules;
     }
@@ -91,7 +91,7 @@ class AuthRequest extends FormRequest
         $rules = [
             'identifier' => 'required|string',
         ];
-        Log::info('Reglas de validación para recuperación de contraseña:', $rules);
+       
 
         return $rules;
     }

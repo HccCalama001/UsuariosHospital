@@ -23,7 +23,8 @@ class GruposSistema extends Model
         'NombreGrupo',
         'Url',
         'Descripcion',
-        'Tipo'
+        'Tipo',
+        'imagen'
     ];
 
     // Definir los atributos que deben tratarse como fechas

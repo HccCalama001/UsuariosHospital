@@ -26,7 +26,7 @@ class ValidateResetToken
         }
 
         // Si se considera válido, continuar con la solicitud
-        Log::info('Token válido. Continuando con la solicitud.');
+       
         return $next($request);
     }
 }

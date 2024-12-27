@@ -20,7 +20,7 @@ class ResetPasswordRequest extends FormRequest
     }
     public function authorize()
     {
-        Log::info('ResetPasswordRequest activado con datos:', $this->all());
+      
         return true; // Cambiar si necesitas autorización específica
     }
 
