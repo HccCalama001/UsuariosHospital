@@ -4,41 +4,104 @@ namespace App\Models\ServidorNew;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\ServidorNew\Usuario;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * Class Rol
+ *
+ * Representa la tabla 'roles' en la conexión 'sqlsrvUsers'.
+ *
+ * @property int    $RolID
+ * @property string $NombreRol
+ * @property string $Descripcion
+ * @property string $created_at
+ * @property string $updated_at
+ * @property string $deleted_at
+ */
 class Rol extends Model
 {
     use SoftDeletes;
+
+    /**
+     * Conexión de base de datos utilizada por este modelo.
+     *
+     * @var string
+     */
     protected $connection = 'sqlsrvUsers';
+
+    /**
+     * Nombre de la tabla asociada a este modelo.
+     *
+     * @var string
+     */
     protected $table = 'roles';
 
-    // Definir clave primaria personalizada
+    /**
+     * Clave primaria de la tabla.
+     *
+     * @var string
+     */
     protected $primaryKey = 'RolID';
 
-    // Especificar que la clave primaria es autoincremental y de tipo entero
+    /**
+     * Indica si la clave primaria es auto-incremental.
+     *
+     * @var bool
+     */
     public $incrementing = true;
+
+    /**
+     * Indica el tipo de la clave primaria.
+     *
+     * @var string
+     */
     protected $keyType = 'int';
 
-    // Definir los campos asignables masivamente
+    /**
+     * Atributos asignables de forma masiva.
+     *
+     * @var array
+     */
     protected $fillable = [
         'NombreRol',
         'Descripcion',
     ];
 
-    // Definir las fechas manejadas por Laravel
-    protected $dates = ['created_at', 'updated_at', 'deleted_at']; // Nombres de fechas en minúsculas por convención de Laravel
+    /**
+     * Atributos que deben ser tratados como fechas por Laravel.
+     *
+     * @var array
+     */
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
 
-    // Laravel manejará los timestamps automáticamente
-    public $timestamps = true; // Cambiado a true para permitir que Laravel maneje created_at y updated_at
+    /**
+     * Indica si el modelo maneja automáticamente las columnas
+     * created_at y updated_at.
+     *
+     * @var bool
+     */
+    public $timestamps = true;
 
-    // Relación con la tabla Usuarios
-    public function usuarios()
+    /**
+     * Relación: un rol puede tener muchos usuarios.
+     *
+     * @return HasMany
+     */
+    public function usuarios(): HasMany
     {
         return $this->hasMany(User::class, 'RolID', 'RolID');
     }
 
-    // Especificar el nombre de la clave para el route model binding
-    public function getRouteKeyName()
+    /**
+     * Determina el nombre de la clave usada para route model binding.
+     *
+     * @return string
+     */
+    public function getRouteKeyName(): string
     {
         return 'RolID';
     }

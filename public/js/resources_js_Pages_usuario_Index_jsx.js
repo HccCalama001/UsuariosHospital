@@ -25,26 +25,39 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 /**
- * Layout principal con:
- * - Header fijo con menú desktop/mobile
- * - Footer con borde diagonal en lugar de ola
- * - Responsividad y transiciones sutiles
+ * Componente principal que envuelve toda la aplicación.
+ * Incluye:
+ * - Header fijo con menú (versión desktop y mobile).
+ * - Footer con borde diagonal.
+ * - Responsividad y transiciones sutiles.
+ *
+ * @param {Object} props
+ * @param {React.ReactNode} props.children - Contenido interior de la aplicación.
  */
 
 var App = function App(_ref) {
   var children = _ref.children;
+  /**
+   * Estado que controla la apertura o cierre del menú en dispositivos móviles.
+   */
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
     _useState2 = _slicedToArray(_useState, 2),
     menuOpen = _useState2[0],
     setMenuOpen = _useState2[1];
 
-  // Cierra sesión eliminando la cookie y redireccionando
+  /**
+   * Función para cerrar sesión:
+   * - Elimina la cookie de autenticación.
+   * - Redirecciona a la pantalla de login.
+   */
   var handleLogout = function handleLogout() {
     document.cookie = "auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     window.location.href = "auth/login";
   };
 
-  // Alterna el menú móvil
+  /**
+   * Alterna la visibilidad del menú móvil.
+   */
   var toggleMenu = function toggleMenu() {
     return setMenuOpen(function (prev) {
       return !prev;
@@ -53,35 +66,48 @@ var App = function App(_ref) {
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
     className: "min-h-screen flex flex-col bg-gray-50 font-poppins relative w-full",
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("header", {
-      className: "fixed top-0 w-full z-50 bg-gradient-to-r from-teal-600 to-teal-500 text-white shadow-lg",
+      className: "fixed top-0 w-full z-50 bg-teal-600 text-white shadow-lg",
+      role: "banner",
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
         className: "flex items-center justify-between px-6 py-4",
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("a", {
           href: "/usuario",
-          className: "flex items-center space-x-2",
+          className: "flex items-center space-x-2 group",
+          "aria-label": "Ir al Panel de Usuario",
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
-            className: "text-2xl font-extrabold tracking-wide",
+            className: "text-2xl font-bold tracking-wide transition-colors group-hover:text-gray-50",
             children: "Panel de Usuario"
           })
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("nav", {
-          className: "hidden md:flex space-x-8 items-center",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("a", {
+          className: "hidden md:flex items-center space-x-6",
+          "aria-label": "Men\xFA principal",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("a", {
             href: "/usuario",
-            className: "flex items-center hover:text-gray-200 transition-colors",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_2__.FaHome, {
-              className: "w-5 h-5 mr-2"
-            }), "Inicio"]
+            className: "relative flex items-center group \r hover:text-gray-200 transition-colors",
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+              className: "absolute left-1/2 -translate-x-1/2 bottom-[-2.5rem] \r px-2 py-1 text-xs text-white bg-black bg-opacity-70 rounded-md opacity-0\r group-hover:opacity-100 pointer-events-none transition-opacity\r hidden lg:block",
+              children: "Ir al Panel"
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+            className: "w-px h-5 bg-white/40"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("button", {
             onClick: handleLogout,
-            className: "flex items-center hover:text-gray-200 transition-colors",
+            className: "relative flex items-center group \r hover:text-gray-200 transition-colors",
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_2__.FaSignOutAlt, {
-              className: "w-5 h-5 mr-2"
-            }), "Salir"]
+              className: "w-5 h-5"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+              className: "ml-2 hidden lg:inline text-sm font-medium",
+              children: "Salir"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+              className: "absolute left-1/2 -translate-x-1/2 bottom-[-2.5rem] \r px-2 py-1 text-xs text-white bg-black bg-opacity-70 rounded-md opacity-0\r group-hover:opacity-100 pointer-events-none transition-opacity\r hidden lg:block",
+              children: "Cerrar Sesi\xF3n"
+            })]
           })]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("button", {
           onClick: toggleMenu,
-          className: "md:hidden text-white hover:text-gray-200 transition-colors",
-          "aria-label": "Toggle Menu",
+          className: "md:hidden text-white hover:text-gray-200 focus:outline-none \r focus:ring-2 focus:ring-teal-300 transition-colors",
+          "aria-label": "Abrir o cerrar men\xFA m\xF3vil",
+          "aria-expanded": menuOpen,
           children: menuOpen ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_2__.FaTimes, {
             className: "w-6 h-6"
           }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_2__.FaBars, {
@@ -89,22 +115,22 @@ var App = function App(_ref) {
           })
         })]
       }), menuOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-        className: "md:hidden bg-teal-700",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("nav", {
+        className: "md:hidden bg-teal-700 shadow-lg transition-all",
+        role: "dialog",
+        "aria-modal": "true",
+        "aria-label": "Men\xFA m\xF3vil",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("nav", {
           className: "flex flex-col space-y-4 px-6 py-4",
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("a", {
-            href: "/usuario",
-            className: "flex items-center hover:text-gray-200 transition-colors",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_2__.FaHome, {
-              className: "w-5 h-5 mr-2"
-            }), "Inicio"]
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("button", {
+          "aria-label": "Men\xFA m\xF3vil",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("button", {
             onClick: handleLogout,
-            className: "flex items-center hover:text-gray-200 transition-colors",
+            className: "flex items-center space-x-2 py-1 hover:text-gray-200 transition-colors",
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_2__.FaSignOutAlt, {
-              className: "w-5 h-5 mr-2"
-            }), "Salir"]
-          })]
+              className: "w-5 h-5"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+              children: "Salir"
+            })]
+          })
         })
       })]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
@@ -113,39 +139,49 @@ var App = function App(_ref) {
       className: "flex-grow relative z-10 pb-16",
       children: children
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("footer", {
-      className: "relative bg-gradient-to-r from-teal-700 to-teal-600 text-gray-200 w-full",
+      className: "relative bg-gradient-to-r from-teal-700 via-teal-600 to-teal-500 text-gray-200 w-full mt-8 overflow-hidden",
+      role: "contentinfo",
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-        className: "absolute top-0 left-0 w-full h-8 \r bg-white bg-opacity-10\r transform translate-y-[-80%]\r pointer-events-none",
-        style: {
-          clipPath: "polygon(0 100%, 100% 0, 100% 100%)"
-        }
+        className: "absolute top-0 left-0 w-full leading-[0]",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("svg", {
+          className: "block w-full h-8 text-teal-700 transition-transform duration-300 transform hover:scale-[1.005]",
+          viewBox: "0 0 120 28",
+          preserveAspectRatio: "none",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("path", {
+            d: "M0 0h120v28H0z",
+            fill: "currentColor"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("path", {
+            d: "M0 18c30-10 58 10 120-10v20H0z",
+            fill: "#ffffff14" // Ajusta la opacidad cambiando este valor
+          })]
+        })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-        className: "relative z-10 px-6 pt-8 pb-6 text-center",
+        className: "relative z-10 px-6 pt-10 pb-8 text-center",
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("p", {
-          className: "text-sm",
+          className: "text-sm mb-2",
           children: ["\xA9 ", new Date().getFullYear(), " ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
             className: "font-semibold text-white",
             children: "Sistema Hospitalario"
           }), ". Todos los derechos reservados."]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-          className: "mt-4 flex justify-center space-x-6",
+          className: "flex justify-center space-x-6 mt-4",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("a", {
             href: "#",
-            className: "text-gray-300 hover:text-white transition duration-200",
+            className: "text-gray-300 hover:text-white transition duration-200 transform hover:scale-110",
             "aria-label": "Facebook",
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_2__.FaFacebook, {
               className: "w-5 h-5"
             })
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("a", {
             href: "#",
-            className: "text-gray-300 hover:text-white transition duration-200",
+            className: "text-gray-300 hover:text-white transition duration-200 transform hover:scale-110",
             "aria-label": "Twitter",
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_2__.FaTwitter, {
               className: "w-5 h-5"
             })
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("a", {
             href: "#",
-            className: "text-gray-300 hover:text-white transition duration-200",
+            className: "text-gray-300 hover:text-white transition duration-200 transform hover:scale-110",
             "aria-label": "Instagram",
             children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_2__.FaInstagram, {
               className: "w-5 h-5"
@@ -191,54 +227,50 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 
-// Íconos para botones
+// Íconos
 
 
-// Tus modales
+// Modales
 
 
 
-// Tus componentes de contenido
+// Componentes de contenido
 
 
 
 
 /**
- * Componente reutilizable para un Item de Acordeón.
- * - Recibe `title`, `defaultOpen` (por defecto false), y `children`.
- * - Maneja su propio estado (abierto/cerrado).
+ * Botón que representa una pestaña.
+ * @param {object} props
+ * @param {string} props.label - Texto mostrado en la pestaña.
+ * @param {React.ReactNode} [props.icon] - Ícono opcional para la pestaña.
+ * @param {string} props.value - Identificador de la pestaña.
+ * @param {string} props.activeTab - Pestaña activa actual.
+ * @param {function} props.onClick - Función para manejar el cambio de pestaña.
  */
 
-function AccordionItem(_ref) {
-  var title = _ref.title,
-    _ref$defaultOpen = _ref.defaultOpen,
-    defaultOpen = _ref$defaultOpen === void 0 ? false : _ref$defaultOpen,
-    children = _ref.children;
-  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(defaultOpen),
-    _useState2 = _slicedToArray(_useState, 2),
-    isOpen = _useState2[0],
-    setIsOpen = _useState2[1];
-  var toggle = function toggle() {
-    return setIsOpen(function (prev) {
-      return !prev;
-    });
-  };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
-    className: "border-b border-gray-300",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("button", {
-      type: "button",
-      onClick: toggle,
-      className: "w-full flex justify-between items-center py-4 text-left focus:outline-none",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("h2", {
-        className: "text-xl sm:text-2xl font-semibold text-teal-800",
-        children: title
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
-        className: "text-2xl ml-3 text-teal-700 transition-colors",
-        children: isOpen ? "−" : "+"
-      })]
-    }), isOpen && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
-      className: "pb-4 transition-all duration-300 ease-in-out",
-      children: children
+function TabButton(_ref) {
+  var label = _ref.label,
+    icon = _ref.icon,
+    value = _ref.value,
+    activeTab = _ref.activeTab,
+    _onClick = _ref.onClick;
+  var isActive = activeTab === value;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("button", {
+    onClick: function onClick() {
+      return _onClick(value);
+    },
+    className: "flex items-center space-x-2 px-4 py-2 font-semibold rounded-t-md \n                  transition-colors focus:outline-none focus:ring-2 focus:ring-teal-400\n                  ".concat(isActive ?
+    // ESTILO DE LA PESTAÑA ACTIVA
+    "bg-white text-teal-700 border-l border-r border-t border-gray-200 shadow-sm" :
+    // ESTILO DE LA PESTAÑA INACTIVA
+    "bg-teal-200 text-teal-800 hover:bg-teal-300", "\n                 "),
+    "aria-selected": isActive,
+    children: [icon && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
+      className: "text-lg",
+      children: icon
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
+      children: label
     })]
   });
 }
@@ -269,16 +301,16 @@ var UsuarioIndex = function UsuarioIndex() {
   var userFullName = "\n    ".concat((_userNew$Nombre2 = userNew.Nombre) !== null && _userNew$Nombre2 !== void 0 ? _userNew$Nombre2 : "", "\n    ").concat((_userNew$ApellidoPate3 = userNew.ApellidoPaterno) !== null && _userNew$ApellidoPate3 !== void 0 ? _userNew$ApellidoPate3 : "", "\n    ").concat((_userNew$ApellidoMate = userNew.ApellidoMaterno) !== null && _userNew$ApellidoMate !== void 0 ? _userNew$ApellidoMate : "", "\n  ").trim();
 
   // Estados para los modales
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState2 = _slicedToArray(_useState, 2),
+    isModalOpen = _useState2[0],
+    setModalOpen = _useState2[1];
   var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
     _useState4 = _slicedToArray(_useState3, 2),
-    isModalOpen = _useState4[0],
-    setModalOpen = _useState4[1];
-  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
-    _useState6 = _slicedToArray(_useState5, 2),
-    isEditModalOpen = _useState6[0],
-    setEditModalOpen = _useState6[1];
+    isEditModalOpen = _useState4[0],
+    setEditModalOpen = _useState4[1];
 
-  // Handlers para abrir/cerrar modales
+  // Handlers de modales
   var handleOpenEditModal = function handleOpenEditModal() {
     return setEditModalOpen(true);
   };
@@ -291,11 +323,91 @@ var UsuarioIndex = function UsuarioIndex() {
   var handleCloseModal = function handleCloseModal() {
     return setModalOpen(false);
   };
+
+  // Estado para controlar la pestaña activa. Opciones: 'info', 'web', 'desk'
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("info"),
+    _useState6 = _slicedToArray(_useState5, 2),
+    activeTab = _useState6[0],
+    setActiveTab = _useState6[1];
+
+  /**
+   * Renderiza el contenido según la pestaña activa.
+   */
+  var renderTabContent = function renderTabContent() {
+    switch (activeTab) {
+      case "info":
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+          className: "px-6 py-4 animate-fadeIn"
+          // Con animate-fadeIn, asumiendo que tienes una clase Tailwind plugin o similar
+          // para animaciones. O simplemente usa transition-all si deseas un fade básico.
+          ,
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+            className: "flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+              className: "flex items-center space-x-4 mb-4 sm:mb-0",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+                className: "h-16 w-16 bg-gradient-to-br from-teal-400 to-purple-400 p-[2px] rounded-full shadow-lg",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+                  className: "flex h-full w-full items-center justify-center rounded-full bg-white text-teal-600 text-2xl font-semibold",
+                  children: initials || /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_9__.FaRegUserCircle, {})
+                })
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("h2", {
+                  className: "text-xl sm:text-2xl font-bold text-gray-800 leading-tight",
+                  children: userFullName || "Usuario sin nombre"
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("p", {
+                  className: "text-sm text-gray-500",
+                  children: userNew.EmailUsuario || "Sin correo registrado"
+                })]
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
+              className: "flex space-x-3 sm:space-x-4",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("button", {
+                onClick: handleOpenEditModal,
+                className: "px-3 py-2 bg-teal-500 hover:bg-teal-600 text-white font-medium rounded-full shadow-md\r focus:outline-none focus:ring-2 focus:ring-teal-400 \r transition-transform transform hover:-translate-y-0.5",
+                title: "Editar Informaci\xF3n del Usuario",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_9__.FaUserEdit, {
+                  className: "h-5 w-5 sm:h-6 sm:w-6"
+                })
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("button", {
+                onClick: handleChangePassword,
+                className: "px-3 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-full shadow-md\r focus:outline-none focus:ring-2 focus:ring-yellow-400 \r transition-transform transform hover:-translate-y-0.5",
+                title: "Cambiar Contrase\xF1a",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_9__.FaKey, {
+                  className: "h-5 w-5 sm:h-6 sm:w-6"
+                })
+              })]
+            })]
+          }), Object.keys(userNew).length > 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_Grid_UserInfoGrid__WEBPACK_IMPORTED_MODULE_5__["default"], {
+            userNew: userNew
+          }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("p", {
+            className: "text-gray-500 italic",
+            children: "No hay informaci\xF3n general disponible."
+          })]
+        });
+      case "web":
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+          className: "px-6 py-4 animate-fadeIn",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_Paginated_PaginatedRoles__WEBPACK_IMPORTED_MODULE_6__["default"], {
+            gruposWeb: gruposWeb
+          })
+        });
+      case "desk":
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
+          className: "px-6 py-4 animate-fadeIn",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_Paginated_PaginatedEscritorio__WEBPACK_IMPORTED_MODULE_7__["default"], {
+            gruposEscritorio: gruposEscritorio
+          })
+        });
+      default:
+        return null;
+    }
+  };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)(_Layouts_App__WEBPACK_IMPORTED_MODULE_2__["default"], {
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
-      className: "max-w-7xl mx-auto mt-10 bg-gray-50 shadow-lg rounded-lg overflow-hidden",
+      className: "max-w-7xl mx-auto mt-10 bg-white shadow-2xl rounded-lg overflow-hidden",
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
-        className: "bg-gradient-to-r from-teal-600 to-teal-400 text-white text-center py-10 shadow-md",
+        className: "bg-gradient-to-r from-teal-600 via-teal-500 to-teal-400 text-white text-center py-10 shadow-md",
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
           className: "max-w-4xl mx-auto px-6 lg:px-8",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("h1", {
@@ -307,74 +419,27 @@ var UsuarioIndex = function UsuarioIndex() {
           })]
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
-        className: "p-6 sm:p-8 lg:p-10 space-y-8",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(AccordionItem, {
-          title: "Informaci\xF3n General",
-          defaultOpen: true,
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
-            className: "mb-6",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
-              className: "flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4",
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
-                className: "flex items-center space-x-4 mb-4 sm:mb-0",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
-                  className: "h-16 w-16 bg-gradient-to-br from-teal-400 to-purple-400 p-[2px] rounded-full shadow-lg",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
-                    className: "flex h-full w-full items-center justify-center rounded-full bg-white text-teal-600 text-2xl font-semibold",
-                    children: initials || /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_9__.FaRegUserCircle, {})
-                  })
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
-                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("h2", {
-                    className: "text-xl sm:text-2xl font-bold text-gray-800 leading-tight",
-                    children: userFullName || "Usuario sin nombre"
-                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("p", {
-                    className: "text-sm text-gray-500",
-                    children: userNew.EmailUsuario || "Sin correo registrado"
-                  })]
-                })]
-              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
-                className: "flex space-x-3 sm:space-x-4",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("button", {
-                  onClick: handleOpenEditModal,
-                  className: "px-3 py-2 bg-teal-500 hover:bg-teal-600 text-white font-medium rounded-full shadow-md\r focus:outline-none focus:ring-2 focus:ring-teal-400 transition-colors",
-                  title: "Editar Informaci\xF3n del Usuario",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_9__.FaUserEdit, {
-                    className: "h-5 w-5 sm:h-6 sm:w-6"
-                  })
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("button", {
-                  onClick: handleChangePassword,
-                  className: "px-3 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-full shadow-md\r focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-colors",
-                  title: "Cambiar Contrase\xF1a",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_9__.FaKey, {
-                    className: "h-5 w-5 sm:h-6 sm:w-6"
-                  })
-                })]
-              })]
-            }), Object.keys(userNew).length > 0 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_Grid_UserInfoGrid__WEBPACK_IMPORTED_MODULE_5__["default"], {
-              userNew: userNew
-            }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("p", {
-              className: "text-gray-500 italic",
-              children: "No hay informaci\xF3n general disponible."
-            })]
-          })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(AccordionItem, {
-          title: "Sistemas Web",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
-            className: "mb-4",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_Paginated_PaginatedRoles__WEBPACK_IMPORTED_MODULE_6__["default"], {
-              gruposWeb: gruposWeb
-            })
-          })
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(AccordionItem, {
-          title: "Sistemas de Escritorio",
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("div", {
-            className: "mb-4",
-            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_Paginated_PaginatedEscritorio__WEBPACK_IMPORTED_MODULE_7__["default"], {
-              gruposEscritorio: gruposEscritorio
-            })
-          })
+        className: "border-b border-gray-200 flex space-x-2 bg-teal-200 px-4 pt-2 justify-center relative",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(TabButton, {
+          label: "Informaci\xF3n General",
+          icon: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_9__.FaRegUserCircle, {}),
+          value: "info",
+          activeTab: activeTab,
+          onClick: setActiveTab
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(TabButton, {
+          label: "Sistemas Web",
+          icon: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_9__.FaGlobe, {}),
+          value: "web",
+          activeTab: activeTab,
+          onClick: setActiveTab
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(TabButton, {
+          label: "Sistemas Escritorio",
+          icon: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_9__.FaDesktop, {}),
+          value: "desk",
+          activeTab: activeTab,
+          onClick: setActiveTab
         })]
-      })]
+      }), renderTabContent()]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_modals_ChangePasswordModal__WEBPACK_IMPORTED_MODULE_3__["default"], {
       isOpen: isModalOpen,
       onClose: handleCloseModal,
