@@ -65,7 +65,6 @@ const SQLLogin = () => {
                         />
                     </div>
                 </div>
-
                 <h1 className="text-4xl font-bold text-teal-600 text-center mt-16 mb-8">
                     Iniciar Sesión
                 </h1>
