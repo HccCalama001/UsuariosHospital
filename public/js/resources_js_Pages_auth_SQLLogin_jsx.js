@@ -116,9 +116,19 @@ var SQLLogin = function SQLLogin() {
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
     className: "min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-400 via-teal-500 to-teal-600 font-poppins",
     children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-      className: "bg-white shadow-xl rounded-xl p-10 max-w-lg w-full",
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("h1", {
-        className: "text-4xl font-bold text-teal-600 text-center mb-8",
+      className: "bg-white shadow-xl rounded-xl p-10 max-w-lg w-full relative",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+        className: "absolute -top-14 left-1/2 transform -translate-x-1/2",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+          className: "w-32 h-32 bg-teal-500 rounded-full flex items-center justify-center shadow-lg overflow-hidden",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("img", {
+            src: "/images/grupos/largaestadia.png",
+            alt: "logo",
+            className: "w-full h-full object-cover"
+          })
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("h1", {
+        className: "text-4xl font-bold text-teal-600 text-center mt-16 mb-8",
         children: "Iniciar Sesi\xF3n"
       }), (getError("general") || getError("authentication")) && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
         className: "mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded",
@@ -133,37 +143,44 @@ var SQLLogin = function SQLLogin() {
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("label", {
             className: "block text-gray-700 font-medium mb-2",
             children: "Nombre de Usuario"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("input", {
-            type: "text",
-            name: "username",
-            value: formData.username,
-            onChange: handleInputChange,
-            className: "w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none",
-            placeholder: "Ingrese su usuario"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
+            className: "flex items-center border rounded-lg shadow-sm focus-within:ring-2 focus-within:ring-teal-500",
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("i", {
+              className: "fas fa-user text-gray-500 px-3"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("input", {
+              type: "text",
+              name: "username",
+              value: formData.username,
+              onChange: handleInputChange,
+              className: "w-full py-3 pr-4 focus:outline-none",
+              placeholder: "Ingrese su usuario"
+            })]
           }), getError("username") && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("p", {
             className: "text-red-500 text-sm mt-1",
             children: getError("username")
           })]
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
-          className: "mb-6 relative",
+          className: "mb-6",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("label", {
             className: "block text-gray-700 font-medium mb-2",
             children: "Contrase\xF1a"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsxs)("div", {
             className: "relative",
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("input", {
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("i", {
+              className: "fas fa-lock absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-500"
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("input", {
               type: showPassword ? "text" : "password",
               name: "current_password",
               value: formData.current_password,
               onChange: handleInputChange,
-              className: "w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none",
+              className: "w-full pl-10 pr-12 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none",
               placeholder: "Ingrese su contrase\xF1a"
             }), formData.current_password && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("button", {
               type: "button",
               onClick: function onClick() {
                 return setShowPassword(!showPassword);
               },
-              className: "absolute top-0 right-3 h-full flex items-center text-gray-500 focus:outline-none",
+              className: "absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 focus:outline-none",
               children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("i", {
                 className: "fas ".concat(showPassword ? "fa-eye-slash" : "fa-eye")
               })
