@@ -69,7 +69,6 @@ const SQLLogin = () => {
                 <h1 className="text-4xl font-bold text-teal-600 text-center mt-16 mb-8">
                     Iniciar Sesión
                 </h1>
-
                 {(getError("general") || getError("authentication")) && (
                     <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
                         {getError("general") && <p>{getError("general")}</p>}
