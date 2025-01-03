@@ -241,5 +241,4 @@ const UsuarioIndex = () => {
         </App>
     );
 };
-
 export default UsuarioIndex;

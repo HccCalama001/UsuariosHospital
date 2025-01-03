@@ -32,10 +32,11 @@ class UsuarioLogin extends Model
         return $this->hasOne(UsuarioToken::class, 'id_user', 'principal_id');
     }
 
-    // Relación corregida: Uno a muchos con RolUsuarioSistema
     public function roleUserSistema()
     {
-        return $this->hasMany(RolUsuarioSistema::class, 'user_principal_id', 'principal_id');
+        return $this->hasMany(RolUsuarioSistema::class, 'user_principal_id', 'principal_id')
+                    ->vigencia();
     }
+    
 
 }

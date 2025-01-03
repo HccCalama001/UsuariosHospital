@@ -289,4 +289,32 @@ class UsuarioController extends Controller
             ], 404);
         }
     }
+
+    public function obtenerGrupos(Request $request)
+    {
+        try {
+            // 1. Extraemos el user ID del token
+            //    Asumiendo que ya tienes un middleware que hace JWTAuth::authenticate()
+            //    y te da un $request->user() con los datos
+            $authUser = $request->user(); // o JWTAuth::parseToken()->authenticate();
+
+            // 2. Obtener el "resumen" del usuario
+            $resumen = $this->usuarioService->buscarUsuarioResumen($authUser->NombreUsuario);
+
+            // 3. Obtener los grupos
+            $gruposDelUsuario = $this->sistemaService->obtenerUsuarioGrupos($resumen);
+
+            // 4. Retornar la lista de grupos en JSON
+            return response()->json([
+                'status' => 'success',
+                'grupos' => $gruposDelUsuario,
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }

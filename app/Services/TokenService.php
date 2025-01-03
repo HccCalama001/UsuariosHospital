@@ -65,7 +65,10 @@ class TokenService
      */
     public function generateFullToken($user): string
     {
-        return JWTAuth::fromUser($user);
+
+        return JWTAuth::claims([
+  
+        ])->fromUser($user);
     }
 
         /**
