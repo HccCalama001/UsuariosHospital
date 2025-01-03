@@ -6,7 +6,6 @@ const ErrorPage = ({ message = "La ruta solicitada no fue encontrada." }) => {
     const handleGoHome = () => {
         Inertia.get("/");
     };
-
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-gray-100 to-gray-300">
             <div className="bg-white p-10 rounded-2xl shadow-xl max-w-lg text-center">
