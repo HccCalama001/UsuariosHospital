@@ -6,6 +6,7 @@ use App\Http\Requests\AuthRequest;
 use App\Http\Requests\ResetPasswordRequest;
 use App\Services\AuthService;
 use App\Services\EmailService;
+use App\Services\SistemaService;
 use App\Services\TokenService;
 use App\Services\UsuarioService;
 use Illuminate\Http\JsonResponse;
@@ -27,6 +28,11 @@ class AuthController extends Controller
      * @var AuthService
      */
     protected AuthService $authService;
+        /**
+     * @var SistemaService
+     */
+    protected SistemaService $sistemaService;
+
 
     /**
      * @var TokenService
@@ -55,12 +61,14 @@ class AuthController extends Controller
         AuthService $authService,
         TokenService $tokenService,
         UsuarioService $usuarioService,
-        EmailService $emailService
+        EmailService $emailService,
+        SistemaService $sistemaService
     ) {
         $this->authService = $authService;
         $this->tokenService = $tokenService;
         $this->usuarioService = $usuarioService;
         $this->emailService = $emailService;
+        $this->sistemaService = $sistemaService;
     }
 
     /**
@@ -180,7 +188,11 @@ class AuthController extends Controller
 
             // Usuario existente
             $user   = $this->usuarioService->buscarUsuarioExistente($request->username);
-            $token  = $this->tokenService->generateFullToken($user);
+    
+            // 3. Generar un token minimalista
+            $token = $this->tokenService->generateFullToken($user);
+
+            // 4. Guardar el token en la cookie
             $cookie = $this->tokenService->guardarEnCookie($token);
 
             return response()
