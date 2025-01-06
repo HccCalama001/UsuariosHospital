@@ -4,21 +4,55 @@ namespace App\Models\ServidorNew;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * Class SistemaConsolidado
+ *
+ * Modelo que representa la tabla 'sistema_consolidado' en la conexión 'sqlsrvUsers'.
+ *
+ * @property int         $SistemaID
+ * @property string      $Codigo
+ * @property string      $Nombre
+ * @property string      $Descripcion
+ * @property bool|int    $ValidaRUT
+ * @property string      $UsuarioBD
+ * @property bool|int    $Vigencia
+ * @property int         $GrupoID
+ * @property string|null $deleted_at
+ * @property string|null $created_at
+ * @property string|null $updated_at
+ */
 class SistemaConsolidado extends Model
 {
-    use  SoftDeletes;
+    use SoftDeletes;
 
-    // Especificar la conexión a la base de datos
+    /**
+     * Conexión de base de datos utilizada por este modelo.
+     *
+     * @var string
+     */
     protected $connection = 'sqlsrvUsers';
 
-    // Especificar el nombre de la tabla
+    /**
+     * Nombre de la tabla asociada a este modelo.
+     *
+     * @var string
+     */
     protected $table = 'sistema_consolidado';
 
-    // Especificar la clave primaria
+    /**
+     * Clave primaria de la tabla.
+     *
+     * @var string
+     */
     protected $primaryKey = 'SistemaID';
 
-    // Definir los atributos asignables en masa
+    /**
+     * Atributos asignables de forma masiva.
+     *
+     * @var array
+     */
     protected $fillable = [
         'Codigo',
         'Nombre',
@@ -26,43 +60,79 @@ class SistemaConsolidado extends Model
         'ValidaRUT',
         'UsuarioBD',
         'Vigencia',
-        'GrupoID'
+        'GrupoID',
     ];
 
-    // Definir los atributos que deben tratarse como fechas
-    protected $dates = ['deleted_at', 'created_at', 'updated_at'];
+    /**
+     * Atributos que deben ser tratados como fechas.
+     *
+     * @var array
+     */
+    protected $dates = [
+        'deleted_at',
+        'created_at',
+        'updated_at',
+    ];
 
-    // Relación con el modelo GruposSistemas
-    public function grupo()
+    /**
+     * Relación con el modelo GruposSistema.
+     *
+     * @return BelongsTo
+     */
+    public function grupo(): BelongsTo
     {
         return $this->belongsTo(GruposSistema::class, 'GrupoID', 'GrupoID');
     }
 
-    // Crear o actualizar un sistema
-    public static function crearOActualizar(array $datos)
+    /**
+     * Crea o actualiza un sistema con los datos proporcionados.
+     *
+     * @param  array  $datos
+     * @return static
+     */
+    public static function crearOActualizar(array $datos): self
     {
-        return self::updateOrCreate(['SistemaID' => $datos['SistemaID'] ?? null], $datos);
+        return self::updateOrCreate(
+            ['SistemaID' => $datos['SistemaID'] ?? null],
+            $datos
+        );
     }
 
-    // Verificar si un sistema está vigente
+    /**
+     * Verifica si el sistema está vigente.
+     *
+     * @return bool|int
+     */
     public function estaVigente()
     {
+        // Retorna el valor de la columna 'Vigencia', puede ser bool o int según la tabla.
         return $this->Vigencia;
     }
 
-    // Eliminar un sistema por ID
-    public static function eliminarPorID($id)
+    /**
+     * Elimina un sistema por su ID.
+     *
+     * @param  int  $id
+     * @return bool
+     */
+    public static function eliminarPorID($id): bool
     {
         $sistema = self::find($id);
+
         if ($sistema) {
             $sistema->delete();
             return true;
         }
+
         return false;
     }
 
-    // Obtener el grupo asociado
-    public function obtenerGrupo()
+    /**
+     * Retorna el grupo asociado a este sistema.
+     *
+     * @return GruposSistema|null
+     */
+    public function obtenerGrupo(): ?GruposSistema
     {
         return $this->grupo()->first();
     }

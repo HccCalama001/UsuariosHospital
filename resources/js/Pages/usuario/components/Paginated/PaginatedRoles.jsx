@@ -13,7 +13,7 @@ const PaginatedRoles = ({ gruposWeb }) => {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
     // Obtener los elementos de la página actual
-    const currentItems = gruposWeb.slice(indexOfFirstItem, indexOfLastItem);
+    const paginatedGroups = gruposWeb.slice(indexOfFirstItem, indexOfLastItem);
 
     // Calcular el número total de páginas
     const totalPages = Math.ceil(gruposWeb.length / itemsPerPage);
@@ -25,27 +25,38 @@ const PaginatedRoles = ({ gruposWeb }) => {
 
     return (
         <section>
-            {gruposWeb.length ? (
+            {gruposWeb.length > 0 ? (
                 <>
+                    {/* Grid de tarjetas */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {currentItems.map((gruposWeb, index) => (
-                            <CardRoleWeb key={index} gruposWeb={gruposWeb} />
+                        {paginatedGroups.map((grupo, index) => (
+                            <CardRoleWeb key={index} gruposWeb={grupo} />
                         ))}
                     </div>
+
+                    {/* Paginación */}
                     <div className="flex justify-center items-center mt-6 space-x-2">
-                        {Array.from({ length: totalPages }, (_, index) => (
-                            <button
-                                key={index}
-                                className={`px-4 py-2 border rounded ${
-                                    currentPage === index + 1
-                                        ? "bg-teal-600 text-white"
-                                        : "bg-gray-200 text-gray-800"
-                                }`}
-                                onClick={() => handlePageChange(index + 1)}
-                            >
-                                {index + 1}
-                            </button>
-                        ))}
+                        {Array.from({ length: totalPages }, (_, idx) => {
+                            const pageNum = idx + 1;
+                            const isActive = currentPage === pageNum;
+
+                            return (
+                                <button
+                                    key={pageNum}
+                                    onClick={() => handlePageChange(pageNum)}
+                                    aria-label={`Ir a la página ${pageNum}`}
+                                    className={`px-4 py-2 border rounded 
+                    transition-colors duration-150 focus:outline-none
+                    ${
+                        isActive
+                            ? "bg-teal-600 text-white border-teal-600"
+                            : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                    }`}
+                                >
+                                    {pageNum}
+                                </button>
+                            );
+                        })}
                     </div>
                 </>
             ) : (

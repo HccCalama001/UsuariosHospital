@@ -15,7 +15,7 @@ class SistemaService
      */
     public function obtenerUsuarioGrupos(array $resumen)
     {
-        Log::info('=== [obtenerUsuarioGruposManual] INICIO ===');
+
 
         // 1) Obtener los códigos de sistemas de escritorio (usuarioSistema)
         //    y de sistemas web (usuarioSistemaWeb).
@@ -29,10 +29,6 @@ class SistemaService
             ->map(fn($cod) => trim($cod))
             ->unique();
 
-        // Logueamos ambas colecciones
-        Log::info('Codigos de ESCRITORIO: ', $codigosEscritorio->toArray());
-        Log::info('Codigos de WEB: ', $codigosWeb->toArray());
-
         // 2) Cargar TODOS los grupos (sin Eloquent)
         $grupos = DB::connection('sqlsrvUsers')
             ->table('grupos_sistemas')
@@ -42,6 +38,7 @@ class SistemaService
                 'Url',
                 'Descripcion',
                 'Tipo',
+                'imagen',
                 'created_at',
                 'updated_at',
                 'deleted_at'
@@ -49,8 +46,6 @@ class SistemaService
             ->whereNull('deleted_at') // Por si estás usando SoftDeletes
             ->get();
 
-        // Logueamos la cantidad de grupos encontrados
-        Log::info('Cantidad de grupos encontrados: ' . $grupos->count());
 
         // 3) Cargar TODOS los sistemas
         $sistemas = DB::connection('sqlsrvUsers')
@@ -71,16 +66,10 @@ class SistemaService
             ->whereNull('deleted_at')
             ->get();
 
-        // Logueamos la cantidad de sistemas encontrados
-        Log::info('Cantidad de sistemas encontrados: ' . $sistemas->count());
 
         // 4) Agrupar los sistemas por su GrupoID
         $sistemasPorGrupo = $sistemas->groupBy('GrupoID');
 
-        Log::info('Sistemas agrupados por GrupoID: ');
-        foreach ($sistemasPorGrupo as $grupoID => $sist) {
-            Log::info(" -> GrupoID $grupoID tiene " . $sist->count() . ' sistemas.');
-        }
 
         // 5) Filtrar en memoria
         $gruposDelUsuario = [];
@@ -90,21 +79,20 @@ class SistemaService
             $sistDeEsteGrupo = $sistemasPorGrupo->get($grupo->GrupoID, collect());
             $tieneAcceso = false;
 
-            // Log para cada grupo
-            Log::info("Analizando GrupoID: {$grupo->GrupoID}, Tipo: {$grupo->Tipo}, Nombre: {$grupo->NombreGrupo}");
+
 
             foreach ($sistDeEsteGrupo as $sistema) {
                 $codigoBD = trim($sistema->Codigo ?? '');
 
                 if ($grupo->Tipo === 'escritorio') {
                     if ($codigosEscritorio->contains($codigoBD)) {
-                        Log::info("   -> ¡Match! El usuario sí tiene acceso a este sistema de escritorio: $codigoBD");
+       
                         $tieneAcceso = true;
                         break;
                     }
                 } elseif ($grupo->Tipo === 'web') {
                     if ($codigosWeb->contains($codigoBD)) {
-                        Log::info("   -> ¡Match! El usuario sí tiene acceso a este sistema web: $codigoBD");
+                   
                         $tieneAcceso = true;
                         break;
                     }
@@ -118,25 +106,18 @@ class SistemaService
                 if ($urlGroup === 'Desconosido') {
                     $urlGroup = 'Desconocido';
                 }
-
+            
                 $gruposDelUsuario[] = [
                     'GrupoID'     => $grupo->GrupoID,
                     'NombreGrupo' => $grupo->NombreGrupo,
                     'Tipo'        => $grupo->Tipo,
                     'Url'         => $urlGroup,
+                    'imagen'      => $grupo->imagen, 
+                    
                 ];
             }
         }
-
-        // 6) Log final de los grupos filtrados, usando JSON_UNESCAPED_UNICODE
-        // para que los acentos no aparezcan como \u00f3, etc.
-        Log::info(
-            'Grupos del usuario (JSON sin escapar Unicode ni slashes): ' 
-            . json_encode($gruposDelUsuario, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT)
-        );
-
-        Log::info('=== [obtenerUsuarioGruposManual] FIN ===');
-
+      
         return $gruposDelUsuario;
     }
 }

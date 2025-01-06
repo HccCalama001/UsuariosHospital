@@ -1,198 +1,292 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AuthRequest;
 use App\Http\Requests\ResetPasswordRequest;
-use App\Services\EmailService;
 use App\Services\AuthService;
+use App\Services\EmailService;
+use App\Services\SistemaService;
 use App\Services\TokenService;
 use App\Services\UsuarioService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Http\Request;
+use Inertia\Response;
 
-
+/**
+ * Class AuthController
+ *
+ * Controlador responsable del proceso de autenticación y recuperación de contraseña.
+ */
 class AuthController extends Controller
 {
-    protected $AuthService;
-    protected $tokenService;
-    protected $usuarioService;
-    protected $emailService;
+    /**
+     * @var AuthService
+     */
+    protected AuthService $authService;
+        /**
+     * @var SistemaService
+     */
+    protected SistemaService $sistemaService;
 
-    public function __construct(AuthService $AuthService, TokenService $tokenService, UsuarioService $usuarioService, EmailService $emailService)
-    {
-        $this->AuthService = $AuthService;
+
+    /**
+     * @var TokenService
+     */
+    protected TokenService $tokenService;
+
+    /**
+     * @var UsuarioService
+     */
+    protected UsuarioService $usuarioService;
+
+    /**
+     * @var EmailService
+     */
+    protected EmailService $emailService;
+
+    /**
+     * AuthController constructor.
+     *
+     * @param  AuthService    $authService
+     * @param  TokenService   $tokenService
+     * @param  UsuarioService $usuarioService
+     * @param  EmailService   $emailService
+     */
+    public function __construct(
+        AuthService $authService,
+        TokenService $tokenService,
+        UsuarioService $usuarioService,
+        EmailService $emailService,
+        SistemaService $sistemaService
+    ) {
+        $this->authService = $authService;
         $this->tokenService = $tokenService;
         $this->usuarioService = $usuarioService;
         $this->emailService = $emailService;
+        $this->sistemaService = $sistemaService;
     }
+
     /**
      * Muestra la vista de inicio de sesión.
+     *
+     * @return Response
      */
-    public function index()
+    public function index(): Response
     {
         return Inertia::render('auth/SQLLogin', [
-            'csrfToken' => csrf_token(), 
+            'csrfToken' => csrf_token(),
         ]);
     }
-     // Mostrar el formulario de recuperación de contraseña
-     public function showForgotPasswordForm()
-     {
-         return Inertia::render('auth/ForgotPassword',[
-            'csrfToken' => csrf_token(), 
-        ]);
-     }
+
     /**
-     * Mostrar la vista de verificación de código.
+     * Muestra el formulario para recuperación de contraseña.
      *
-     * @return \Inertia\Response
+     * @return Response
      */
-    public function showVerifyCode()
+    public function showForgotPasswordForm(): Response
     {
-        return Inertia::render('auth/VerifyCode',[
-            'csrfToken' => csrf_token(), 
+        return Inertia::render('auth/ForgotPassword', [
+            'csrfToken' => csrf_token(),
         ]);
     }
+
     /**
-     * Manejar la verificación del código.
+     * Muestra la vista de verificación de código.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return Response
      */
-    public function handleVerifyCode(AuthRequest $request)
+    public function showVerifyCode(): Response
+    {
+        return Inertia::render('auth/VerifyCode', [
+            'csrfToken' => csrf_token(),
+        ]);
+    }
+
+    /**
+     * Maneja la verificación de código y token.
+     *
+     * @param  AuthRequest  $request
+     * @return JsonResponse
+     */
+    public function handleVerifyCode(AuthRequest $request): JsonResponse
     {
         try {
-            $token = $this->AuthService->verifyCodeAndToken($request->code);
+            $token = $this->authService->verifyCodeAndToken($request->code);
+
             // Crear una cookie segura con el token
             $cookie = $this->tokenService->guardarEnCookieReset($token, 15);
+
             // Respuesta JSON con el estado y adjuntando la cookie
-            return response()->json([
-                'message' => 'Código verificado con éxito',
-                'redirect' => '/auth/change-password',
-            ])->withCookie($cookie);
+            return response()
+                ->json([
+                    'message'  => 'Código verificado con éxito',
+                    'redirect' => '/auth/change-password',
+                ])
+                ->withCookie($cookie);
         } catch (\Exception $e) {
             return response()->json([
-                'errors' => ['code' => $e->getMessage()],
+                'errors' => [
+                    'code' => $e->getMessage(),
+                ],
             ], 422);
         }
     }
 
-    public function showChangePassword()
+    /**
+     * Muestra la vista de cambio de contraseña.
+     *
+     * @return Response
+     */
+    public function showChangePassword(): Response
     {
         $token = request()->cookie('reset_token');
-        return Inertia::render('auth/ChangePassword', [
-            'token' => $token,
-            'csrfToken' => csrf_token(), // Enviar el token CSRF
-        ]);
-        
-    }
-    
 
-    public function authenticate(AuthRequest $request)
+        return Inertia::render('auth/ChangePassword', [
+            'token'     => $token,
+            'csrfToken' => csrf_token(),
+        ]);
+    }
+
+    /**
+     * Maneja la autenticación del usuario.
+     *
+     * @param  AuthRequest  $request
+     * @return JsonResponse
+     */
+    public function authenticate(AuthRequest $request): JsonResponse
     {
         try {
-    
-            $this->AuthService->authenticateUser($request->username, $request->current_password);
-    
+            $this->authService->authenticateUser($request->username, $request->current_password);
             $usuarioData = $this->usuarioService->buscarUsuarioResumen($request->username);
-            log::info('Usuario nuevo o temporal' , $usuarioData);
+
+            // Usuario nuevo o temporal
             if (is_null($usuarioData['userNew'])) {
-              
-                // Usuario nuevo o temporal
                 $token = $this->tokenService->generateTemporaryToken([
-                    'username' => $request->username,
+                    'username'  => $request->username,
                     'temporary' => true,
                 ]);
-                // Guardar datos en la sesión
+
                 session([
-                    'userLogin' => $usuarioData,
+                    'userLogin'        => $usuarioData,
                     'current_password' => $request->current_password,
                 ]);
-            
+
                 $cookie = $this->tokenService->guardarEnCookie($token);
-            
-                return response()->json([
-                    'status' => 'success',
-                    'redirect' => route('usuario.completarDatos'),
-                ])->withCookie($cookie);
+
+                return response()
+                    ->json([
+                        'status'   => 'success',
+                        'redirect' => route('usuario.completarDatos'),
+                    ])
+                    ->withCookie($cookie);
             }
+
             // Usuario existente
-            $user = $this->usuarioService->buscarUsuarioExistente($request->username);
+            $user   = $this->usuarioService->buscarUsuarioExistente($request->username);
+    
+            // 3. Generar un token minimalista
             $token = $this->tokenService->generateFullToken($user);
+
+            // 4. Guardar el token en la cookie
             $cookie = $this->tokenService->guardarEnCookie($token);
-    
-            return response()->json([
-                'status' => 'success',
-                'redirect' => route('usuario.index'),
-            ])->withCookie($cookie);
-    
+
+            return response()
+                ->json([
+                    'status'   => 'success',
+                    'redirect' => route('usuario.index'),
+                ])
+                ->withCookie($cookie);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'errors' => ['authentication' => $e->getMessage()],
-            ],422);
+                'errors' => [
+                    'authentication' => $e->getMessage(),
+                ],
+            ], 422);
         }
     }
 
     /**
      * Cierra todas las sesiones activas del usuario en SQL Server.
+     *
+     * @return RedirectResponse
      */
-    public function closeSessions()
+    public function closeSessions(): RedirectResponse
     {
         try {
             $username = Session::get('sql_username');
+
             if (!$username) {
                 return back()->withErrors(['message' => 'No autorizado.']);
             }
+
             // Cerrar sesiones activas
-            $this->AuthService->closeUserSessions($username);
+            $this->authService->closeUserSessions($username);
 
             return redirect()->route('sqlpassword.success');
         } catch (\Exception $e) {
-            return back()->withErrors(['message' => 'Error al cerrar las sesiones: ' . $e->getMessage()]);
+            return back()->withErrors([
+                'message' => 'Error al cerrar las sesiones: ' . $e->getMessage(),
+            ]);
         }
     }
 
-    public function forgotPassword(AuthRequest $request)
+    /**
+     * Maneja la generación de token y envío de correo para recuperación de contraseña.
+     *
+     * @param  AuthRequest  $request
+     * @return JsonResponse
+     */
+    public function forgotPassword(AuthRequest $request): JsonResponse
     {
         $identifier = $request->input('identifier');
-    
+
         try {
             // Generar el token y obtener el correo del usuario
-            $data = $this->AuthService->generateResetToken($identifier);
-    
+            $data = $this->authService->generateResetToken($identifier);
+
             $codAleatorio = $data['codAleatorio'];
-            $email = $data['email'];
-            $resetLink = url("/auth/verify-code");
+            $email        = $data['email'];
+            $resetLink    = url('/auth/verify-code');
 
             // Enviar el correo utilizando EmailService
             $this->emailService->enviarCorreoRecuperacion($email, $resetLink, $codAleatorio);
         } catch (\Exception $e) {
-            // No hacer nada específico aquí, pero podrías registrar el error
-            Log::error('Error en forgotPassword:', ['message' => $e->getMessage()]);
+            // Se puede registrar el error si se desea
+            Log::error('Error al generar o enviar token de recuperación: '.$e->getMessage());
         }
-    
+
         // Respuesta genérica para evitar exposición de datos
-        return response()->json(['message' => 'Si los datos proporcionados son válidos, se enviará un correo con las instrucciones.'], 200);
+        return response()->json([
+            'message' => 'Si los datos proporcionados son válidos, se enviará un correo con las instrucciones.',
+        ], 200);
     }
-    
-    public function resetPassword(ResetPasswordRequest $request)
+
+    /**
+     * Maneja el reseteo de contraseña del usuario.
+     *
+     * @param  ResetPasswordRequest  $request
+     * @return JsonResponse
+     */
+    public function resetPassword(ResetPasswordRequest $request): JsonResponse
     {
-        $token = $request->input('token');
+        $token       = $request->input('token');
         $newPassword = $request->input('new_password');
-    
+
         try {
-            $response = $this->AuthService->ResetPassword($token, $newPassword);
+            $response = $this->authService->ResetPassword($token, $newPassword);
+
             return response()->json($response, 200);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error al cambiar la contraseña.',
-                'error' => $e->getMessage(),
+                'error'   => $e->getMessage(),
             ], 500);
         }
     }
-    
-    
-
 }

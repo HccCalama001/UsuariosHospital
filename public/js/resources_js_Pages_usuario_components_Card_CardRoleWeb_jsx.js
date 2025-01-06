@@ -18,31 +18,41 @@ __webpack_require__.r(__webpack_exports__);
 
 var CardRoleWeb = function CardRoleWeb(_ref) {
   var gruposWeb = _ref.gruposWeb;
-  var handleButtonClick = function handleButtonClick() {
-    // Si la URL no es "Desconocido" o "No Aplica", redirigimos
-    if (gruposWeb.Url && gruposWeb.Url !== "No Aplica" && gruposWeb.Url !== "Desconocido") {
-      // Abre la URL en otra pestaña/ventana
-      window.open(gruposWeb.Url, "_blank");
+  var Url = gruposWeb.Url,
+    NombreGrupo = gruposWeb.NombreGrupo,
+    imagen = gruposWeb.imagen,
+    GrupoID = gruposWeb.GrupoID;
+  var handleOpenSystem = function handleOpenSystem() {
+    if (Url && Url !== "No Aplica" && Url !== "Desconocido") {
+      window.open(Url, "_blank", "noopener,noreferrer");
     } else {
       console.log("La URL no es válida o no se puede aplicar.");
     }
   };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
-    className: "bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow p-6",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("h3", {
-      className: "text-lg font-semibold text-teal-800 mb-2",
-      children: ["Sistema: ", gruposWeb.NombreGrupo]
+    className: "\r flex flex-col items-center justify-between\r bg-white border border-gray-200 rounded-lg shadow-md\r hover:shadow-lg transition-shadow\r w-full max-w-xs sm:max-w-sm\r mx-auto               /* Esto centra la tarjeta horizontalmente */\r p-4                   /* Ajustamos el padding para que sea algo menor */\r h-[300px]            /* Reducimos la altura total */\r ",
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+      className: "w-full text-sm text-gray-600",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+        className: "font-bold",
+        children: "ID Sistema:"
+      }), " ", GrupoID]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
-      className: "text-sm text-gray-600 mb-4",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("p", {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
-          className: "font-bold",
-          children: "ID Sistema:"
-        }), " ", gruposWeb.NombreGrupo]
+      className: "flex justify-center my-4",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+        className: "w-24 h-24 overflow-hidden rounded-full shadow-md",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("img", {
+          src: imagen || "/images/default.png",
+          alt: NombreGrupo || "Imagen del sistema",
+          className: "w-full h-full object-cover"
+        })
       })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("h3", {
+      className: "text-lg font-semibold text-teal-800 text-center mb-2",
+      children: ["Sistema: ", NombreGrupo]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("button", {
-      className: "w-full bg-teal-600 text-white py-2 px-4 rounded-lg hover:bg-teal-700 transition-colors",
-      onClick: handleButtonClick,
+      onClick: handleOpenSystem,
+      className: "\r w-full bg-teal-600 text-white py-2 px-4 rounded-lg\r hover:bg-teal-700 transition-colors\r ",
       children: "Dirigirse a Sistema"
     })]
   });
