@@ -24,13 +24,11 @@ const CompletarDatos = ({ userLogin, current_password, csrfToken }) => {
             [e.target.name]: e.target.value,
         });
     };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
         setErrors({});
         setGlobalError("");
-
         try {
             const responseData = await guardarDatos(formData, csrfToken);
 

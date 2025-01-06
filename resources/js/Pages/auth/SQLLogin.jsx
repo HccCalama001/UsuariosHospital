@@ -117,7 +117,6 @@ const SQLLogin = () => {
                                 className="w-full pl-10 pr-12 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none"
                                 placeholder="Ingrese su contraseña"
                             />
-
                             {formData.current_password && (
                                 <button
                                     type="button"
