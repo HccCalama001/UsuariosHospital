@@ -10,7 +10,7 @@ use App\Http\Controllers\UsuarioController;
 Route::get('/', function () {
     return redirect()->route('sqlpassword.login');
 });
-
+//Comentario de guardado (ELIMINAR)
 
 
 // Rutas públicas (sin autenticación JWT)
