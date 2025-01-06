@@ -14,7 +14,6 @@ const CompletarDatos = ({ userLogin, current_password, csrfToken }) => {
         current_password: current_password || "",
         userLogin: userLogin?.userLogin?.name || "",
     });
-
     const [errors, setErrors] = useState({});
     const [globalError, setGlobalError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);

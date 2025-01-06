@@ -52,7 +52,6 @@ var App = function App(_ref) {
    */
   var handleLogout = function handleLogout() {
     document.cookie = "auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-<<<<<<< HEAD
     window.location.href = "auth/login";
   };
 
@@ -63,10 +62,6 @@ var App = function App(_ref) {
     return setMenuOpen(function (prev) {
       return !prev;
     });
-=======
-    // Redirigir a la página de inicio de sesión
-    window.location.href = "/login";
->>>>>>> origin/Desarrollo
   };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
     className: "min-h-screen flex flex-col bg-gray-50 font-poppins relative w-full",
