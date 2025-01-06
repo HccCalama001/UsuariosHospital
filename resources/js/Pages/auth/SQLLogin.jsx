@@ -121,15 +121,10 @@ const SQLLogin = () => {
                             {formData.current_password && (
                                 <button
                                     type="button"
-<<<<<<< HEAD
                                     onClick={() =>
                                         setShowPassword(!showPassword)
                                     }
-                                    className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 focus:outline-none"
-=======
-                                    onClick={() => setShowPassword(!showPassword)}
                                     className="absolute top-0 right-3 h-full flex items-center text-gray-500 focus:outline-none"
->>>>>>> origin/Desarrollo
                                 >
                                     <i
                                         className={`fas ${
