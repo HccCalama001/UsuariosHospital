@@ -41935,6 +41935,14 @@ var map = {
 	"./usuario/components/modals/EditUserModal.jsx": [
 		"./resources/js/Pages/usuario/components/modals/EditUserModal.jsx",
 		"resources_js_Pages_usuario_components_modals_EditUserModal_jsx"
+	],
+	"./usuario/components/modals/NoAccessModal": [
+		"./resources/js/Pages/usuario/components/modals/NoAccessModal.jsx",
+		"resources_js_Pages_usuario_components_modals_NoAccessModal_jsx"
+	],
+	"./usuario/components/modals/NoAccessModal.jsx": [
+		"./resources/js/Pages/usuario/components/modals/NoAccessModal.jsx",
+		"resources_js_Pages_usuario_components_modals_NoAccessModal_jsx"
 	]
 };
 function webpackAsyncContext(req) {
@@ -42085,7 +42093,7 @@ module.exports = /*#__PURE__*/JSON.parse('{"name":"axios","version":"0.21.4","de
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_Pages_ErrorPage_jsx":1,"resources_js_Pages_auth_ChangePassword_jsx":1,"resources_js_Pages_auth_ForgotPassword_jsx":1,"resources_js_Pages_auth_ResetPassword_jsx":1,"resources_js_Pages_auth_SQLLogin_jsx":1,"resources_js_Pages_auth_VerifyCode_jsx":1,"resources_js_Pages_usuario_CompletarDatos_jsx":1,"resources_js_Pages_usuario_Index_jsx":1,"resources_js_Pages_usuario_components_Card_CardRoleWeb_jsx":1,"resources_js_Pages_usuario_components_Card_CardSisEscr_jsx":1,"resources_js_Pages_usuario_components_Card_UserInfoCard_jsx":1,"resources_js_Pages_usuario_components_Grid_UserInfoGrid_jsx":1,"resources_js_Pages_usuario_components_Paginated_PaginatedEscritorio_jsx":1,"resources_js_Pages_usuario_components_Paginated_PaginatedRoles_jsx":1,"resources_js_Pages_usuario_components_modals_ChangePasswordModal_jsx":1,"resources_js_Pages_usuario_components_modals_EditUserModal_jsx":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_Pages_ErrorPage_jsx":1,"resources_js_Pages_auth_ChangePassword_jsx":1,"resources_js_Pages_auth_ForgotPassword_jsx":1,"resources_js_Pages_auth_ResetPassword_jsx":1,"resources_js_Pages_auth_SQLLogin_jsx":1,"resources_js_Pages_auth_VerifyCode_jsx":1,"resources_js_Pages_usuario_CompletarDatos_jsx":1,"resources_js_Pages_usuario_Index_jsx":1,"resources_js_Pages_usuario_components_Card_CardRoleWeb_jsx":1,"resources_js_Pages_usuario_components_Card_CardSisEscr_jsx":1,"resources_js_Pages_usuario_components_Card_UserInfoCard_jsx":1,"resources_js_Pages_usuario_components_Grid_UserInfoGrid_jsx":1,"resources_js_Pages_usuario_components_Paginated_PaginatedEscritorio_jsx":1,"resources_js_Pages_usuario_components_Paginated_PaginatedRoles_jsx":1,"resources_js_Pages_usuario_components_modals_ChangePasswordModal_jsx":1,"resources_js_Pages_usuario_components_modals_EditUserModal_jsx":1,"resources_js_Pages_usuario_components_modals_NoAccessModal_jsx":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};
