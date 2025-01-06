@@ -41810,162 +41810,130 @@ module.exports = function getSideChannel() {
 var map = {
 	"./ErrorPage": [
 		"./resources/js/Pages/ErrorPage.jsx",
-		9,
 		"resources_js_Pages_ErrorPage_jsx"
 	],
 	"./ErrorPage.jsx": [
 		"./resources/js/Pages/ErrorPage.jsx",
-		9,
 		"resources_js_Pages_ErrorPage_jsx"
 	],
 	"./auth/ChangePassword": [
 		"./resources/js/Pages/auth/ChangePassword.jsx",
-		9,
 		"resources_js_Pages_auth_ChangePassword_jsx"
 	],
 	"./auth/ChangePassword.jsx": [
 		"./resources/js/Pages/auth/ChangePassword.jsx",
-		9,
 		"resources_js_Pages_auth_ChangePassword_jsx"
 	],
 	"./auth/ForgotPassword": [
 		"./resources/js/Pages/auth/ForgotPassword.jsx",
-		9,
 		"resources_js_Pages_auth_ForgotPassword_jsx"
 	],
 	"./auth/ForgotPassword.jsx": [
 		"./resources/js/Pages/auth/ForgotPassword.jsx",
-		9,
 		"resources_js_Pages_auth_ForgotPassword_jsx"
 	],
 	"./auth/ResetPassword": [
 		"./resources/js/Pages/auth/ResetPassword.jsx",
-		9,
 		"resources_js_Pages_auth_ResetPassword_jsx"
 	],
 	"./auth/ResetPassword.jsx": [
 		"./resources/js/Pages/auth/ResetPassword.jsx",
-		9,
 		"resources_js_Pages_auth_ResetPassword_jsx"
 	],
 	"./auth/SQLLogin": [
 		"./resources/js/Pages/auth/SQLLogin.jsx",
-		7,
 		"resources_js_Pages_auth_SQLLogin_jsx"
 	],
 	"./auth/SQLLogin.jsx": [
 		"./resources/js/Pages/auth/SQLLogin.jsx",
-		7,
 		"resources_js_Pages_auth_SQLLogin_jsx"
 	],
 	"./auth/VerifyCode": [
 		"./resources/js/Pages/auth/VerifyCode.jsx",
-		9,
 		"resources_js_Pages_auth_VerifyCode_jsx"
 	],
 	"./auth/VerifyCode.jsx": [
 		"./resources/js/Pages/auth/VerifyCode.jsx",
-		9,
 		"resources_js_Pages_auth_VerifyCode_jsx"
 	],
 	"./usuario/CompletarDatos": [
 		"./resources/js/Pages/usuario/CompletarDatos.jsx",
-		9,
 		"resources_js_Pages_usuario_CompletarDatos_jsx"
 	],
 	"./usuario/CompletarDatos.jsx": [
 		"./resources/js/Pages/usuario/CompletarDatos.jsx",
-		9,
 		"resources_js_Pages_usuario_CompletarDatos_jsx"
 	],
 	"./usuario/Index": [
 		"./resources/js/Pages/usuario/Index.jsx",
-		9,
 		"resources_js_Pages_usuario_Index_jsx"
 	],
 	"./usuario/Index.jsx": [
 		"./resources/js/Pages/usuario/Index.jsx",
-		9,
 		"resources_js_Pages_usuario_Index_jsx"
 	],
 	"./usuario/components/Card/CardRoleWeb": [
 		"./resources/js/Pages/usuario/components/Card/CardRoleWeb.jsx",
-		9,
 		"resources_js_Pages_usuario_components_Card_CardRoleWeb_jsx"
 	],
 	"./usuario/components/Card/CardRoleWeb.jsx": [
 		"./resources/js/Pages/usuario/components/Card/CardRoleWeb.jsx",
-		9,
 		"resources_js_Pages_usuario_components_Card_CardRoleWeb_jsx"
 	],
 	"./usuario/components/Card/CardSisEscr": [
 		"./resources/js/Pages/usuario/components/Card/CardSisEscr.jsx",
-		9,
 		"resources_js_Pages_usuario_components_Card_CardSisEscr_jsx"
 	],
 	"./usuario/components/Card/CardSisEscr.jsx": [
 		"./resources/js/Pages/usuario/components/Card/CardSisEscr.jsx",
-		9,
 		"resources_js_Pages_usuario_components_Card_CardSisEscr_jsx"
 	],
 	"./usuario/components/Card/UserInfoCard": [
 		"./resources/js/Pages/usuario/components/Card/UserInfoCard.jsx",
-		9,
 		"resources_js_Pages_usuario_components_Card_UserInfoCard_jsx"
 	],
 	"./usuario/components/Card/UserInfoCard.jsx": [
 		"./resources/js/Pages/usuario/components/Card/UserInfoCard.jsx",
-		9,
 		"resources_js_Pages_usuario_components_Card_UserInfoCard_jsx"
 	],
 	"./usuario/components/Grid/UserInfoGrid": [
 		"./resources/js/Pages/usuario/components/Grid/UserInfoGrid.jsx",
-		9,
 		"resources_js_Pages_usuario_components_Grid_UserInfoGrid_jsx"
 	],
 	"./usuario/components/Grid/UserInfoGrid.jsx": [
 		"./resources/js/Pages/usuario/components/Grid/UserInfoGrid.jsx",
-		9,
 		"resources_js_Pages_usuario_components_Grid_UserInfoGrid_jsx"
 	],
 	"./usuario/components/Paginated/PaginatedEscritorio": [
 		"./resources/js/Pages/usuario/components/Paginated/PaginatedEscritorio.jsx",
-		9,
 		"resources_js_Pages_usuario_components_Paginated_PaginatedEscritorio_jsx"
 	],
 	"./usuario/components/Paginated/PaginatedEscritorio.jsx": [
 		"./resources/js/Pages/usuario/components/Paginated/PaginatedEscritorio.jsx",
-		9,
 		"resources_js_Pages_usuario_components_Paginated_PaginatedEscritorio_jsx"
 	],
 	"./usuario/components/Paginated/PaginatedRoles": [
 		"./resources/js/Pages/usuario/components/Paginated/PaginatedRoles.jsx",
-		9,
 		"resources_js_Pages_usuario_components_Paginated_PaginatedRoles_jsx"
 	],
 	"./usuario/components/Paginated/PaginatedRoles.jsx": [
 		"./resources/js/Pages/usuario/components/Paginated/PaginatedRoles.jsx",
-		9,
 		"resources_js_Pages_usuario_components_Paginated_PaginatedRoles_jsx"
 	],
 	"./usuario/components/modals/ChangePasswordModal": [
 		"./resources/js/Pages/usuario/components/modals/ChangePasswordModal.jsx",
-		9,
 		"resources_js_Pages_usuario_components_modals_ChangePasswordModal_jsx"
 	],
 	"./usuario/components/modals/ChangePasswordModal.jsx": [
 		"./resources/js/Pages/usuario/components/modals/ChangePasswordModal.jsx",
-		9,
 		"resources_js_Pages_usuario_components_modals_ChangePasswordModal_jsx"
 	],
 	"./usuario/components/modals/EditUserModal": [
 		"./resources/js/Pages/usuario/components/modals/EditUserModal.jsx",
-		9,
 		"resources_js_Pages_usuario_components_modals_EditUserModal_jsx"
 	],
 	"./usuario/components/modals/EditUserModal.jsx": [
 		"./resources/js/Pages/usuario/components/modals/EditUserModal.jsx",
-		9,
 		"resources_js_Pages_usuario_components_modals_EditUserModal_jsx"
 	]
 };
@@ -41979,8 +41947,8 @@ function webpackAsyncContext(req) {
 	}
 
 	var ids = map[req], id = ids[0];
-	return __webpack_require__.e(ids[2]).then(() => {
-		return __webpack_require__.t(id, ids[1] | 16)
+	return __webpack_require__.e(ids[1]).then(() => {
+		return __webpack_require__(id);
 	});
 }
 webpackAsyncContext.keys = () => (Object.keys(map));
@@ -42084,36 +42052,6 @@ module.exports = /*#__PURE__*/JSON.parse('{"name":"axios","version":"0.21.4","de
 /******/ 				() => (module);
 /******/ 			__webpack_require__.d(getter, { a: getter });
 /******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/create fake namespace object */
-/******/ 	(() => {
-/******/ 		var getProto = Object.getPrototypeOf ? (obj) => (Object.getPrototypeOf(obj)) : (obj) => (obj.__proto__);
-/******/ 		var leafPrototypes;
-/******/ 		// create a fake namespace object
-/******/ 		// mode & 1: value is a module id, require it
-/******/ 		// mode & 2: merge all properties of value into the ns
-/******/ 		// mode & 4: return value when already ns object
-/******/ 		// mode & 16: return value when it's Promise-like
-/******/ 		// mode & 8|1: behave like require
-/******/ 		__webpack_require__.t = function(value, mode) {
-/******/ 			if(mode & 1) value = this(value);
-/******/ 			if(mode & 8) return value;
-/******/ 			if(typeof value === 'object' && value) {
-/******/ 				if((mode & 4) && value.__esModule) return value;
-/******/ 				if((mode & 16) && typeof value.then === 'function') return value;
-/******/ 			}
-/******/ 			var ns = Object.create(null);
-/******/ 			__webpack_require__.r(ns);
-/******/ 			var def = {};
-/******/ 			leafPrototypes = leafPrototypes || [null, getProto({}), getProto([]), getProto(getProto)];
-/******/ 			for(var current = mode & 2 && value; typeof current == 'object' && !~leafPrototypes.indexOf(current); current = getProto(current)) {
-/******/ 				Object.getOwnPropertyNames(current).forEach((key) => (def[key] = () => (value[key])));
-/******/ 			}
-/******/ 			def['default'] = () => (value);
-/******/ 			__webpack_require__.d(ns, def);
-/******/ 			return ns;
 /******/ 		};
 /******/ 	})();
 /******/ 	
