@@ -61,8 +61,46 @@ var ChangePassword = function ChangePassword(_ref) {
     _useState10 = _slicedToArray(_useState9, 2),
     successMessage = _useState10[0],
     setSuccessMessage = _useState10[1];
+  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState12 = _slicedToArray(_useState11, 2),
+    showChecklist = _useState12[0],
+    setShowChecklist = _useState12[1];
+  var _useState13 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+      length: false,
+      uppercase: false,
+      lowercase: false,
+      number: false,
+      special: false,
+      match: false
+    }),
+    _useState14 = _slicedToArray(_useState13, 2),
+    validationChecks = _useState14[0],
+    setValidationChecks = _useState14[1];
   var resetToken = (0,_services_cookieService__WEBPACK_IMPORTED_MODULE_1__["default"])("reset_token"); // Recuperar el token de la cookie
 
+  var validatePassword = function validatePassword(password, confirmPassword) {
+    setValidationChecks({
+      length: password.length >= 5 && password.length <= 8,
+      uppercase: /[A-Z]/.test(password),
+      lowercase: /[a-z]/.test(password),
+      number: /[0-9]/.test(password),
+      special: /[@$!%*?&#.]/.test(password),
+      match: password === confirmPassword
+    });
+  };
+  var handleNewPasswordChange = function handleNewPasswordChange(e) {
+    var value = e.target.value;
+    setNewPassword(value);
+
+    // Mostrar el checklist solo si hay datos
+    setShowChecklist(value.length > 0);
+    validatePassword(value, confirmPassword);
+  };
+  var handleConfirmPasswordChange = function handleConfirmPasswordChange(e) {
+    var value = e.target.value;
+    setConfirmPassword(value);
+    validatePassword(newPassword, value);
+  };
   var handleSubmit = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(e) {
       var response, data, errorMessages;
@@ -77,7 +115,7 @@ var ChangePassword = function ChangePassword(_ref) {
               headers: {
                 "Content-Type": "application/json",
                 "X-CSRF-TOKEN": csrfToken,
-                Authorization: "Bearer ".concat(resetToken) // Enviar el token en el encabezado
+                Authorization: "Bearer ".concat(resetToken)
               },
               body: JSON.stringify({
                 token: token,
@@ -122,7 +160,7 @@ var ChangePassword = function ChangePassword(_ref) {
       return _ref2.apply(this, arguments);
     };
   }();
-  var renderPasswordInput = function renderPasswordInput(label, value, setValue, field) {
+  var renderPasswordInput = function renderPasswordInput(label, value, setValue, field, onChange) {
     return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
       className: "mb-6 relative",
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("label", {
@@ -133,9 +171,7 @@ var ChangePassword = function ChangePassword(_ref) {
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("input", {
           type: showPassword[field] ? "text" : "password",
           value: value,
-          onChange: function onChange(e) {
-            return setValue(e.target.value);
-          },
+          onChange: onChange,
           className: "w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none",
           placeholder: "Ingrese su ".concat(label.toLowerCase()),
           required: true
@@ -148,6 +184,36 @@ var ChangePassword = function ChangePassword(_ref) {
           },
           className: "absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 focus:outline-none",
           children: showPassword[field] ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_3__.FaEyeSlash, {}) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_3__.FaEye, {})
+        })]
+      })]
+    });
+  };
+  var renderValidationChecklist = function renderValidationChecklist() {
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+      className: "mt-4 p-4 bg-gray-100 rounded-lg text-sm text-gray-700",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("p", {
+        className: "font-semibold mb-2",
+        children: "La contrase\xF1a debe cumplir los siguientes requisitos:"
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("ul", {
+        className: "space-y-1",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("li", {
+          className: validationChecks.length ? "text-green-600" : "text-red-600",
+          children: [validationChecks.length ? "✅" : "❌", " Entre 5 y 8 caracteres."]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("li", {
+          className: validationChecks.uppercase ? "text-green-600" : "text-red-600",
+          children: [validationChecks.uppercase ? "✅" : "❌", " Al menos una letra may\xFAscula."]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("li", {
+          className: validationChecks.lowercase ? "text-green-600" : "text-red-600",
+          children: [validationChecks.lowercase ? "✅" : "❌", " Al menos una letra min\xFAscula."]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("li", {
+          className: validationChecks.number ? "text-green-600" : "text-red-600",
+          children: [validationChecks.number ? "✅" : "❌", " Al menos un n\xFAmero."]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("li", {
+          className: validationChecks.special ? "text-green-600" : "text-red-600",
+          children: [validationChecks.special ? "✅" : "❌", " Al menos un car\xE1cter especial."]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("li", {
+          className: validationChecks.match ? "text-green-600" : "text-red-600",
+          children: [validationChecks.match ? "✅" : "❌", " Las contrase\xF1as deben coincidir."]
         })]
       })]
     });
@@ -171,7 +237,7 @@ var ChangePassword = function ChangePassword(_ref) {
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("form", {
         onSubmit: handleSubmit,
-        children: [renderPasswordInput("Nueva Contraseña", newPassword, setNewPassword, "newPassword"), renderPasswordInput("Confirmar Contraseña", confirmPassword, setConfirmPassword, "confirmPassword"), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
+        children: [renderPasswordInput("Nueva Contraseña", newPassword, setNewPassword, "newPassword", handleNewPasswordChange), showChecklist && renderValidationChecklist(), renderPasswordInput("Confirmar Contraseña", confirmPassword, setConfirmPassword, "confirmPassword", handleConfirmPasswordChange), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
           type: "submit",
           className: "w-full py-3 px-4 bg-teal-600 text-white font-medium rounded-lg shadow-lg hover:bg-teal-700 transition-all duration-200",
           children: "Cambiar Contrase\xF1a"
