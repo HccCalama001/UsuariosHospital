@@ -9,6 +9,7 @@ import {
     FaRegUserCircle,
     FaGlobe,
     FaDesktop,
+    FaEnvelope,
 } from "react-icons/fa";
 
 // Modales
@@ -21,12 +22,12 @@ import PaginatedRoles from "./components/Paginated/PaginatedRoles";
 import PaginatedEscritorio from "./components/Paginated/PaginatedEscritorio";
 
 /**
- * Botón que representa una pestaña.
+ * Botón para pestañas de navegación.
  * @param {object} props
- * @param {string} props.label - Texto mostrado en la pestaña.
- * @param {React.ReactNode} [props.icon] - Ícono opcional para la pestaña.
- * @param {string} props.value - Identificador de la pestaña.
- * @param {string} props.activeTab - Pestaña activa actual.
+ * @param {string} props.label - Texto de la pestaña.
+ * @param {React.ReactNode} [props.icon] - Ícono opcional.
+ * @param {string} props.value - Valor o identificador de la pestaña.
+ * @param {string} props.activeTab - Pestaña activa.
  * @param {function} props.onClick - Función para manejar el cambio de pestaña.
  */
 function TabButton({ label, icon, value, activeTab, onClick }) {
@@ -34,17 +35,15 @@ function TabButton({ label, icon, value, activeTab, onClick }) {
 
     return (
         <button
+            type="button"
             onClick={() => onClick(value)}
-            className={`flex items-center space-x-2 px-4 py-2 font-semibold rounded-t-md 
-                  transition-colors focus:outline-none focus:ring-2 focus:ring-teal-400
-                  ${
-                      isActive
-                          ? // ESTILO DE LA PESTAÑA ACTIVA
-                            "bg-white text-teal-700 border-l border-r border-t border-gray-200 shadow-sm"
-                          : // ESTILO DE LA PESTAÑA INACTIVA
-                            "bg-teal-200 text-teal-800 hover:bg-teal-300"
-                  }
-                 `}
+            className={`flex items-center space-x-2 px-4 py-2 font-semibold rounded-t-md transition-colors
+        focus:outline-none focus:ring-2 focus:ring-teal-400
+        ${
+            isActive
+                ? "bg-white text-teal-700 border-l border-r border-t border-gray-200 shadow-sm"
+                : "bg-teal-200 text-teal-800 hover:bg-teal-300"
+        }`}
             aria-selected={isActive}
         >
             {icon && <span className="text-lg">{icon}</span>}
@@ -59,35 +58,38 @@ const UsuarioIndex = () => {
 
     // Filtra los grupos según su tipo
     const gruposEscritorio = gruposDelUsuario.filter(
-        (g) => g.Tipo === "escritorio"
+        (grupo) => grupo.Tipo === "escritorio"
     );
-    const gruposWeb = gruposDelUsuario.filter((g) => g.Tipo === "web");
+    const gruposWeb = gruposDelUsuario.filter((grupo) => grupo.Tipo === "web");
 
     // Construye iniciales (primeras letras de Nombre y ApellidoPaterno)
-    const initials = `${userNew.Nombre?.[0] ?? ""}${
-        userNew.ApellidoPaterno?.[0] ?? ""
+    const initials = `${userNew.Nombre?.[0] || ""}${
+        userNew.ApellidoPaterno?.[0] || ""
     }`
         .toUpperCase()
         .trim();
 
     // Construye el nombre completo
-    const userFullName = `
-    ${userNew.Nombre ?? ""}
-    ${userNew.ApellidoPaterno ?? ""}
-    ${userNew.ApellidoMaterno ?? ""}
-  `.trim();
+    const userFullName = [
+        userNew.Nombre,
+        userNew.ApellidoPaterno,
+        userNew.ApellidoMaterno,
+    ]
+        .filter(Boolean)
+        .join(" ")
+        .trim();
 
     // Estados para los modales
-    const [isModalOpen, setModalOpen] = useState(false);
-    const [isEditModalOpen, setEditModalOpen] = useState(false);
+    const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-    // Handlers de modales
-    const handleOpenEditModal = () => setEditModalOpen(true);
-    const handleCloseEditModal = () => setEditModalOpen(false);
-    const handleChangePassword = () => setModalOpen(true);
-    const handleCloseModal = () => setModalOpen(false);
+    // Manejo de apertura/cierre de modales
+    const handleOpenEditModal = () => setIsEditModalOpen(true);
+    const handleCloseEditModal = () => setIsEditModalOpen(false);
+    const handleOpenPasswordModal = () => setIsPasswordModalOpen(true);
+    const handleClosePasswordModal = () => setIsPasswordModalOpen(false);
 
-    // Estado para controlar la pestaña activa. Opciones: 'info', 'web', 'desk'
+    // Estado para la pestaña activa: 'info', 'web' o 'desk'
     const [activeTab, setActiveTab] = useState("info");
 
     /**
@@ -97,11 +99,7 @@ const UsuarioIndex = () => {
         switch (activeTab) {
             case "info":
                 return (
-                    <div
-                        className="px-6 py-4 animate-fadeIn"
-                        // Con animate-fadeIn, asumiendo que tienes una clase Tailwind plugin o similar
-                        // para animaciones. O simplemente usa transition-all si deseas un fade básico.
-                    >
+                    <div className="px-6 py-4 animate-fadeIn">
                         {/* Encabezado con avatar y datos */}
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
                             {/* Avatar + Nombre + Correo */}
@@ -112,7 +110,7 @@ const UsuarioIndex = () => {
                                     </div>
                                 </div>
                                 <div>
-                                    <h2 className="text-xl sm:text-2xl font-bold text-gray-800 leading-tight">
+                                    <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
                                         {userFullName || "Usuario sin nombre"}
                                     </h2>
                                     <p className="text-sm text-gray-500">
@@ -122,25 +120,50 @@ const UsuarioIndex = () => {
                                 </div>
                             </div>
 
-                            {/* Botones (Editar Perfil, Cambiar Contraseña) */}
+                            {/* Botones de acción */}
                             <div className="flex space-x-3 sm:space-x-4">
+                                {/* Botón Editar Usuario */}
                                 <button
+                                    type="button"
                                     onClick={handleOpenEditModal}
-                                    className="px-3 py-2 bg-teal-500 hover:bg-teal-600 text-white font-medium rounded-full shadow-md
-                             focus:outline-none focus:ring-2 focus:ring-teal-400 
-                             transition-transform transform hover:-translate-y-0.5"
+                                    className="px-3 py-2 bg-teal-500 hover:bg-teal-600 text-white font-medium 
+               rounded-full shadow-md focus:outline-none 
+               focus:ring-2 focus:ring-teal-400 transition-transform 
+               transform hover:-translate-y-0.5"
                                     title="Editar Información del Usuario"
                                 >
                                     <FaUserEdit className="h-5 w-5 sm:h-6 sm:w-6" />
                                 </button>
+
+                                {/* Botón Cambiar Contraseña */}
                                 <button
-                                    onClick={handleChangePassword}
-                                    className="px-3 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-full shadow-md
-                             focus:outline-none focus:ring-2 focus:ring-yellow-400 
-                             transition-transform transform hover:-translate-y-0.5"
+                                    type="button"
+                                    onClick={handleOpenPasswordModal}
+                                    className="px-3 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-medium 
+               rounded-full shadow-md focus:outline-none 
+               focus:ring-2 focus:ring-yellow-400 transition-transform 
+               transform hover:-translate-y-0.5"
                                     title="Cambiar Contraseña"
                                 >
                                     <FaKey className="h-5 w-5 sm:h-6 sm:w-6" />
+                                </button>
+
+                                {/* Botón Abrir Outlook */}
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        window.open(
+                                            "https://outlook.office.com",
+                                            "_blank"
+                                        )
+                                    }
+                                    className="px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium 
+               rounded-full shadow-md focus:outline-none 
+               focus:ring-2 focus:ring-blue-400 transition-transform 
+               transform hover:-translate-y-0.5"
+                                    title="Abrir Outlook"
+                                >
+                                    <FaEnvelope className="h-5 w-5 sm:h-6 sm:w-6" />
                                 </button>
                             </div>
                         </div>
@@ -193,9 +216,8 @@ const UsuarioIndex = () => {
                     </div>
                 </div>
 
-                {/** Contenedor de pestañas */}
+                {/* Contenedor de pestañas */}
                 <div className="border-b border-gray-200 flex space-x-2 bg-teal-200 px-4 pt-2 justify-center relative">
-                    {/** Pestaña: Información General */}
                     <TabButton
                         label="Información General"
                         icon={<FaRegUserCircle />}
@@ -203,7 +225,6 @@ const UsuarioIndex = () => {
                         activeTab={activeTab}
                         onClick={setActiveTab}
                     />
-                    {/** Pestaña: Sistemas Web */}
                     <TabButton
                         label="Sistemas Web"
                         icon={<FaGlobe />}
@@ -211,7 +232,6 @@ const UsuarioIndex = () => {
                         activeTab={activeTab}
                         onClick={setActiveTab}
                     />
-                    {/** Pestaña: Sistemas de Escritorio */}
                     <TabButton
                         label="Sistemas Escritorio"
                         icon={<FaDesktop />}
@@ -221,14 +241,14 @@ const UsuarioIndex = () => {
                     />
                 </div>
 
-                {/** Panel de contenido según la pestaña activa */}
+                {/* Panel de contenido según la pestaña activa */}
                 {renderTabContent()}
             </div>
 
-            {/** Modales */}
+            {/* Modales */}
             <ChangePasswordModal
-                isOpen={isModalOpen}
-                onClose={handleCloseModal}
+                isOpen={isPasswordModalOpen}
+                onClose={handleClosePasswordModal}
                 csrfToken={csrfToken}
             />
             <EditUserModal
@@ -241,4 +261,5 @@ const UsuarioIndex = () => {
         </App>
     );
 };
+
 export default UsuarioIndex;
