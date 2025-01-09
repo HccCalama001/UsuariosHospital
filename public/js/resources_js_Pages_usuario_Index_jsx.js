@@ -240,12 +240,12 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 /**
- * Botón que representa una pestaña.
+ * Botón para pestañas de navegación.
  * @param {object} props
- * @param {string} props.label - Texto mostrado en la pestaña.
- * @param {React.ReactNode} [props.icon] - Ícono opcional para la pestaña.
- * @param {string} props.value - Identificador de la pestaña.
- * @param {string} props.activeTab - Pestaña activa actual.
+ * @param {string} props.label - Texto de la pestaña.
+ * @param {React.ReactNode} [props.icon] - Ícono opcional.
+ * @param {string} props.value - Valor o identificador de la pestaña.
+ * @param {string} props.activeTab - Pestaña activa.
  * @param {function} props.onClick - Función para manejar el cambio de pestaña.
  */
 
@@ -257,14 +257,11 @@ function TabButton(_ref) {
     _onClick = _ref.onClick;
   var isActive = activeTab === value;
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("button", {
+    type: "button",
     onClick: function onClick() {
       return _onClick(value);
     },
-    className: "flex items-center space-x-2 px-4 py-2 font-semibold rounded-t-md \n                  transition-colors focus:outline-none focus:ring-2 focus:ring-teal-400\n                  ".concat(isActive ?
-    // ESTILO DE LA PESTAÑA ACTIVA
-    "bg-white text-teal-700 border-l border-r border-t border-gray-200 shadow-sm" :
-    // ESTILO DE LA PESTAÑA INACTIVA
-    "bg-teal-200 text-teal-800 hover:bg-teal-300", "\n                 "),
+    className: "flex items-center space-x-2 px-4 py-2 font-semibold rounded-t-md transition-colors\n        focus:outline-none focus:ring-2 focus:ring-teal-400\n        ".concat(isActive ? "bg-white text-teal-700 border-l border-r border-t border-gray-200 shadow-sm" : "bg-teal-200 text-teal-800 hover:bg-teal-300"),
     "aria-selected": isActive,
     children: [icon && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("span", {
       className: "text-lg",
@@ -275,7 +272,7 @@ function TabButton(_ref) {
   });
 }
 var UsuarioIndex = function UsuarioIndex() {
-  var _userNew$Nombre$, _userNew$Nombre, _userNew$ApellidoPate, _userNew$ApellidoPate2, _userNew$Nombre2, _userNew$ApellidoPate3, _userNew$ApellidoMate;
+  var _userNew$Nombre, _userNew$ApellidoPate;
   var _usePage$props = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props,
     resumen = _usePage$props.resumen,
     csrfToken = _usePage$props.csrfToken,
@@ -287,44 +284,44 @@ var UsuarioIndex = function UsuarioIndex() {
     userLogin = _ref2$userLogin === void 0 ? {} : _ref2$userLogin;
 
   // Filtra los grupos según su tipo
-  var gruposEscritorio = gruposDelUsuario.filter(function (g) {
-    return g.Tipo === "escritorio";
+  var gruposEscritorio = gruposDelUsuario.filter(function (grupo) {
+    return grupo.Tipo === "escritorio";
   });
-  var gruposWeb = gruposDelUsuario.filter(function (g) {
-    return g.Tipo === "web";
+  var gruposWeb = gruposDelUsuario.filter(function (grupo) {
+    return grupo.Tipo === "web";
   });
 
   // Construye iniciales (primeras letras de Nombre y ApellidoPaterno)
-  var initials = "".concat((_userNew$Nombre$ = (_userNew$Nombre = userNew.Nombre) === null || _userNew$Nombre === void 0 ? void 0 : _userNew$Nombre[0]) !== null && _userNew$Nombre$ !== void 0 ? _userNew$Nombre$ : "").concat((_userNew$ApellidoPate = (_userNew$ApellidoPate2 = userNew.ApellidoPaterno) === null || _userNew$ApellidoPate2 === void 0 ? void 0 : _userNew$ApellidoPate2[0]) !== null && _userNew$ApellidoPate !== void 0 ? _userNew$ApellidoPate : "").toUpperCase().trim();
+  var initials = "".concat(((_userNew$Nombre = userNew.Nombre) === null || _userNew$Nombre === void 0 ? void 0 : _userNew$Nombre[0]) || "").concat(((_userNew$ApellidoPate = userNew.ApellidoPaterno) === null || _userNew$ApellidoPate === void 0 ? void 0 : _userNew$ApellidoPate[0]) || "").toUpperCase().trim();
 
   // Construye el nombre completo
-  var userFullName = "\n    ".concat((_userNew$Nombre2 = userNew.Nombre) !== null && _userNew$Nombre2 !== void 0 ? _userNew$Nombre2 : "", "\n    ").concat((_userNew$ApellidoPate3 = userNew.ApellidoPaterno) !== null && _userNew$ApellidoPate3 !== void 0 ? _userNew$ApellidoPate3 : "", "\n    ").concat((_userNew$ApellidoMate = userNew.ApellidoMaterno) !== null && _userNew$ApellidoMate !== void 0 ? _userNew$ApellidoMate : "", "\n  ").trim();
+  var userFullName = [userNew.Nombre, userNew.ApellidoPaterno, userNew.ApellidoMaterno].filter(Boolean).join(" ").trim();
 
   // Estados para los modales
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
     _useState2 = _slicedToArray(_useState, 2),
-    isModalOpen = _useState2[0],
-    setModalOpen = _useState2[1];
+    isPasswordModalOpen = _useState2[0],
+    setIsPasswordModalOpen = _useState2[1];
   var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
     _useState4 = _slicedToArray(_useState3, 2),
     isEditModalOpen = _useState4[0],
-    setEditModalOpen = _useState4[1];
+    setIsEditModalOpen = _useState4[1];
 
-  // Handlers de modales
+  // Manejo de apertura/cierre de modales
   var handleOpenEditModal = function handleOpenEditModal() {
-    return setEditModalOpen(true);
+    return setIsEditModalOpen(true);
   };
   var handleCloseEditModal = function handleCloseEditModal() {
-    return setEditModalOpen(false);
+    return setIsEditModalOpen(false);
   };
-  var handleChangePassword = function handleChangePassword() {
-    return setModalOpen(true);
+  var handleOpenPasswordModal = function handleOpenPasswordModal() {
+    return setIsPasswordModalOpen(true);
   };
-  var handleCloseModal = function handleCloseModal() {
-    return setModalOpen(false);
+  var handleClosePasswordModal = function handleClosePasswordModal() {
+    return setIsPasswordModalOpen(false);
   };
 
-  // Estado para controlar la pestaña activa. Opciones: 'info', 'web', 'desk'
+  // Estado para la pestaña activa: 'info', 'web' o 'desk'
   var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("info"),
     _useState6 = _slicedToArray(_useState5, 2),
     activeTab = _useState6[0],
@@ -337,10 +334,7 @@ var UsuarioIndex = function UsuarioIndex() {
     switch (activeTab) {
       case "info":
         return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
-          className: "px-6 py-4 animate-fadeIn"
-          // Con animate-fadeIn, asumiendo que tienes una clase Tailwind plugin o similar
-          // para animaciones. O simplemente usa transition-all si deseas un fade básico.
-          ,
+          className: "px-6 py-4 animate-fadeIn",
           children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
             className: "flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6",
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
@@ -353,7 +347,7 @@ var UsuarioIndex = function UsuarioIndex() {
                 })
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
                 children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("h2", {
-                  className: "text-xl sm:text-2xl font-bold text-gray-800 leading-tight",
+                  className: "text-xl sm:text-2xl font-bold text-gray-800",
                   children: userFullName || "Usuario sin nombre"
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("p", {
                   className: "text-sm text-gray-500",
@@ -363,17 +357,29 @@ var UsuarioIndex = function UsuarioIndex() {
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("div", {
               className: "flex space-x-3 sm:space-x-4",
               children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("button", {
+                type: "button",
                 onClick: handleOpenEditModal,
-                className: "px-3 py-2 bg-teal-500 hover:bg-teal-600 text-white font-medium rounded-full shadow-md\r focus:outline-none focus:ring-2 focus:ring-teal-400 \r transition-transform transform hover:-translate-y-0.5",
+                className: "px-3 py-2 bg-teal-500 hover:bg-teal-600 text-white font-medium \r rounded-full shadow-md focus:outline-none \r focus:ring-2 focus:ring-teal-400 transition-transform \r transform hover:-translate-y-0.5",
                 title: "Editar Informaci\xF3n del Usuario",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_9__.FaUserEdit, {
                   className: "h-5 w-5 sm:h-6 sm:w-6"
                 })
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("button", {
-                onClick: handleChangePassword,
-                className: "px-3 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-full shadow-md\r focus:outline-none focus:ring-2 focus:ring-yellow-400 \r transition-transform transform hover:-translate-y-0.5",
+                type: "button",
+                onClick: handleOpenPasswordModal,
+                className: "px-3 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-medium \r rounded-full shadow-md focus:outline-none \r focus:ring-2 focus:ring-yellow-400 transition-transform \r transform hover:-translate-y-0.5",
                 title: "Cambiar Contrase\xF1a",
                 children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_9__.FaKey, {
+                  className: "h-5 w-5 sm:h-6 sm:w-6"
+                })
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("button", {
+                type: "button",
+                onClick: function onClick() {
+                  return window.open("https://outlook.office.com", "_blank");
+                },
+                className: "px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium \r rounded-full shadow-md focus:outline-none \r focus:ring-2 focus:ring-blue-400 transition-transform \r transform hover:-translate-y-0.5",
+                title: "Abrir Outlook",
+                children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(react_icons_fa__WEBPACK_IMPORTED_MODULE_9__.FaEnvelope, {
                   className: "h-5 w-5 sm:h-6 sm:w-6"
                 })
               })]
@@ -441,8 +447,8 @@ var UsuarioIndex = function UsuarioIndex() {
         })]
       }), renderTabContent()]
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_modals_ChangePasswordModal__WEBPACK_IMPORTED_MODULE_3__["default"], {
-      isOpen: isModalOpen,
-      onClose: handleCloseModal,
+      isOpen: isPasswordModalOpen,
+      onClose: handleClosePasswordModal,
       csrfToken: csrfToken
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)(_components_modals_EditUserModal__WEBPACK_IMPORTED_MODULE_4__["default"], {
       isOpen: isEditModalOpen,
