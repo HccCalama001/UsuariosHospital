@@ -23,12 +23,14 @@ class SistemaService
             ->pluck('TAB_ID_Sistema')
             ->map(fn($cod) => trim($cod))
             ->unique();
+        
+        Log::info( $codigosEscritorio);
 
         $codigosWeb = collect($resumen['usuarioSistemaWeb'] ?? [])
             ->pluck('sistema_id')
             ->map(fn($cod) => trim($cod))
             ->unique();
-
+        log::info($codigosWeb);
         // 2) Cargar TODOS los grupos (sin Eloquent)
         $grupos = DB::connection('sqlsrvUsers')
             ->table('grupos_sistemas')
@@ -83,21 +85,29 @@ class SistemaService
 
             foreach ($sistDeEsteGrupo as $sistema) {
                 $codigoBD = trim($sistema->Codigo ?? '');
-
+            
                 if ($grupo->Tipo === 'escritorio') {
-                    if ($codigosEscritorio->contains($codigoBD)) {
-       
+                    // Comprobación estricta en la colección de escritorio
+                    if ($codigosEscritorio->contains(fn($valor) => $valor === $codigoBD)) {
                         $tieneAcceso = true;
                         break;
                     }
                 } elseif ($grupo->Tipo === 'web') {
-                    if ($codigosWeb->contains($codigoBD)) {
-                   
+                    // Comprobación estricta en la colección de web
+                    if ($codigosWeb->contains(fn($valor) => $valor === $codigoBD)) {
+                        $tieneAcceso = true;
+                        break;
+                    }
+            
+                    // Y también podrías revisar si está en escritorio
+                    if ($codigosEscritorio->contains(fn($valor) => $valor === $codigoBD)) {
                         $tieneAcceso = true;
                         break;
                     }
                 }
             }
+            
+            
 
             if ($tieneAcceso) {
                 // Corrección si el campo 'Url' viene mal escrito como "Desconosido"
@@ -116,7 +126,9 @@ class SistemaService
                     
                 ];
             }
+          
         }
+        log::info($gruposDelUsuario);
       
         return $gruposDelUsuario;
     }
