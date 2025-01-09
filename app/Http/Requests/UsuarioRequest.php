@@ -118,7 +118,7 @@ class UsuarioRequest extends FormRequest
             'rut'               => 'required|string|unique:sqlsrvUsers.usuarios,Rut',
             'email'             => 'required|email|unique:sqlsrvUsers.usuarios,EmailUsuario',
             'phone'             => 'nullable|string|max:15',
-            'current_password'  => 'required|string|min:8',
+            'current_password'  => 'required|string|min:1',
             'userLogin'         => 'required|string|max:255',
         ];
     }
