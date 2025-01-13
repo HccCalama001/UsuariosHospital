@@ -10,6 +10,7 @@ import {
     FaGlobe,
     FaDesktop,
     FaEnvelope,
+    FaCogs, // Puedes cambiar a otro ícono si gustas
 } from "react-icons/fa";
 
 // Modales
@@ -20,6 +21,7 @@ import EditUserModal from "./components/modals/EditUserModal";
 import UserInfoGrid from "./components/Grid/UserInfoGrid";
 import PaginatedRoles from "./components/Paginated/PaginatedRoles";
 import PaginatedEscritorio from "./components/Paginated/PaginatedEscritorio";
+import PaginatedExternos from "./components/Paginated/PaginatedExternos";
 
 /**
  * Botón para pestañas de navegación.
@@ -61,6 +63,9 @@ const UsuarioIndex = () => {
         (grupo) => grupo.Tipo === "escritorio"
     );
     const gruposWeb = gruposDelUsuario.filter((grupo) => grupo.Tipo === "web");
+    const gruposExternos = gruposDelUsuario.filter(
+        (grupo) => grupo.Tipo === "externo"
+    );
 
     // Construye iniciales (primeras letras de Nombre y ApellidoPaterno)
     const initials = `${userNew.Nombre?.[0] || ""}${
@@ -89,7 +94,7 @@ const UsuarioIndex = () => {
     const handleOpenPasswordModal = () => setIsPasswordModalOpen(true);
     const handleClosePasswordModal = () => setIsPasswordModalOpen(false);
 
-    // Estado para la pestaña activa: 'info', 'web' o 'desk'
+    // Estado para la pestaña activa: 'info', 'web', 'desk' o 'externos'
     const [activeTab, setActiveTab] = useState("info");
 
     /**
@@ -127,9 +132,9 @@ const UsuarioIndex = () => {
                                     type="button"
                                     onClick={handleOpenEditModal}
                                     className="px-3 py-2 bg-teal-500 hover:bg-teal-600 text-white font-medium 
-               rounded-full shadow-md focus:outline-none 
-               focus:ring-2 focus:ring-teal-400 transition-transform 
-               transform hover:-translate-y-0.5"
+                    rounded-full shadow-md focus:outline-none 
+                    focus:ring-2 focus:ring-teal-400 transition-transform 
+                    transform hover:-translate-y-0.5"
                                     title="Editar Información del Usuario"
                                 >
                                     <FaUserEdit className="h-5 w-5 sm:h-6 sm:w-6" />
@@ -140,9 +145,9 @@ const UsuarioIndex = () => {
                                     type="button"
                                     onClick={handleOpenPasswordModal}
                                     className="px-3 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-medium 
-               rounded-full shadow-md focus:outline-none 
-               focus:ring-2 focus:ring-yellow-400 transition-transform 
-               transform hover:-translate-y-0.5"
+                    rounded-full shadow-md focus:outline-none 
+                    focus:ring-2 focus:ring-yellow-400 transition-transform 
+                    transform hover:-translate-y-0.5"
                                     title="Cambiar Contraseña"
                                 >
                                     <FaKey className="h-5 w-5 sm:h-6 sm:w-6" />
@@ -158,9 +163,9 @@ const UsuarioIndex = () => {
                                         )
                                     }
                                     className="px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium 
-               rounded-full shadow-md focus:outline-none 
-               focus:ring-2 focus:ring-blue-400 transition-transform 
-               transform hover:-translate-y-0.5"
+                    rounded-full shadow-md focus:outline-none 
+                    focus:ring-2 focus:ring-blue-400 transition-transform 
+                    transform hover:-translate-y-0.5"
                                     title="Abrir Outlook"
                                 >
                                     <FaEnvelope className="h-5 w-5 sm:h-6 sm:w-6" />
@@ -192,6 +197,14 @@ const UsuarioIndex = () => {
                         <PaginatedEscritorio
                             gruposEscritorio={gruposEscritorio}
                         />
+                    </div>
+                );
+
+            // Nueva pestaña: 'externos'
+            case "externos":
+                return (
+                    <div className="px-6 py-4 animate-fadeIn">
+                        <PaginatedExternos gruposExternos={gruposExternos} />
                     </div>
                 );
 
@@ -236,6 +249,14 @@ const UsuarioIndex = () => {
                         label="Sistemas Escritorio"
                         icon={<FaDesktop />}
                         value="desk"
+                        activeTab={activeTab}
+                        onClick={setActiveTab}
+                    />
+                    {/* Nuevo botón para la pestaña Sistemas Externos */}
+                    <TabButton
+                        label="Sistemas Externos"
+                        icon={<FaCogs />}
+                        value="externos"
                         activeTab={activeTab}
                         onClick={setActiveTab}
                     />

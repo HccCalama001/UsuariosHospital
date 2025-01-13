@@ -80,55 +80,55 @@ class SistemaService
             // Los sistemas de este grupo
             $sistDeEsteGrupo = $sistemasPorGrupo->get($grupo->GrupoID, collect());
             $tieneAcceso = false;
-
-
-
-            foreach ($sistDeEsteGrupo as $sistema) {
-                $codigoBD = trim($sistema->Codigo ?? '');
-            
-                if ($grupo->Tipo === 'escritorio') {
-                    // Comprobación estricta en la colección de escritorio
-                    if ($codigosEscritorio->contains(fn($valor) => $valor === $codigoBD)) {
-                        $tieneAcceso = true;
-                        break;
-                    }
-                } elseif ($grupo->Tipo === 'web') {
-                    // Comprobación estricta en la colección de web
-                    if ($codigosWeb->contains(fn($valor) => $valor === $codigoBD)) {
-                        $tieneAcceso = true;
-                        break;
-                    }
-            
-                    // Y también podrías revisar si está en escritorio
-                    if ($codigosEscritorio->contains(fn($valor) => $valor === $codigoBD)) {
-                        $tieneAcceso = true;
-                        break;
+        
+            // Si es tipo 'externo', siempre se incluye
+            if ($grupo->Tipo === 'externo') {
+                $tieneAcceso = true;
+            } else {
+                // Continuamos con la lógica existente para 'escritorio' y 'web'
+                foreach ($sistDeEsteGrupo as $sistema) {
+                    $codigoBD = trim($sistema->Codigo ?? '');
+                    
+                    if ($grupo->Tipo === 'escritorio') {
+                        // Comprobación estricta con $codigosEscritorio
+                        if ($codigosEscritorio->contains(fn($valor) => $valor === $codigoBD)) {
+                            $tieneAcceso = true;
+                            break;
+                        }
+                    } elseif ($grupo->Tipo === 'web') {
+                        // Comprobación estricta con $codigosWeb
+                        if ($codigosWeb->contains(fn($valor) => $valor === $codigoBD)) {
+                            $tieneAcceso = true;
+                            break;
+                        }
+        
+                        // Opcional: si también quieres validar 'web' con códigos de 'escritorio'
+                        if ($codigosEscritorio->contains(fn($valor) => $valor === $codigoBD)) {
+                            $tieneAcceso = true;
+                            break;
+                        }
                     }
                 }
             }
-            
-            
-
+        
+            // Si pasó la validación o es 'externo', se agrega al arreglo final
             if ($tieneAcceso) {
                 // Corrección si el campo 'Url' viene mal escrito como "Desconosido"
-                // (lo ideal es corregirlo en la BD, pero aquí lo hacemos por si acaso).
                 $urlGroup = $grupo->Url;
                 if ($urlGroup === 'Desconosido') {
                     $urlGroup = 'Desconocido';
                 }
-            
+        
                 $gruposDelUsuario[] = [
                     'GrupoID'     => $grupo->GrupoID,
                     'NombreGrupo' => $grupo->NombreGrupo,
                     'Tipo'        => $grupo->Tipo,
                     'Url'         => $urlGroup,
                     'imagen'      => $grupo->imagen, 
-                    
                 ];
             }
-          
         }
-        log::info($gruposDelUsuario);
+    
       
         return $gruposDelUsuario;
     }

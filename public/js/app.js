@@ -41872,6 +41872,14 @@ var map = {
 		"./resources/js/Pages/usuario/Index.jsx",
 		"resources_js_Pages_usuario_Index_jsx"
 	],
+	"./usuario/components/Card/CardRoleExternos": [
+		"./resources/js/Pages/usuario/components/Card/CardRoleExternos.jsx",
+		"resources_js_Pages_usuario_components_Card_CardRoleExternos_jsx"
+	],
+	"./usuario/components/Card/CardRoleExternos.jsx": [
+		"./resources/js/Pages/usuario/components/Card/CardRoleExternos.jsx",
+		"resources_js_Pages_usuario_components_Card_CardRoleExternos_jsx"
+	],
 	"./usuario/components/Card/CardRoleWeb": [
 		"./resources/js/Pages/usuario/components/Card/CardRoleWeb.jsx",
 		"resources_js_Pages_usuario_components_Card_CardRoleWeb_jsx"
@@ -41911,6 +41919,14 @@ var map = {
 	"./usuario/components/Paginated/PaginatedEscritorio.jsx": [
 		"./resources/js/Pages/usuario/components/Paginated/PaginatedEscritorio.jsx",
 		"resources_js_Pages_usuario_components_Paginated_PaginatedEscritorio_jsx"
+	],
+	"./usuario/components/Paginated/PaginatedExternos": [
+		"./resources/js/Pages/usuario/components/Paginated/PaginatedExternos.jsx",
+		"resources_js_Pages_usuario_components_Paginated_PaginatedExternos_jsx"
+	],
+	"./usuario/components/Paginated/PaginatedExternos.jsx": [
+		"./resources/js/Pages/usuario/components/Paginated/PaginatedExternos.jsx",
+		"resources_js_Pages_usuario_components_Paginated_PaginatedExternos_jsx"
 	],
 	"./usuario/components/Paginated/PaginatedRoles": [
 		"./resources/js/Pages/usuario/components/Paginated/PaginatedRoles.jsx",
@@ -42093,7 +42109,7 @@ module.exports = /*#__PURE__*/JSON.parse('{"name":"axios","version":"0.21.4","de
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if ({"resources_js_Pages_ErrorPage_jsx":1,"resources_js_Pages_auth_ChangePassword_jsx":1,"resources_js_Pages_auth_ForgotPassword_jsx":1,"resources_js_Pages_auth_ResetPassword_jsx":1,"resources_js_Pages_auth_SQLLogin_jsx":1,"resources_js_Pages_auth_VerifyCode_jsx":1,"resources_js_Pages_usuario_CompletarDatos_jsx":1,"resources_js_Pages_usuario_Index_jsx":1,"resources_js_Pages_usuario_components_Card_CardRoleWeb_jsx":1,"resources_js_Pages_usuario_components_Card_CardSisEscr_jsx":1,"resources_js_Pages_usuario_components_Card_UserInfoCard_jsx":1,"resources_js_Pages_usuario_components_Grid_UserInfoGrid_jsx":1,"resources_js_Pages_usuario_components_Paginated_PaginatedEscritorio_jsx":1,"resources_js_Pages_usuario_components_Paginated_PaginatedRoles_jsx":1,"resources_js_Pages_usuario_components_modals_ChangePasswordModal_jsx":1,"resources_js_Pages_usuario_components_modals_EditUserModal_jsx":1,"resources_js_Pages_usuario_components_modals_NoAccessModal_jsx":1}[chunkId]) return "js/" + chunkId + ".js";
+/******/ 			if ({"resources_js_Pages_ErrorPage_jsx":1,"resources_js_Pages_auth_ChangePassword_jsx":1,"resources_js_Pages_auth_ForgotPassword_jsx":1,"resources_js_Pages_auth_ResetPassword_jsx":1,"resources_js_Pages_auth_SQLLogin_jsx":1,"resources_js_Pages_auth_VerifyCode_jsx":1,"resources_js_Pages_usuario_CompletarDatos_jsx":1,"resources_js_Pages_usuario_Index_jsx":1,"resources_js_Pages_usuario_components_Card_CardRoleExternos_jsx":1,"resources_js_Pages_usuario_components_Card_CardRoleWeb_jsx":1,"resources_js_Pages_usuario_components_Card_CardSisEscr_jsx":1,"resources_js_Pages_usuario_components_Card_UserInfoCard_jsx":1,"resources_js_Pages_usuario_components_Grid_UserInfoGrid_jsx":1,"resources_js_Pages_usuario_components_Paginated_PaginatedEscritorio_jsx":1,"resources_js_Pages_usuario_components_Paginated_PaginatedExternos_jsx":1,"resources_js_Pages_usuario_components_Paginated_PaginatedRoles_jsx":1,"resources_js_Pages_usuario_components_modals_ChangePasswordModal_jsx":1,"resources_js_Pages_usuario_components_modals_EditUserModal_jsx":1,"resources_js_Pages_usuario_components_modals_NoAccessModal_jsx":1}[chunkId]) return "js/" + chunkId + ".js";
 /******/ 			// return url for filenames based on template
 /******/ 			return undefined;
 /******/ 		};
