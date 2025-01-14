@@ -15,8 +15,6 @@ class SistemaService
      */
     public function obtenerUsuarioGrupos(array $resumen)
     {
-
-
         // 1) Obtener los códigos de sistemas de escritorio (usuarioSistema)
         //    y de sistemas web (usuarioSistemaWeb).
         $codigosEscritorio = collect($resumen['usuarioSistema'] ?? [])
