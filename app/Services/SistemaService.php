@@ -21,15 +21,12 @@ class SistemaService
             ->pluck('TAB_ID_Sistema')
             ->map(fn($cod) => trim($cod))
             ->unique();
-        
-        Log::info( $codigosEscritorio);
 
         $codigosWeb = collect($resumen['usuarioSistemaWeb'] ?? [])
             ->pluck('sistema_id')
             ->map(fn($cod) => trim($cod))
             ->unique();
-        log::info($codigosWeb);
-        // 2) Cargar TODOS los grupos (sin Eloquent)
+
         $grupos = DB::connection('sqlsrvUsers')
             ->table('grupos_sistemas')
             ->select(

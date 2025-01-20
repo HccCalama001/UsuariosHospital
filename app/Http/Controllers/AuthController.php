@@ -202,6 +202,7 @@ class AuthController extends Controller
                 ])
                 ->withCookie($cookie);
         } catch (\Exception $e) {
+
             return response()->json([
                 'status' => 'error',
                 'errors' => [
@@ -258,7 +259,6 @@ class AuthController extends Controller
             $this->emailService->enviarCorreoRecuperacion($email, $resetLink, $codAleatorio);
         } catch (\Exception $e) {
             // Se puede registrar el error si se desea
-            Log::error('Error al generar o enviar token de recuperación: '.$e->getMessage());
         }
 
         // Respuesta genérica para evitar exposición de datos
