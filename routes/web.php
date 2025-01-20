@@ -6,15 +6,12 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UsuarioController;
 
 
-// Ruta raíz que redirige a /sql/login
 Route::get('/', function () {
     return redirect()->route('sqlpassword.login');
-});
-//Comentario de guardado (ELIMINAR)
-
+})->middleware('guest.check');
 
 // Rutas públicas (sin autenticación JWT)
-Route::prefix('auth')->group(function () {
+Route::prefix('auth')->middleware('guest.check')->group(function () {
     Route::get('/login', [AuthController::class, 'index'])->name('sqlpassword.login');
     Route::post('/authenticate', [AuthController::class, 'authenticate'])->name('sqlpassword.authenticate');
     Route::get('/forgot-password', [AuthController::class, 'showForgotPasswordForm'])->name('forgot-password');
@@ -22,13 +19,20 @@ Route::prefix('auth')->group(function () {
     Route::get('/verify-code', [AuthController::class, 'showVerifyCode'])->name('verify-code');
     Route::post('/verify-code', [AuthController::class, 'handleVerifyCode']);
     Route::get('/change-password', [AuthController::class, 'showChangePassword'])
+         ->name('password.change')
+         ->middleware('validate.reset.token');
+    Route::post('/reset-password', [AuthController::class, 'resetPassword'])
+         ->name('password.reset')
+         ->middleware('validate.reset.token');
+});
+
+Route::prefix('auth')->group(function () {
+    Route::get('/change-password', [AuthController::class, 'showChangePassword'])
     ->name('password.change')
     ->middleware('validate.reset.token');
     Route::post('/reset-password', [AuthController::class, 'resetPassword'])
     ->name('password.reset')
-    ->middleware('validate.reset.token');;
-
-
+    ->middleware('validate.reset.token');
 });
 
 Route::middleware(['temporaryToken'])->group(function () {
