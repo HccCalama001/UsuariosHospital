@@ -95,15 +95,16 @@ class User extends Authenticatable implements JWTSubject
 
     public function rolesSistemas()
     {
-        return $this->hasManyThrough(
-            RolUsuarioSistema::class,
-            UsuarioLogin::class,
-            'name',            // Foreign key on UsuarioLogin referencing User->NombreUsuario
-            'name',            // Foreign key on RolUsuarioSistema referencing UsuarioLogin->name
-            'NombreUsuario',   // Local key on the "users" table
-            'name'             // Local key on the "usuario_login" table
+        return $this->belongsToMany(
+            RolUsuarioSistema::class,  // The model you're pivoting to
+            'role_user_sistema',       // The pivot table
+            'user_name',               // FK in pivot that references *this model's* primary key
+            'role_id',                 // FK in pivot that references RolUsuarioSistema->id (?)
+            'NombreUsuario',           // local key on the "users" table
+            'id'                       // local key on the "rol_usuario_sistema" table (or whatever PK it has)
         );
     }
+    
     
 
     /**
