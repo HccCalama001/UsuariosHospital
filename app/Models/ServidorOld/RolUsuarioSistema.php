@@ -35,8 +35,10 @@ class RolUsuarioSistema extends Model
     // Relación corregida: Pertenece a UsuarioLogin
     public function sysSqlLogin()
     {
-        return $this->belongsTo(UsuarioLogin::class, 'user_name', 'principal_id');
+        // user_name -> references UsuarioLogin->name
+        return $this->belongsTo(UsuarioLogin::class, 'user_name', 'name');
     }
+    
 
     // Scope corregido: Filtra por vigencia activa
     public function scopeVigencia($query)

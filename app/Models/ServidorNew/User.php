@@ -98,12 +98,13 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasManyThrough(
             RolUsuarioSistema::class,
             UsuarioLogin::class,
-            'name',             // Foreign key on UsuarioLogin table...
-            'name', // Foreign key on RolUsuarioSistema table...
-            'NombreUsuario',    // Local key on User table...
-            'name'      // Local key on UsuarioLogin table...
+            'name',            // Foreign key on UsuarioLogin referencing User->NombreUsuario
+            'name',            // Foreign key on RolUsuarioSistema referencing UsuarioLogin->name
+            'NombreUsuario',   // Local key on the "users" table
+            'name'             // Local key on the "usuario_login" table
         );
     }
+    
 
     /**
      * Métodos requeridos por JWTSubject

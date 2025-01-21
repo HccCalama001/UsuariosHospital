@@ -11,7 +11,8 @@ class UsuarioLogin extends Model
     protected $connection = 'sqlsrv2';
     protected $table = 'sys.sql_logins';
     protected $primaryKey = 'name';
-    public $timestamps = false;
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
         'name', 
