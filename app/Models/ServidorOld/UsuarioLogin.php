@@ -10,12 +10,12 @@ class UsuarioLogin extends Model
     
     protected $connection = 'sqlsrv2';
     protected $table = 'sys.sql_logins';
-    protected $primaryKey = 'principal_id';
+    protected $primaryKey = 'name';
     public $timestamps = false;
 
     protected $fillable = [
         'name', 
-        'principal_id',
+
     ];
 
     protected $hidden = ['sid', 'password_hash'];
