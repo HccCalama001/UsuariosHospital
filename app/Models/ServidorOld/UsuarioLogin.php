@@ -26,15 +26,11 @@ class UsuarioLogin extends Model
         return $this->hasOne(UsuarioServicio::class, 'Segu_Usr_Cuenta', 'name');
     }
 
-    // Relación corregida: Uno a uno con UsuarioToken
-    public function authRememberToken()
-    {
-        return $this->hasOne(UsuarioToken::class, 'id_user', 'principal_id');
-    }
+
 
     public function roleUserSistema()
     {
-        return $this->hasMany(RolUsuarioSistema::class, 'user_principal_id', 'principal_id')
+        return $this->hasMany(RolUsuarioSistema::class, 'user_name', 'name')
                     ->vigencia();
     }
     

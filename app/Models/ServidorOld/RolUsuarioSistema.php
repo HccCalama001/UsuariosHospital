@@ -15,7 +15,7 @@ class RolUsuarioSistema extends Model
 
     protected $fillable = [
         'role_id',
-        'user_principal_id',
+        'user_name',
         'sistemas_id',
         'vigencia',
     ];
@@ -35,7 +35,7 @@ class RolUsuarioSistema extends Model
     // Relación corregida: Pertenece a UsuarioLogin
     public function sysSqlLogin()
     {
-        return $this->belongsTo(UsuarioLogin::class, 'user_principal_id', 'principal_id');
+        return $this->belongsTo(UsuarioLogin::class, 'user_name', 'principal_id');
     }
 
     // Scope corregido: Filtra por vigencia activa
