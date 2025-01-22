@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models\ServidorOld;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,7 +11,11 @@ class UsuarioLogin extends Model
     
     protected $connection = 'sqlsrv2';
     protected $table = 'sys.sql_logins';
-    protected $primaryKey = 'principal_id';
+
+    // Indicar que la PK es 'name'
+    protected $primaryKey = 'name';
+    public $incrementing = false;      // No es auto-incremental
+    protected $keyType = 'string';     // Es un string
     public $timestamps = false;
 
     protected $fillable = [
@@ -18,7 +23,10 @@ class UsuarioLogin extends Model
         'principal_id',
     ];
 
-    protected $hidden = ['sid', 'password_hash'];
+    protected $hidden = [
+        'sid', 
+        'password_hash'
+    ];
 
     // Relación corregida: Uno a uno con UsuarioServicio
     public function seguUsuario()
@@ -34,9 +42,10 @@ class UsuarioLogin extends Model
 
     public function roleUserSistema()
     {
-        return $this->hasMany(RolUsuarioSistema::class, 'user_name', 'name')
-                    ->vigencia();
+        return $this->hasMany(
+            RolUsuarioSistema::class, 
+            'user_name', 
+            'name'
+        )->vigencia();
     }
-    
-
 }
