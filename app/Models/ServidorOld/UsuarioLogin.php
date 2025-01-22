@@ -10,13 +10,12 @@ class UsuarioLogin extends Model
     
     protected $connection = 'sqlsrv2';
     protected $table = 'sys.sql_logins';
-    protected $primaryKey = 'name';
-    public $incrementing = false;
-    protected $keyType = 'string';
+    protected $primaryKey = 'principal_id';
+    public $timestamps = false;
 
     protected $fillable = [
         'name', 
-
+        'principal_id',
     ];
 
     protected $hidden = ['sid', 'password_hash'];
@@ -27,7 +26,11 @@ class UsuarioLogin extends Model
         return $this->hasOne(UsuarioServicio::class, 'Segu_Usr_Cuenta', 'name');
     }
 
-
+    // Relación corregida: Uno a uno con UsuarioToken
+    public function authRememberToken()
+    {
+        return $this->hasOne(UsuarioToken::class, 'id_user', 'principal_id');
+    }
 
     public function roleUserSistema()
     {
