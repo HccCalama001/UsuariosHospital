@@ -1,11 +1,11 @@
 import Cookies from "js-cookie";
 
-export const authenticateUser = async (formData, csrfToken) => {
+export const authenticateUser = async (formData) => {
     const response = await fetch("/auth/authenticate", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "X-CSRF-TOKEN": csrfToken,
+
             "X-Requested-With": "XMLHttpRequest",
         },
         body: JSON.stringify(formData),
@@ -19,7 +19,7 @@ export const authenticateUser = async (formData, csrfToken) => {
     return await response.json();
 };
 
-export const guardarDatos = async (formData, csrfToken) => {
+export const guardarDatos = async (formData) => {
     const jwtToken = Cookies.get("auth_token");
 
     if (!jwtToken) {
@@ -32,7 +32,6 @@ export const guardarDatos = async (formData, csrfToken) => {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "X-CSRF-TOKEN": csrfToken,
             Authorization: `Bearer ${jwtToken}`,
             Accept: "application/json",
         },
@@ -54,12 +53,11 @@ export const guardarDatos = async (formData, csrfToken) => {
 };
 
 // apiService.js
-export const cambiarContrasena = async (formData, csrfToken) => {
+export const cambiarContrasena = async (formData) => {
     const response = await fetch("/usuario/cambiar-contrasena", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "X-CSRF-TOKEN": csrfToken,
             Accept: "application/json",
         },
         body: JSON.stringify(formData),
@@ -80,12 +78,11 @@ export const cambiarContrasena = async (formData, csrfToken) => {
 };
 
 // apiService.js
-export const actualizarUsuario = async (formData, csrfToken) => {
+export const actualizarUsuario = async (formData) => {
     const response = await fetch(`/usuario/actualizar-global`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "X-CSRF-TOKEN": csrfToken,
             Accept: "application/json",
         },
         body: JSON.stringify(formData),

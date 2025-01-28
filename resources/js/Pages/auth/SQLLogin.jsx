@@ -4,7 +4,6 @@ import { authenticateUser } from "../../services/apiService";
 import { Inertia } from "@inertiajs/inertia";
 
 const SQLLogin = () => {
-    const { csrfToken } = usePage().props;
     const [formData, setFormData] = useState({
         username: "",
         current_password: "",
@@ -26,17 +25,10 @@ const SQLLogin = () => {
     };
 
     const handleLogin = async () => {
-        if (!csrfToken) {
-            setErrors({
-                general: "Token CSRF no disponible. Inténtelo más tarde.",
-            });
-            return;
-        }
-
         setIsSubmitting(true);
 
         try {
-            const data = await authenticateUser(formData, csrfToken);
+            const data = await authenticateUser(formData);
             window.location.href = data.redirect;
         } catch (error) {
             if (error.errors) {

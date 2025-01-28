@@ -95,5 +95,30 @@ class TokenService
         return cookie('reset_token', $token, $minutes, '/', null, false, false, false, 'Lax');
     }
 
+      /**
+     * Decodifica el token almacenado en la cookie.
+     *
+     * @return array|null
+     */
+    public function decodeTokenFromCookie(): ?array
+    {
+        // Obtén el token desde la cookie
+        $token = Cookie::get('auth_token');
+    
+        if (!$token) {
+            \Log::error('La cookie auth_token no está presente.');
+            return null; // No hay token en la cookie
+        }
+        \Log::error('La si');
+        try {
+            // Decodifica el token usando JWTAuth
+            $decoded = JWTAuth::setToken($token)->getPayload()->toArray();
+            return $decoded; // Devuelve el contenido del token como array
+        } catch (\Exception $e) {
+            // Maneja errores de decodificación
+            \Log::error('Error al decodificar el token: ' . $e->getMessage());
+            return null;
+        }
+    }
     
 }

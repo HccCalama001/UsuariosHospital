@@ -1,6 +1,6 @@
 import React from "react";
 
-const VerifyCode = ({ errors, csrfToken }) => {
+const VerifyCode = ({ errors }) => {
     const [code, setCode] = React.useState("");
     const [error, setError] = React.useState(null);
 
@@ -11,7 +11,6 @@ const VerifyCode = ({ errors, csrfToken }) => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": csrfToken, // Enviar el token CSRF
                 },
                 body: JSON.stringify({ code }),
             });

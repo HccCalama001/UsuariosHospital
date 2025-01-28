@@ -31,8 +31,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 var ResetPassword = function ResetPassword(_ref) {
-  var token = _ref.token,
-    csrfToken = _ref.csrfToken;
+  var token = _ref.token;
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
       token: token,
       new_password: "",

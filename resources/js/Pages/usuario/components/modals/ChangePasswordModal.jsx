@@ -8,7 +8,7 @@ import {
 } from "react-icons/fa";
 import { cambiarContrasena } from "../../../../services/apiService";
 
-const ChangePasswordModal = ({ isOpen, onClose, csrfToken }) => {
+const ChangePasswordModal = ({ isOpen, onClose }) => {
     const [formData, setFormData] = useState({
         current_password: "",
         new_password: "",
@@ -79,7 +79,9 @@ const ChangePasswordModal = ({ isOpen, onClose, csrfToken }) => {
         if (name === "new_password" || name === "new_password_confirmation") {
             validatePassword(
                 name === "new_password" ? value : formData.new_password,
-                name === "new_password_confirmation" ? value : formData.new_password
+                name === "new_password_confirmation"
+                    ? value
+                    : formData.new_password
             );
 
             setShowChecklist(value.length > 0);
@@ -93,7 +95,7 @@ const ChangePasswordModal = ({ isOpen, onClose, csrfToken }) => {
         setIsSubmitting(true);
 
         try {
-            await cambiarContrasena(formData, csrfToken);
+            await cambiarContrasena(formData);
             setStatus({
                 type: "success",
                 message: "Contraseña actualizada exitosamente.",
@@ -116,15 +118,18 @@ const ChangePasswordModal = ({ isOpen, onClose, csrfToken }) => {
 
     const renderPasswordInput = (name, placeholder, label) => (
         <div className="relative">
-            <label className="block text-gray-700 font-medium mb-2">{label}</label>
+            <label className="block text-gray-700 font-medium mb-2">
+                {label}
+            </label>
             <div className="relative">
                 <input
                     type={showPassword[name] ? "text" : "password"}
                     name={name}
                     value={formData[name]}
                     onChange={handleInputChange}
-                    className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none ${errors[name] ? "border-red-500" : "border-gray-300"
-                        }`}
+                    className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500 focus:outline-none ${
+                        errors[name] ? "border-red-500" : "border-gray-300"
+                    }`}
                     placeholder={placeholder}
                 />
                 {formData[name] && (
@@ -150,25 +155,68 @@ const ChangePasswordModal = ({ isOpen, onClose, csrfToken }) => {
 
     const renderValidationChecklist = () => (
         <div className="mt-4 p-4 bg-gray-100 rounded-lg text-sm text-gray-700">
-            <p className="font-semibold mb-2">La contraseña debe cumplir los siguientes requisitos:</p>
+            <p className="font-semibold mb-2">
+                La contraseña debe cumplir los siguientes requisitos:
+            </p>
             <ul className="space-y-1">
-                <li className={validationChecks.length ? "text-green-600" : "text-red-600"}>
-                    {validationChecks.length ? "✅" : "❌"} Entre 5 y 8 caracteres.
+                <li
+                    className={
+                        validationChecks.length
+                            ? "text-green-600"
+                            : "text-red-600"
+                    }
+                >
+                    {validationChecks.length ? "✅" : "❌"} Entre 5 y 8
+                    caracteres.
                 </li>
-                <li className={validationChecks.uppercase ? "text-green-600" : "text-red-600"}>
-                    {validationChecks.uppercase ? "✅" : "❌"} Al menos una letra mayúscula.
+                <li
+                    className={
+                        validationChecks.uppercase
+                            ? "text-green-600"
+                            : "text-red-600"
+                    }
+                >
+                    {validationChecks.uppercase ? "✅" : "❌"} Al menos una
+                    letra mayúscula.
                 </li>
-                <li className={validationChecks.lowercase ? "text-green-600" : "text-red-600"}>
-                    {validationChecks.lowercase ? "✅" : "❌"} Al menos una letra minúscula.
+                <li
+                    className={
+                        validationChecks.lowercase
+                            ? "text-green-600"
+                            : "text-red-600"
+                    }
+                >
+                    {validationChecks.lowercase ? "✅" : "❌"} Al menos una
+                    letra minúscula.
                 </li>
-                <li className={validationChecks.number ? "text-green-600" : "text-red-600"}>
+                <li
+                    className={
+                        validationChecks.number
+                            ? "text-green-600"
+                            : "text-red-600"
+                    }
+                >
                     {validationChecks.number ? "✅" : "❌"} Al menos un número.
                 </li>
-                <li className={validationChecks.special ? "text-green-600" : "text-red-600"}>
-                    {validationChecks.special ? "✅" : "❌"} Al menos un carácter especial.
+                <li
+                    className={
+                        validationChecks.special
+                            ? "text-green-600"
+                            : "text-red-600"
+                    }
+                >
+                    {validationChecks.special ? "✅" : "❌"} Al menos un
+                    carácter especial.
                 </li>
-                <li className={validationChecks.match ? "text-green-600" : "text-red-600"}>
-                    {validationChecks.match ? "✅" : "❌"} Las contraseñas deben coincidir.
+                <li
+                    className={
+                        validationChecks.match
+                            ? "text-green-600"
+                            : "text-red-600"
+                    }
+                >
+                    {validationChecks.match ? "✅" : "❌"} Las contraseñas deben
+                    coincidir.
                 </li>
             </ul>
         </div>
@@ -195,7 +243,9 @@ const ChangePasswordModal = ({ isOpen, onClose, csrfToken }) => {
                         ) : (
                             <FaExclamationCircle className="text-red-500 text-6xl" />
                         )}
-                        <p className="text-center text-lg font-medium">{status.message}</p>
+                        <p className="text-center text-lg font-medium">
+                            {status.message}
+                        </p>
                         <button
                             onClick={onClose}
                             className="px-6 py-2 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700 transition"
@@ -205,10 +255,22 @@ const ChangePasswordModal = ({ isOpen, onClose, csrfToken }) => {
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit} className="mt-6 space-y-6">
-                        {renderPasswordInput("current_password", "Ingresa tu contraseña actual", "Contraseña Actual")}
-                        {renderPasswordInput("new_password", "Ingresa tu nueva contraseña", "Nueva Contraseña")}
+                        {renderPasswordInput(
+                            "current_password",
+                            "Ingresa tu contraseña actual",
+                            "Contraseña Actual"
+                        )}
+                        {renderPasswordInput(
+                            "new_password",
+                            "Ingresa tu nueva contraseña",
+                            "Nueva Contraseña"
+                        )}
                         {showChecklist && renderValidationChecklist()}
-                        {renderPasswordInput("new_password_confirmation", "Confirma tu nueva contraseña", "Confirmar Contraseña")}
+                        {renderPasswordInput(
+                            "new_password_confirmation",
+                            "Confirma tu nueva contraseña",
+                            "Confirmar Contraseña"
+                        )}
                         <div className="flex justify-end space-x-3 mt-6">
                             <button
                                 type="button"
@@ -221,13 +283,18 @@ const ChangePasswordModal = ({ isOpen, onClose, csrfToken }) => {
                                 type="submit"
                                 disabled={
                                     isSubmitting ||
-                                    !Object.values(validationChecks).every((check) => check)
+                                    !Object.values(validationChecks).every(
+                                        (check) => check
+                                    )
                                 }
-                                className={`px-6 py-2 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700 transition ${isSubmitting ||
-                                    !Object.values(validationChecks).every((check) => check)
-                                    ? "opacity-50 cursor-not-allowed"
-                                    : ""
-                                    }`}
+                                className={`px-6 py-2 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700 transition ${
+                                    isSubmitting ||
+                                    !Object.values(validationChecks).every(
+                                        (check) => check
+                                    )
+                                        ? "opacity-50 cursor-not-allowed"
+                                        : ""
+                                }`}
                             >
                                 {isSubmitting ? "Cambiando..." : "Cambiar"}
                             </button>

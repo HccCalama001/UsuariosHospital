@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Inertia } from "@inertiajs/inertia";
 
-const ResetPassword = ({ token, csrfToken }) => {
+const ResetPassword = ({ token }) => {
     const [form, setForm] = useState({
         token,
         new_password: "",

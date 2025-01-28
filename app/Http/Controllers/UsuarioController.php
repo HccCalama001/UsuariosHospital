@@ -100,7 +100,6 @@ class UsuarioController extends Controller
             return Inertia::render('usuario/Index', [
                 'user'             => $this->usuarioService->formatUserData($user),
                 'resumen'          => $resumen,
-                'csrfToken'        => csrf_token(),
                 'gruposDelUsuario' => $gruposDelUsuario,
             ]);
         } catch (\Exception $e) {
@@ -128,7 +127,6 @@ class UsuarioController extends Controller
 
         return Inertia::render('usuario/ResetPassword', [
             'token'     => $token,
-            'csrfToken' => csrf_token(),
         ]);
     }
 
@@ -152,13 +150,19 @@ class UsuarioController extends Controller
      */
     public function completarDatos(): Response
     {
-        $userLogin       = session('userLogin');
-        $currentPassword = session('current_password');
+  
+        $tokenData = $this->tokenService->decodeTokenFromCookie();
 
+  
+        if (!$tokenData) {
+            \Log::error('El token decodificado es inválido o está vacío.');
+        }
+    
+     
+    
         return Inertia::render('usuario/CompletarDatos', [
-            'userLogin'        => $userLogin,
-            'current_password' => $currentPassword,
-            'csrfToken'        => csrf_token(), // Incluir el token CSRF
+            'userLogin'        => $tokenData['userLogin'] ?? null,
+            'current_password' => $tokenData['current_password'] ?? null,
         ]);
     }
 
@@ -171,6 +175,7 @@ class UsuarioController extends Controller
     public function guardarDatos(UsuarioRequest $request): JsonResponse
     {
         try {
+            log::info($request->all());
             // Validar los datos del request
             $validatedData = $request->validated();
 

@@ -27,8 +27,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 var VerifyCode = function VerifyCode(_ref) {
-  var errors = _ref.errors,
-    csrfToken = _ref.csrfToken;
+  var errors = _ref.errors;
   var _React$useState = react__WEBPACK_IMPORTED_MODULE_0___default().useState(""),
     _React$useState2 = _slicedToArray(_React$useState, 2),
     code = _React$useState2[0],
@@ -49,8 +48,7 @@ var VerifyCode = function VerifyCode(_ref) {
             return fetch("/auth/verify-code", {
               method: "POST",
               headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": csrfToken // Enviar el token CSRF
+                "Content-Type": "application/json"
               },
               body: JSON.stringify({
                 code: code

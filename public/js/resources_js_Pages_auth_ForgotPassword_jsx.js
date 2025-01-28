@@ -36,7 +36,6 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 var ForgotPassword = function ForgotPassword() {
-  var csrfToken = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.csrfToken;
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
       identifier: "" // Puede ser nombre de usuario o correo electrónico
     }),
@@ -73,8 +72,7 @@ var ForgotPassword = function ForgotPassword() {
             return fetch("/auth/forgot-password", {
               method: "POST",
               headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": csrfToken
+                "Content-Type": "application/json"
               },
               body: JSON.stringify(formData)
             });

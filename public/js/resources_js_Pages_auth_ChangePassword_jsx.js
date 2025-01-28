@@ -36,8 +36,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 var ChangePassword = function ChangePassword(_ref) {
-  var token = _ref.token,
-    csrfToken = _ref.csrfToken;
+  var token = _ref.token;
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(""),
     _useState2 = _slicedToArray(_useState, 2),
     newPassword = _useState2[0],
@@ -114,7 +113,6 @@ var ChangePassword = function ChangePassword(_ref) {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
-                "X-CSRF-TOKEN": csrfToken,
                 Authorization: "Bearer ".concat(resetToken)
               },
               body: JSON.stringify({

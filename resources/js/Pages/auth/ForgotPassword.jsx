@@ -3,7 +3,6 @@ import { usePage } from "@inertiajs/inertia-react";
 import { Inertia } from "@inertiajs/inertia";
 
 const ForgotPassword = () => {
-    const { csrfToken } = usePage().props;
     const [formData, setFormData] = useState({
         identifier: "", // Puede ser nombre de usuario o correo electrónico
     });
@@ -30,7 +29,6 @@ const ForgotPassword = () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": csrfToken,
                 },
                 body: JSON.stringify(formData),
             });

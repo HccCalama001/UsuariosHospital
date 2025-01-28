@@ -38,7 +38,6 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 var EditUserModal = function EditUserModal(_ref) {
   var isOpen = _ref.isOpen,
     onClose = _ref.onClose,
-    csrfToken = _ref.csrfToken,
     userData = _ref.userData,
     userLoginData = _ref.userLoginData;
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
@@ -104,7 +103,7 @@ var EditUserModal = function EditUserModal(_ref) {
             setIsSubmitting(true);
             _context.prev = 4;
             _context.next = 7;
-            return (0,_services_apiService__WEBPACK_IMPORTED_MODULE_1__.actualizarUsuario)(formData, csrfToken);
+            return (0,_services_apiService__WEBPACK_IMPORTED_MODULE_1__.actualizarUsuario)(formData);
           case 7:
             responseData = _context.sent;
             setStatus({
@@ -330,7 +329,7 @@ function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 
 var authenticateUser = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(formData, csrfToken) {
+  var _ref = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(formData) {
     var response, errorData;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
@@ -340,7 +339,6 @@ var authenticateUser = /*#__PURE__*/function () {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "X-CSRF-TOKEN": csrfToken,
               "X-Requested-With": "XMLHttpRequest"
             },
             body: JSON.stringify(formData)
@@ -367,12 +365,12 @@ var authenticateUser = /*#__PURE__*/function () {
       }
     }, _callee);
   }));
-  return function authenticateUser(_x, _x2) {
+  return function authenticateUser(_x) {
     return _ref.apply(this, arguments);
   };
 }();
 var guardarDatos = /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2(formData, csrfToken) {
+  var _ref2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2(formData) {
     var jwtToken, response, errorData;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) switch (_context2.prev = _context2.next) {
@@ -389,7 +387,6 @@ var guardarDatos = /*#__PURE__*/function () {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "X-CSRF-TOKEN": csrfToken,
               Authorization: "Bearer ".concat(jwtToken),
               Accept: "application/json"
             },
@@ -425,14 +422,14 @@ var guardarDatos = /*#__PURE__*/function () {
       }
     }, _callee2);
   }));
-  return function guardarDatos(_x3, _x4) {
+  return function guardarDatos(_x2) {
     return _ref2.apply(this, arguments);
   };
 }();
 
 // apiService.js
 var cambiarContrasena = /*#__PURE__*/function () {
-  var _ref3 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3(formData, csrfToken) {
+  var _ref3 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3(formData) {
     var response, errorData;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) switch (_context3.prev = _context3.next) {
@@ -442,7 +439,6 @@ var cambiarContrasena = /*#__PURE__*/function () {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "X-CSRF-TOKEN": csrfToken,
               Accept: "application/json"
             },
             body: JSON.stringify(formData)
@@ -477,14 +473,14 @@ var cambiarContrasena = /*#__PURE__*/function () {
       }
     }, _callee3);
   }));
-  return function cambiarContrasena(_x5, _x6) {
+  return function cambiarContrasena(_x3) {
     return _ref3.apply(this, arguments);
   };
 }();
 
 // apiService.js
 var actualizarUsuario = /*#__PURE__*/function () {
-  var _ref4 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee4(formData, csrfToken) {
+  var _ref4 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee4(formData) {
     var response, errorData;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) switch (_context4.prev = _context4.next) {
@@ -494,7 +490,6 @@ var actualizarUsuario = /*#__PURE__*/function () {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "X-CSRF-TOKEN": csrfToken,
               Accept: "application/json"
             },
             body: JSON.stringify(formData)
@@ -529,7 +524,7 @@ var actualizarUsuario = /*#__PURE__*/function () {
       }
     }, _callee4);
   }));
-  return function actualizarUsuario(_x7, _x8) {
+  return function actualizarUsuario(_x4) {
     return _ref4.apply(this, arguments);
   };
 }();

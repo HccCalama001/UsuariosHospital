@@ -2,13 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaTimes, FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
 import { actualizarUsuario } from "../../../../services/apiService";
 
-const EditUserModal = ({
-    isOpen,
-    onClose,
-    csrfToken,
-    userData,
-    userLoginData,
-}) => {
+const EditUserModal = ({ isOpen, onClose, userData, userLoginData }) => {
     const [formData, setFormData] = useState({
         name: "",
         apellido_paterno: "",
@@ -55,7 +49,7 @@ const EditUserModal = ({
         setIsSubmitting(true);
 
         try {
-            const responseData = await actualizarUsuario(formData, csrfToken);
+            const responseData = await actualizarUsuario(formData);
             setStatus({
                 type: "success",
                 message: "Usuario actualizado exitosamente.",

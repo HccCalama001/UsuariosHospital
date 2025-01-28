@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import getCookie from "../../services/cookieService";
 
-const ChangePassword = ({ token, csrfToken }) => {
+const ChangePassword = ({ token }) => {
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [showPassword, setShowPassword] = useState({
@@ -56,7 +56,6 @@ const ChangePassword = ({ token, csrfToken }) => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": csrfToken,
                     Authorization: `Bearer ${resetToken}`,
                 },
                 body: JSON.stringify({
@@ -146,8 +145,8 @@ const ChangePassword = ({ token, csrfToken }) => {
                             : "text-red-600"
                     }
                 >
-                    {validationChecks.uppercase ? "✅" : "❌"} Al menos una letra
-                    mayúscula.
+                    {validationChecks.uppercase ? "✅" : "❌"} Al menos una
+                    letra mayúscula.
                 </li>
                 <li
                     className={
@@ -156,8 +155,8 @@ const ChangePassword = ({ token, csrfToken }) => {
                             : "text-red-600"
                     }
                 >
-                    {validationChecks.lowercase ? "✅" : "❌"} Al menos una letra
-                    minúscula.
+                    {validationChecks.lowercase ? "✅" : "❌"} Al menos una
+                    letra minúscula.
                 </li>
                 <li
                     className={

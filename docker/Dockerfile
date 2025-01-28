@@ -63,6 +63,7 @@ COPY . /var/www/html
 # --------------------------------------------------------------------
 # 9. Instalar dependencias de Laravel (composer install)
 # --------------------------------------------------------------------
+
 RUN composer require predis/predis \
 && composer install --no-dev --optimize-autoloader
 

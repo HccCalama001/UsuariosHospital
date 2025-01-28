@@ -55,7 +55,7 @@ function TabButton({ label, icon, value, activeTab, onClick }) {
 }
 
 const UsuarioIndex = () => {
-    const { resumen, csrfToken, gruposDelUsuario } = usePage().props;
+    const { resumen, gruposDelUsuario } = usePage().props;
     const { userNew = {}, userLogin = {} } = resumen || {};
 
     // Filtra los grupos según su tipo
@@ -270,12 +270,10 @@ const UsuarioIndex = () => {
             <ChangePasswordModal
                 isOpen={isPasswordModalOpen}
                 onClose={handleClosePasswordModal}
-                csrfToken={csrfToken}
             />
             <EditUserModal
                 isOpen={isEditModalOpen}
                 onClose={handleCloseEditModal}
-                csrfToken={csrfToken}
                 userData={userNew}
                 userLoginData={userLogin}
             />

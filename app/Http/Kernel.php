@@ -29,20 +29,12 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
-            \App\Http\Middleware\EncryptCookies::class, // Para encriptar cookies
-            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class, // Para manejar cookies
-            \Illuminate\Session\Middleware\StartSession::class, // Iniciar sesiones
-            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            \App\Http\Middleware\VerifyCsrfToken::class, // Verificar tokens CSRF
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
 
         'api' => [
             \Fruitcake\Cors\HandleCors::class, // Manejo de CORS en API
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \Illuminate\Session\Middleware\StartSession::class, // Para manejar sesiones en rutas API
-            \App\Http\Middleware\EncryptCookies::class, // Encriptar cookies en rutas API
-            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             'throttle:api',
             \Tymon\JWTAuth\Http\Middleware\Authenticate::class, // Middleware para autenticar JWT
         ],

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { guardarDatos } from "../../services/apiService";
 import Cookies from "js-cookie"; // Para manejar cookies
 
-const CompletarDatos = ({ userLogin, current_password, csrfToken }) => {
+const CompletarDatos = ({ userLogin, current_password }) => {
     const seguUsuario = userLogin?.userLogin?.segu_usuario || {};
     const [formData, setFormData] = useState({
         name: seguUsuario?.Segu_Usr_Nombre || "",
@@ -30,7 +30,7 @@ const CompletarDatos = ({ userLogin, current_password, csrfToken }) => {
         setErrors({});
         setGlobalError("");
         try {
-            const responseData = await guardarDatos(formData, csrfToken);
+            const responseData = await guardarDatos(formData);
 
             setFormData({
                 name: "",

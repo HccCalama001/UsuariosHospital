@@ -38,7 +38,6 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 var SQLLogin = function SQLLogin() {
-  var csrfToken = (0,_inertiajs_inertia_react__WEBPACK_IMPORTED_MODULE_1__.usePage)().props.csrfToken;
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
       username: "",
       current_password: ""
@@ -71,27 +70,18 @@ var SQLLogin = function SQLLogin() {
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
-            if (csrfToken) {
-              _context.next = 3;
-              break;
-            }
-            setErrors({
-              general: "Token CSRF no disponible. Inténtelo más tarde."
-            });
-            return _context.abrupt("return");
-          case 3:
             setIsSubmitting(true);
-            _context.prev = 4;
-            _context.next = 7;
-            return (0,_services_apiService__WEBPACK_IMPORTED_MODULE_2__.authenticateUser)(formData, csrfToken);
-          case 7:
+            _context.prev = 1;
+            _context.next = 4;
+            return (0,_services_apiService__WEBPACK_IMPORTED_MODULE_2__.authenticateUser)(formData);
+          case 4:
             data = _context.sent;
             window.location.href = data.redirect;
-            _context.next = 14;
+            _context.next = 11;
             break;
-          case 11:
-            _context.prev = 11;
-            _context.t0 = _context["catch"](4);
+          case 8:
+            _context.prev = 8;
+            _context.t0 = _context["catch"](1);
             if (_context.t0.errors) {
               setErrors(_context.t0.errors);
             } else {
@@ -99,15 +89,15 @@ var SQLLogin = function SQLLogin() {
                 general: "Error inesperado. Por favor, inténtelo más tarde."
               });
             }
-          case 14:
-            _context.prev = 14;
+          case 11:
+            _context.prev = 11;
             setIsSubmitting(false);
-            return _context.finish(14);
-          case 17:
+            return _context.finish(11);
+          case 14:
           case "end":
             return _context.stop();
         }
-      }, _callee, null, [[4, 11, 14, 17]]);
+      }, _callee, null, [[1, 8, 11, 14]]);
     }));
     return function handleLogin() {
       return _ref.apply(this, arguments);
@@ -250,7 +240,7 @@ function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 
 var authenticateUser = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(formData, csrfToken) {
+  var _ref = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(formData) {
     var response, errorData;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
@@ -260,7 +250,6 @@ var authenticateUser = /*#__PURE__*/function () {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "X-CSRF-TOKEN": csrfToken,
               "X-Requested-With": "XMLHttpRequest"
             },
             body: JSON.stringify(formData)
@@ -287,12 +276,12 @@ var authenticateUser = /*#__PURE__*/function () {
       }
     }, _callee);
   }));
-  return function authenticateUser(_x, _x2) {
+  return function authenticateUser(_x) {
     return _ref.apply(this, arguments);
   };
 }();
 var guardarDatos = /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2(formData, csrfToken) {
+  var _ref2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2(formData) {
     var jwtToken, response, errorData;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) switch (_context2.prev = _context2.next) {
@@ -309,7 +298,6 @@ var guardarDatos = /*#__PURE__*/function () {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "X-CSRF-TOKEN": csrfToken,
               Authorization: "Bearer ".concat(jwtToken),
               Accept: "application/json"
             },
@@ -345,14 +333,14 @@ var guardarDatos = /*#__PURE__*/function () {
       }
     }, _callee2);
   }));
-  return function guardarDatos(_x3, _x4) {
+  return function guardarDatos(_x2) {
     return _ref2.apply(this, arguments);
   };
 }();
 
 // apiService.js
 var cambiarContrasena = /*#__PURE__*/function () {
-  var _ref3 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3(formData, csrfToken) {
+  var _ref3 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3(formData) {
     var response, errorData;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) switch (_context3.prev = _context3.next) {
@@ -362,7 +350,6 @@ var cambiarContrasena = /*#__PURE__*/function () {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "X-CSRF-TOKEN": csrfToken,
               Accept: "application/json"
             },
             body: JSON.stringify(formData)
@@ -397,14 +384,14 @@ var cambiarContrasena = /*#__PURE__*/function () {
       }
     }, _callee3);
   }));
-  return function cambiarContrasena(_x5, _x6) {
+  return function cambiarContrasena(_x3) {
     return _ref3.apply(this, arguments);
   };
 }();
 
 // apiService.js
 var actualizarUsuario = /*#__PURE__*/function () {
-  var _ref4 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee4(formData, csrfToken) {
+  var _ref4 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee4(formData) {
     var response, errorData;
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) switch (_context4.prev = _context4.next) {
@@ -414,7 +401,6 @@ var actualizarUsuario = /*#__PURE__*/function () {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "X-CSRF-TOKEN": csrfToken,
               Accept: "application/json"
             },
             body: JSON.stringify(formData)
@@ -449,7 +435,7 @@ var actualizarUsuario = /*#__PURE__*/function () {
       }
     }, _callee4);
   }));
-  return function actualizarUsuario(_x7, _x8) {
+  return function actualizarUsuario(_x4) {
     return _ref4.apply(this, arguments);
   };
 }();

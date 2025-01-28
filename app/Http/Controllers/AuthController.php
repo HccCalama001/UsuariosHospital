@@ -13,7 +13,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -79,7 +78,7 @@ class AuthController extends Controller
     public function index(): Response
     {
         return Inertia::render('auth/SQLLogin', [
-            'csrfToken' => csrf_token(),
+            
         ]);
     }
 
@@ -91,7 +90,6 @@ class AuthController extends Controller
     public function showForgotPasswordForm(): Response
     {
         return Inertia::render('auth/ForgotPassword', [
-            'csrfToken' => csrf_token(),
         ]);
     }
 
@@ -103,7 +101,6 @@ class AuthController extends Controller
     public function showVerifyCode(): Response
     {
         return Inertia::render('auth/VerifyCode', [
-            'csrfToken' => csrf_token(),
         ]);
     }
 
@@ -147,8 +144,7 @@ class AuthController extends Controller
         $token = request()->cookie('reset_token');
 
         return Inertia::render('auth/ChangePassword', [
-            'token'     => $token,
-            'csrfToken' => csrf_token(),
+            'token'     => $token
         ]);
     }
 
@@ -167,17 +163,14 @@ class AuthController extends Controller
             // Usuario nuevo o temporal
             if (is_null($usuarioData['userNew'])) {
                 $token = $this->tokenService->generateTemporaryToken([
-                    'username'  => $request->username,
-                    'temporary' => true,
-                ]);
-
-                session([
+                    'username'         => $request->username,
+                    'temporary'        => true,
                     'userLogin'        => $usuarioData,
                     'current_password' => $request->current_password,
                 ]);
-
+            
                 $cookie = $this->tokenService->guardarEnCookie($token);
-
+            
                 return response()
                     ->json([
                         'status'   => 'success',
@@ -185,7 +178,6 @@ class AuthController extends Controller
                     ])
                     ->withCookie($cookie);
             }
-
             // Usuario existente
             $user   = $this->usuarioService->buscarUsuarioExistente($request->username);
     

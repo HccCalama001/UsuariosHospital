@@ -23,6 +23,7 @@ class UsuarioRequest extends FormRequest
      */
     protected function failedValidation(Validator $validator): void
     {
+        \Log::error('Errores de validación:', $validator->errors()->toArray());
         throw new HttpResponseException(
             response()->json([
                 'message' => 'Errores de validación.',
