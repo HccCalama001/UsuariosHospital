@@ -9,7 +9,9 @@ use App\Http\Controllers\UsuarioController;
 Route::get('/', function () {
     return redirect()->route('sqlpassword.login');
 })->middleware('guest.check');
-
+Route::get('/health', function () {
+    return response()->json(['status' => 'OK'], 200);
+});
 // Rutas públicas (sin autenticación JWT)
 Route::prefix('auth')->middleware('guest.check')->group(function () {
     Route::get('/login', [AuthController::class, 'index'])->name('sqlpassword.login');
